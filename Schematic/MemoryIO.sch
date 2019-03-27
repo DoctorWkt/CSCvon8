@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:Schematic-rescue
 LIBS:power
 LIBS:device
 LIBS:switches
@@ -39,6 +40,7 @@ LIBS:SN74LS273NE4
 LIBS:UM245R
 LIBS:7400-ic
 LIBS:74LS593
+LIBS:74LS139
 LIBS:Schematic-cache
 EELAYER 25 0
 EELAYER END
@@ -575,9 +577,11 @@ Wire Wire Line
 Wire Wire Line
 	5200 4750 5300 4750
 $Comp
-L 74LS139 IC15
+L 74LS139-RESCUE-Schematic IC15
 U 2 1 5C9A3AED
 P 4700 5750
+AR Path="/5C9A3AED" Ref="IC15"  Part="2" 
+AR Path="/5C984F41/5C9A3AED" Ref="IC15"  Part="2" 
 F 0 "IC15" H 4700 6300 50  0000 C CNN
 F 1 "74LS139" H 4700 6200 50  0000 C CNN
 F 2 "" H 4700 5750 50  0001 C CNN
@@ -641,9 +645,12 @@ Text Notes 2450 4500 0    60   ~ 0
 AddressBus
 Text Notes 7050 800  0    60   ~ 0
 DataBus
-Wire Wire Line
-	3950 6100 3750 6100
 Connection ~ 3750 6100
+Wire Wire Line
+	3850 5800 3750 5800
+Connection ~ 3750 5800
+Wire Wire Line
+	3400 6000 3400 5900
 $Comp
 L VCC #PWR010
 U 1 1 5C9AF8FD
@@ -656,10 +663,7 @@ F 3 "" H 3400 5900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3850 5800 3750 5800
-Connection ~ 3750 5800
-Wire Wire Line
 	3950 6000 3400 6000
 Wire Wire Line
-	3400 6000 3400 5900
+	3950 6100 3750 6100
 $EndSCHEMATC
