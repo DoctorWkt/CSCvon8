@@ -165,13 +165,13 @@ conditional jumps that a CPU is expected to provide:
 
 | ALU operation | Jumpsel | Action peformed |
 |--------------------|-------------|-----------------------|
-| 0                     |    1 (Z)   |   Always jump   |
-| A - B                 |    1 (Z)   |  Jump if A == B |
-| A - B (special) |    1 (Z)   |  Jump if A != B |
-| B - A         |   2 (C)       | Jump if A > B |
-| A - B         |   2 (C)       | Jump if B > A |
-| B - A - 1             |   2 (C)       | Jump if A >= B |
-| A - B - 1             |   2 (C)       | Jump if B >= A |
+| 0                     |    2 (Z)   |   Always jump   |
+| A - B                 |    2 (Z)   |  Jump if A == B |
+| A - B (special) |    2 (Z)   |  Jump if A != B |
+| B - A         |   1 (C)       | Jump if A > B |
+| A - B         |   1 (C)       | Jump if B > A |
+| B - A - 1             |   1 (C)       | Jump if A >= B |
+| A - B - 1             |   1 (C)       | Jump if B >= A |
 
 
 The special "A - B" ALU operation still produces the result of A - B, but the Zero flag is inverted to allow the not equals comparison.
