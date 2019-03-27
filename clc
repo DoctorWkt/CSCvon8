@@ -1,0 +1,433 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Data::Dumper;
+
+# A very rudimentary compiler for a
+# high-ish level language down to
+# the CSCvon8 CPU assembly language.
+# (c) 2017 Warren Toomey, GPL3.
+
+my $OUT;
+
+# Stack of instructions to emit at the end of each if or loop
+# Each entry is a 3-element list: type, code and end loop label.
+# End loop label is undef for if statements. First element
+# is "LOOP", "IF", "FUNC".
+my @Loopstack;
+
+# Function variables: name of current function or undef
+my $funcname;
+
+# Name of defined functions
+my %Function;
+
+# Name of function's parameters
+my %Funcparam;
+
+# Get a new jump label
+my $nextlabel = 0;
+
+sub newlabel {
+    return ( "L" . $nextlabel++ );
+}
+
+my $varlocn = 0x8000;    # Next location to use for variables
+my %Var;                 # List of known variables
+
+# Allocate space for a new variable. Prepend the current function name
+sub addvar {
+    my $var = shift;
+    $var = $funcname . "." . $var;
+
+    die("$var previously defined\n") if ( defined( $Var{$var} ) );
+    printf( $OUT "%s:\tEQU \$%02x\n", $var, $varlocn++ );
+    $Var{$var} = 1;
+}
+
+# Check if a variable exists. Die if 2nd argument is true
+# Return the full variable name or undef
+sub checkvar {
+    my ( $var, $stop ) = @_;
+    $var = $funcname . "." . $var;
+
+    if ( !defined( $Var{$var} ) ) {
+        die("$var does not exist\n") if ($stop);
+        return (undef);
+    }
+    return ($var);
+}
+
+# Emit an operation with two operands
+sub emit_twoop_operation {
+    my ( $lvar, $var1, $op, $var2 ) = @_;
+
+    # Work out the lvar name
+    if ($lvar ne '') {
+      $lvar = checkvar( $lvar, 1 );
+    }
+
+    # Load either a constant or a value at a label
+    if ($var1=~ m{^-?\d+$}) {
+      printf( $OUT "\tLCA \$%02x\t\t\t# $lvar = $var1 $op $var2\n", $var1 & 0xff);
+    } else {
+      $var1 = checkvar( $var1, 1 );
+      printf( $OUT "\tLDA %s\t\t\t# $lvar = $var1 $op $var2\n", $var1);
+    }
+    if ($var2=~ m{^-?\d+$}) {
+      printf( $OUT "\tLCB \$%02x\n", $var2 & 0xff);
+    } else {
+      $var2 = checkvar( $var2, 1 );
+      printf( $OUT "\tLDB %s\n", $var2);
+    }
+    printf( $OUT "\tA=A%sB\n", $op);
+    printf( $OUT "\tSTA $lvar\n");
+}
+
+# Emit a comparison
+sub emit_comparison {
+    my ( $startlabel, $var1, $op, $var2, $endlabel ) = @_;
+    $var1 = checkvar( $var1, 1 );
+    printf( $OUT "$startlabel:\t\t\t# $var1 $op $var2\n" );
+    printf( $OUT "\tLDA %s\n", $var1);
+    if ($var2=~ m{^-?\d+$}) {
+      printf( $OUT "\tLCB \$%02x\n", $var2 & 0xff);
+    } else {
+      $var2 = checkvar( $var2, 1 );
+      printf( $OUT "\tLDB %s\n", $var2);
+    }
+    printf( $OUT "\tJA%sB $endlabel\n", $op);
+}
+
+# Deal with the end of a function
+sub end_function {
+   printf( $OUT "\tRTS $funcname\t\t# return\n");
+   $funcname= undef;
+}
+
+# Emit code for a function call
+sub do_function_call {
+    my ( $name, $argument, $lvar ) = @_;
+    die("function $name not previously declared\n")
+      if ( !exists( $Function{$name} ) );
+    print( $OUT "\t\t\t# Call $name\n" );
+
+    # If there is an argument, copy it into the function
+    if ( defined($argument) && ( $argument ne "" ) ) {
+        die("function $name has no argument\n")
+          if ( $Funcparam{$name} eq "" );
+        $argument = checkvar( $argument, 1 );
+        print( $OUT "\tLDA $argument\n" );
+        print( $OUT "\tSTA $Funcparam{$name}\n" );
+    }
+
+    # Print out the call
+    print( $OUT "\tJSR $name\n" );
+
+    # If we have an lvar, copy from the param back to the lvar
+    if ( defined($lvar) ) {
+        print( $OUT "\tLDA $Funcparam{$name}\n" );
+        print( $OUT "\tSTA $lvar\n" );
+    }
+}
+
+#### MAIN PROGRAM ####
+die("Usage: $0 file.cl\n") if ( @ARGV != 1 );
+my $outfile = $ARGV[0];
+$outfile =~ s{cl$}{s};
+die("output file name same as input file $outfile\n")
+  if ( $outfile eq $ARGV[0] );
+
+open( $OUT,   ">", $outfile ) || die("Cannot write $outfile: $!\n");
+open( my $IN, "<", $ARGV[0] ) || die("Cannot open $ARGV[0]: $!\n");
+print( $OUT "\tJSR main\n" );    # Initial function call
+print( $OUT "end:\tJMP end\n" );
+while (<$IN>) {
+    chomp;
+
+    # Lose comments
+    s{\s*//.*}{};
+
+    # Skip empty lines;
+    next if (m{^$});
+
+    # Variable declaration
+    if (m{var\s+(\S+)\s*;}) {
+        my $var = $1;
+        addvar($var);
+        next;
+    }
+
+    # Two operand operation
+    if (m{(\S+)\s*=\s*(\S+)\s*(\+|\-|\&|\||\^)\s*(\S+)\s*;}) {
+        my ( $lvar, $var1, $op, $var2 ) = ( $1, $2, $3, $4 );
+        emit_twoop_operation( $lvar, $var1, $op, $var2 );
+        next;
+    }
+
+    # While loop/If statement
+    if (m{(if|while)\s*\(\s*(\S+)\s+(\S+)\s+(\S+)\s*\)\s*\{}) {
+        my ( $keyword, $var1, $op, $var2 ) = ( $1, $2, $3, $4 );
+
+        # Get a start label and an end label
+        my $startlabel = newlabel();
+        my $endlabel   = newlabel();
+        if ( $keyword eq "while" ) {
+            push( @Loopstack,
+                [ "LOOP", "\tJMP $startlabel\n$endlabel:\n", $endlabel ] );
+        } else {
+            push( @Loopstack, [ "IF", "$endlabel:\n", undef ] );
+        }
+
+        if ( $op eq "==" ) {
+            emit_comparison( $startlabel, $var1, "!=", $var2, $endlabel);
+        }
+        if ( $op eq "!=" ) {
+            emit_comparison( $startlabel, $var1, "==", $var2, $endlabel);
+        }
+        if ( $op eq "<" ) {
+            emit_comparison( $startlabel, $var1, ">=", $var2, $endlabel);
+        }
+        if ( $op eq ">=" ) {
+            emit_comparison( $startlabel, $var1, "<", $var2, $endlabel);
+        }
+        if ( $op eq ">" ) {
+            emit_comparison( $startlabel, $var1, "<=", $var2, $endlabel);
+        }
+        if ( $op eq "<=" ) {
+            emit_comparison( $startlabel, $var1, ">", $var2, $endlabel);
+        }
+        next;
+    }
+
+    # Else statement
+    if (m{\}\s*else\s*\{}) {
+        my $endlabel = newlabel();
+        my $aryref   = pop(@Loopstack);
+        die("Unbalanced else\n") if ( !defined($aryref) );
+        my ( $type, $line, $orignendlabel ) = @{$aryref};
+        die("else not after if\n") if ( $type ne "IF" );
+        push( @Loopstack, [ "IF", "$endlabel:\n", undef ] );
+        print( $OUT "\tJMP $endlabel\t\t# Just before else\n" );
+        print( $OUT $line );
+        next;
+    }
+
+    # while (1) statement
+    if (m{while\s*\(\s*1\s*\)\s*\{}) {
+
+        # Get a start label and an end label
+        my $startlabel = newlabel();
+        my $endlabel   = newlabel();
+        push( @Loopstack,
+            [ "LOOP", "\tJMP $startlabel\n$endlabel:\n", $endlabel ] );
+        printf( $OUT "$startlabel:\t\t\t# while (1)\n" );
+        next;
+    }
+
+    # End of an if, loop or function
+    if (m{\}}) {
+        my $aryref = pop(@Loopstack);
+        die("Unbalanced }\n") if ( !defined($aryref) );
+        my ( $type, $line, $orignendlabel ) = @{$aryref};
+        die("Unbalanced }\n") if ( !defined($type) );
+
+        if ( $type eq "FUNC" ) {
+            end_function();
+            next;
+        }
+
+        # Otherwise an if or loop end
+        print( $OUT $line );
+        next;
+    }
+
+    # putchar
+    if (m{putchar\((.+)\);}) {
+        my $origarg = $1;
+        my $arg = checkvar( $origarg, 0 );
+        if ( defined($arg) ) {
+            printf( $OUT "\tLDA %s\t\t# putchar $arg\n", $arg );
+            printf( $OUT "\tOUTA\n" );
+        } else {
+	    $arg= undef;
+            $arg = 10      if ( $origarg eq "'\\n'" );
+            $arg = ord($1) if ( $origarg =~ m{'(.)'} );
+	    die("Unrecognised putchar argument $origarg\n")
+			   if (!defined($arg));
+            printf( $OUT "\tLCA \$%02x\t\t# putchar $arg\n", $arg );
+            printf( $OUT "\tOUTA\n" );
+        }
+        next;
+    }
+
+    # prhex(n): Lots of instructions to do this, sigh
+    if (m{prhex(n?)\((.+)\);}) {
+      my ($n, $arg)= ($1, $2);
+      $arg = checkvar( $arg, 1 );
+
+      # Get two new labels
+      my $l1= newlabel();
+      my $l2= newlabel();
+      printf( $OUT "\tLDA %s\t\t# prhex$n $arg high nibble\n", $arg);
+      printf( $OUT "\tLCB \$04\n");
+      printf( $OUT "\tA=A>>BL\n");
+      printf( $OUT "\tLCB \$09\n");
+      printf( $OUT "\tJA>B $l1\n");
+      printf( $OUT "\tLCB \$30\n");
+      printf( $OUT "\tJMP $l2\n");
+      printf( $OUT "$l1:\tLCB \$37\n");
+      printf( $OUT "$l2:\tA=A+B\n");
+      printf( $OUT "\tOUTA\n");
+
+      # Get two new labels
+      $l1= newlabel();
+      $l2= newlabel();
+      printf( $OUT "\tLDA %s\t\t# prhex$n $arg low nibble\n", $arg);
+      printf( $OUT "\tLCB \$0F\n");
+      printf( $OUT "\tA=A&B\n");
+      printf( $OUT "\tLCB \$09\n");
+      printf( $OUT "\tJA>B $l1\n");
+      printf( $OUT "\tLCB \$30\n");
+      printf( $OUT "\tJMP $l2\n");
+      printf( $OUT "$l1:\tLCB \$37\n");
+      printf( $OUT "$l2:\tA=A+B\n");
+      printf( $OUT "\tOUTA\n");
+      if ($n eq 'n') {
+        printf( $OUT "\tLCA \$0A\n");
+        printf( $OUT "\tOUTA\n");
+      }
+      next;
+    }
+
+    # Postincrement
+    if (m{(\S+)\+\+;}) {
+        my $var1 = $1;
+        $var1 = checkvar( $var1, 1 );
+        printf( $OUT "\tLDA %s\n", $var1 );
+        printf( $OUT "\tA=A+1\n" );
+        printf( $OUT "\tSTA %s\n", $var1 );
+        next;
+    }
+
+    # Arithmetic shift right
+    if (m{(\S+)\s*=\s*(\S+)\s*>>\s*(\S+);}) {
+        my ( $lvar, $var1, $var2 ) = ( $1, $2, $3 );
+        $lvar = checkvar( $lvar, 1 );
+        $var1 = checkvar( $var1, 1 );
+        printf( $OUT "\tLDA %s\t\t# %s= %s >> %s\n", $var1, $lvar, $var1, $var2);
+        if ($var2=~ m{^-?\d+$}) {
+          printf( $OUT "\tLCB \$%02x\n", $var2 & 0xff);
+        } else {
+          $var2 = checkvar( $var2, 1 );
+          printf( $OUT "\tLDB %s\n", $var2);
+        }
+        printf( $OUT "\tA=A>>BA\n" );
+        printf( $OUT "\tSTA %s\n", $lvar );
+        next;
+    }
+
+    # break
+    if (m{break;}) {
+
+        # Get the length of the @Loopstack -1, to get highest index
+        my $i     = @Loopstack - 1;
+        my $found = 0;
+        while ( $i >= 0 ) {
+            my $aryref = $Loopstack[ $i-- ];
+            die("No matching loop end for break\n") if ( !defined($aryref) );
+            my ( $type, $line, $orignendlabel ) = @{$aryref};
+            if ( $type eq "LOOP" ) {
+                printf( $OUT "\tJMP %s\t\t# break\n", $orignendlabel );
+                $found = 1;
+                last;
+            }
+        }
+        die("No matching loop end for break\n") if ( !$found );
+        next;
+    }
+
+    # Exit: inifinite loop
+    if (m{exit;}) {
+        print( $OUT "end:\tJMP end\n" );
+        next;
+    }
+
+    # Function declaration: function name (param) {
+    if (m{function\s+(\S+)\s*\((\S*)\)\s*\{}) {
+        my $name  = $1;
+        my $param = $2;
+        die("Can't declare function $name inside $funcname\n")
+          if ( defined($funcname) );
+        $funcname = $name;
+	$Function{$name}= 1;
+        die("function $name previously declared\n")
+          if ( exists( $Funcparam{$name} ) );
+        print( $OUT "\n$name:\n" );
+        if ( defined($param) && ( $param ne "" ) ) {
+          addvar($param);
+          $param = checkvar( $param, 1 );
+          $Funcparam{$name} = $param;
+	}
+        push( @Loopstack, ["FUNC"] );
+        next;
+    }
+
+    # Return with return value. Use the param as return location
+    if (m{return\((\S+)\);}) {
+        my $retvar = $1;
+        $retvar = checkvar( $retvar, 1 );
+        printf( $OUT "\tLDA %s\t\t# Return $retvar\n", $retvar );
+        printf( $OUT "\tSTA %s\n",  $Funcparam{$funcname} );
+        printf( $OUT "\tRTS $funcname\n");
+        next;
+    }
+
+    # Function call with optional argument and assignment
+    if (m{(\S+)=\s*(\S+)\s*\((\S*)\)\s*;}) {
+        my $name     = $2;
+        my $argument = $3;
+        my $lvar     = $1;
+        $lvar = checkvar( $lvar, 1 );
+        do_function_call( $name, $argument, $lvar );
+        next;
+    }
+
+    # Function call with optional argument and no assignment
+    if (m{(\S+)\s*\((\S*)\)\s*;}) {
+        my $name     = $1;
+        my $argument = $2;
+        do_function_call( $name, $argument );
+        next;
+    }
+
+    # Constant assignment
+    if (m{(\S+)\s*=\s*(\S+)\s*;}) {
+        my ( $var, $val ) = ( $1, $2 );
+        $var = checkvar( $var, 1 );
+
+	# If the value is a constant
+        if ($val=~ m{^-?\d+$}) {
+          printf( $OUT "\tLCA \$%02x\t\t\t# $var = $val\n", $val & 0xff);
+        } else {
+	  # See if the val is a variable
+	  my $rhsvar= checkvar( $val, 1);
+          printf( $OUT "\tLDA %s\t\t\t# $var = $val\n", $rhsvar);
+	}
+        printf( $OUT "\tSTA %s\n", $var);
+	next;
+    }
+
+    # Return and no return value
+    if (m{return;}) {
+        printf( $OUT "\tRTS $funcname\t\t# return\n");
+        next;
+    }
+
+    die("Unrecognised line: $_\n");
+}
+
+die("No main function defined\n") if (!defined($Function{"main"}));
+close($IN);
+close($OUT);
+exit(0);

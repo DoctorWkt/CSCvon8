@@ -1,0 +1,212 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Data::Dumper;
+use Storable;
+
+# Script to generate the contents of the ALU ROM.
+# (C) 2019 Warren Toomey, GPL3
+#
+# The ROM takes these 21 bits of input.
+# - bit 7-0,   the B value
+# - bit 15-8,  the A value
+# - bit 20-16, the ALU operation
+#
+# There are 11 bits of output.
+# - bit 7-0,   the result.
+# - bit   8,   the inverted carry     (C) bit
+# - bit   9,   the inverted zero      (Z) bit
+# - bit  10,   the inverted negative  (N) bit
+#
+# All other output bits are unused and not wired up.
+
+use constant CMASK     => 0x1ff; # Mask to keep carry bit from Perl operation
+use constant CARRYFLAG => 0x100; # Location of the carry flag in the result
+use constant ZEROFLAG  => 0x200; # The bit which is the zero flag in the result
+use constant NEGFLAG   => 0x400; # The bit which is the -ve flag in the result
+
+# Global variables to make writing the anonymous subs easier
+our ($A, $B, $result);		# A and B inputs, and ALU result
+
+# The ROM contents to be generated
+my @ROM;
+
+# Lookup tables to convert BCD to 8-bit numbers and vice versa
+my @BCDtoNum;
+my @NumtoBCD;
+
+# Function to build the above two lookup tables
+sub init_bcd_tables {
+
+  foreach my $i (0x00 .. 0xff) {
+
+    # Firstly convert what might be two BCD digits to an 8-bit value.
+    # Any BCD digit above 9 is treated as 0.
+    my $topdigit= $i >> 4;
+    my $botdigit= $i & 0xf;
+    $topdigit=0 if ($topdigit > 9);
+    $botdigit=0 if ($botdigit > 9);
+
+    # Convert to an 8-bit value and store in the table
+    $BCDtoNum[$i]= $topdigit * 10 + $botdigit;
+
+    # Now do the opposite, take an 8-bit value and convert to two
+    # BCD digits. Any 8-bit value above 99 is changed to 0.
+    my $decimalnum= ($i>99) ? 0 : $i;
+    $topdigit= int($decimalnum/10);
+    $botdigit= $decimalnum%10;
+
+    # Convert to two BCD nibbles and store in the table
+    $NumtoBCD[$i]= ($topdigit<<4) + $botdigit;
+  }
+}
+
+# Some operations are complicated enough that they are in their own subroutine.
+# Rotate $A to the left $B times. Slow but works.
+sub ROL {
+  $result= $A;
+  for (my $i=0; $i < $B; $i++) {
+    my $msb= $result & 0x80;
+    $result= ($result << 1) & 0xff;
+    $result |= ($msb) ? 1 : 0;
+  }
+}
+
+# Rotate $A to the right $B times. Slow but works.
+sub ROR {
+  $result= $A;
+  for (my $i=0; $i < $B; $i++) {
+    my $lsb= $result & 0x1;
+    $result= $result >> 1;
+    $result |= ($lsb) ? 0x80 : 0;
+  }
+}
+
+# Arithmetic shift $A to the right $B times. Slow but works.
+sub ASR {
+  $result= $A;
+  my $msb= $result & 0x80;
+  for (my $i=0; $i < $B; $i++) {
+    $result= $result >> 1;
+    $result |= $msb;
+  }
+}
+
+# Two digit BCD addition of $A and $B.
+# Any result >100 is reduced by 100 and carry set.
+# Result is also two BCD digits.
+sub BCD_ADD {
+  # Convert both to 8-bit values
+  my $a= $BCDtoNum[ $A ];
+  my $b= $BCDtoNum[ $B ];
+
+  my $c=0;
+  $result= $a + $b;
+  if ($result > 99) {
+    $result -= 99;
+    $c= CARRYFLAG;	# This is active high at this point
+  }
+  $result= $NumtoBCD[ $result] + $c;
+}
+
+# Two digit BCD addition of $A and $B.
+# Any result <0 is incremented by 100 and carry set.
+# Result is also two BCD digits.
+sub BCD_SUB {
+  # Convert both to 8-bit values
+  my $a= $BCDtoNum[ $A ];
+  my $b= $BCDtoNum[ $B ];
+
+  my $c=0;
+  $result= $a - $b;
+  if ($result < 0) {
+    $result += 99;
+    $c= CARRYFLAG;	# This is active high at this point
+  }
+  $result= $NumtoBCD[ $result] + $c;
+}
+
+# Array of subroutines, some anonymous, which calculate the result
+# given the A and B values
+my @Opsub= (
+  sub { $result= 0 },					# 0
+  sub { $result= $A; },					# A
+  sub { $result= $B; },					# B
+  sub { $result= (-$A) & CMASK; },			# -A
+  sub { $result= (-$B) & CMASK; },			# -B
+  sub { $result= ($A+1) & CMASK; },			# A+1
+  sub { $result= ($B+1) & CMASK; },			# B+1
+  sub { $result= ($A-1) & CMASK; },			# A-1
+  sub { $result= ($B-1) & CMASK; },			# B-1
+  sub { $result= ($A+$B) & CMASK; },			# A+B
+  sub { $result= ($A+$B+1) & CMASK; },			# A+B+1
+  sub { $result= ($A-$B) & CMASK; },			# A-B
+  sub { $result= ($A-$B) & CMASK; },			# A-B special, op 12
+  sub { $result= ($B-$A) & CMASK; },			# B-A
+  sub { $result= ($A-$B-1) & CMASK; },			# A-B-1
+  sub { $result= ($B-$A-1) & CMASK; },			# B-A-1
+  sub { $result= ($A*$B) & 0xff; },			# A*B, low bits
+  sub { $result= ($A*$B) >> 8; },			# A*B, high bits
+  sub { $result= ($B==0) ? 0 : int($A/$B); },		# A/B
+  sub { $result= ($B==0) ? 0 : int($A%$B); },		# A%B
+  sub { $result= ($A<<$B) & CMASK; },			# A<<B
+  sub { $result= $A>>$B; },				# A>>B logical
+  \&ASR,						# A>>B arithmetic
+  \&ROL,						# A ROL B
+  \&ROR,						# A ROR B,
+  sub { $result= $A&$B; },				# A AND B
+  sub { $result= $A|$B; },				# A OR B
+  sub { $result= $A^$B; },				# A XOR B
+  sub { $result= (~$A) & 0xff; },			# NOT A
+  sub { $result= (~$B) & 0xff; },			# NOT B
+  \&BCD_ADD,						# BCD A + B
+  \&BCD_SUB,						# BCD A + B
+);
+
+### MAIN PROGRAM ###
+
+# Generate the BCD tables
+init_bcd_tables();
+
+# Loop across all possible ALU inputs
+foreach my $aluop (0x00 .. 0x1f) {
+
+  # Cache the ALU op subroutine
+  my $opsub= $Opsub[$aluop];
+ 
+  foreach $A (0x00 .. 0xff) {
+    foreach $B (0x00 .. 0xff) {
+
+      # Run the subroutine to calculate the result
+      $opsub->();
+
+      # At this point we have an active high carry flag
+      # and an active high negative bit in bit 7
+
+      # Add on any active low zero flag
+      $result |= ZEROFLAG if (($result&0xff)!=0);
+
+      # Flip the zero bit for special ALUop 12
+      $result ^= ZEROFLAG if ($aluop==12);
+
+      # Flip the carry bit to make it active low
+      $result ^= CARRYFLAG;
+
+      # Add on any active low negative flag
+      $result |= NEGFLAG if (($result&0x80)==0);
+
+      # Put the result into the ROM
+      $ROM[ ($aluop<<16) | ($A<<8) | $B ] = $result;
+    }
+  }
+}
+
+# Write ROM out in hex for Verilog
+open( my $OUT, ">", "alu.rom" ) || die("Can't write to alu.rom: $!\n");
+  for my $i ( 0 .. ( 2**21 - 1 ) ) {
+    printf( $OUT "%x ", $ROM[$i] ? $ROM[$i] : 0 );
+    print( $OUT "\n" ) if ( ( $i % 8 ) == 7 );
+}
+close($OUT);
+
+exit(0);

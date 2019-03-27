@@ -1,0 +1,357 @@
+Thu 21 Mar 14:47:32 AEST 2019
+-----------------------------
+OK, I've built a new design which allows instructions in RAM and ROM.
+It's a microcoded design. It should take about 20 TTL chips. This time
+I will probably build it in Verilog because I have nearly all the parts
+from the existing CSC8 which I can use.
+
+I've started designing the microcode and writing the script to generate
+the microcode ROM from this input file.
+
+Fri 22 Mar 09:35:49 AEST 2019
+-----------------------------
+I thought I'd backed up all my ucode.rom generating Perl code yesterday
+to my nextCloud, but it didn't happen. Damn. So this morning, I've built
+the Verilog version of the new CSC8 CPU. I'm sure that I've got the
+control lines from the decoder different to what I had yesterday.
+
+However, I've been able to run my first hi-level instruction LDA $23,
+which consists of loading the IR from location $0000, incrementing the PC,
+loading A from location $0001, incrementing the PC and resetting the
+microsequencer to 0. Also, LDB $45 works.
+
+Fri 22 Mar 15:18:19 AEST 2019
+-----------------------------
+Just built a list of 74HC chips available at Element14. I've spotted
+the 74HC574. It's an 8-bit register with tri-state output (active low OE)
+and an edge-triggered low-to-high load line. This will be good for all the
+registers in the design: AH, AL, IR, A and B.
+
+I want to do indexed addressing, e.g. LDA $HHLL,B. Stored as a 3-byte
+instruction. To do this, I'll need to use the ALU for the 16-bit addition.
+Obviously, the least number of chips is still a goal.
+
+Given that we now have registers with tri-state output, can we can send the
+AH register and the A register in as the first ALU argument. Can we do this
+as a microsequence:
+
+	Load IR with Mem[PC++]
+	Load AH with Mem[PC++]		# Actually get the low address into AH
+	AL= AH+B via the ALU with carry output
+	Load AH with Mem[PC++]		# Now the high address byte
+	AH= AH+0+carry in
+	Load A with Mem[AR]
+
+I thought I could optimise this by sending the data bus straight into the
+ALU, but then the ALU output has to come out on the data bus, so that won't
+work.
+
+Also a problem: I really need to buffer the carry between the microinstructions.
+How to do this without putting more chips into the design? Maybe I have to
+bring back the Flags register and somehow lose the Jump logic chip?
+
+OK, so I'm thinking this is going to be a real PITA to implement. How about
+$HH00,B indexed addressing like the existing CSC8? I still have a spare control
+bit. How about a 2-bit address bus selector:
+
+	00: PC value
+	01: AH/AL
+	10: AH/A
+	11: AH/B
+
+I just realised that I can also do ($HHLL),B by doing:
+
+	Load Mem[PC++] into AH
+	Load Mem[PC++] into AL
+	Load Mem[AR] into AH
+	Load Mem[AH/B] into wherever
+
+It means yet another multiplexer unfortunately. I don't think this is
+going to be built with real chips, it's too complex. OK, I've added
+this to the Verilog design and checked that the couple of instructions
+I've already got still work. Yes they do. The control lines are now:
+
+  uSreset, PCincr, AddrOp(2), JumpOp(2), DbusOp(2), LoadOp(3), ALUop(5)
+
+But it does mean I need one 3:8 demux, three 2:4 demuxers, sigh.
+And because the 74HC161 PC chips don't do tri-state, I need two
+buffer chips to make the PC output tri-state. So:
+
+32Kx8 RAM	LY62256 32Kx8 SRAM
+32Kx8 ROM	28C256 32Kx8 EEPROM
+UART		UM245R
+2Mx16 ALU	M27C322 2Mx16 EPROM
+AH		74HC574
+AL		74HC574
+IR		74HC574
+A		74HC574
+B		74HC574
+PC		Four 74HC161
+PC buffer	Two 74HC241
+Jump logic	74HC153
+4Kx16 Decode	M27C1024 64Kx16 EEPROM
+uSeq counter	74HC161
+LoadOp demux	74HC238
+DbusOp demux	Half of 74HC139
+AddrOp demux	Half of 74HC139
+-----
+Total: 20?? Surely this isn't right. No clock yet.
+
+Ah, I'll need a way to invert the msb of the address to enable RAM/ROM.
+separately. Need to find a 4Kx16 EEPROM still.
+
+Sat 23 Mar 09:57:44 AEST 2019
+-----------------------------
+OK, so I decided to rewrite the microcode generator. Then I decided to
+start work on the assembler. Now I have these instructions and they
+seem to work.
+
+    EQU, NOP, LCA, LCB, OUTA, OUTB, STA, STB, LDA, LDB,
+    A=0, B=0, A=B, B=A, A=-A, B=-B, JMP 
+
+There were a few bugs along the way, mainly microcode ones! But overall
+it's going well. I'm wondering if 256 instructions is enough.
+
+Sat 23 Mar 13:18:02 AEST 2019
+-----------------------------
+I've got the indexed instructions to work, and I've converted most of
+the CSC8 example assembly programs. Now I'm stuck on JSR/RTS. The PC's
+value isn't connected to the data bus, so the assembler is going to have
+to help out.
+
+Question: do I want to have single-call functions or multi-call functions?
+If the latter, do we want recursion or just call from many callers?
+Recursion would require some form of stack. Multiple callers would just
+need a "caller-id" idea like the existing CSC8 has.
+
+I'm thinking of a JSR which converts into two real instructions, and a
+single RTS instruction.
+
+	RTS $XXXX: Load the address from $XXXX, $XXX+1 and jump to it.
+		   Would probably destroy B in the process.
+
+	SRA means store return address.
+	SRA $CCCC $XXXX (yes, 5 bytes): Store the return address $CCCC
+			at location $XXXX, $XXXX+1. Would probably
+			destroy B in the process.
+
+So the assembler would choose two adjacent RAM locations for each function.
+A JSR would store the return address in these RAM locations and jump to the
+function. An RTS would jump to the return address in these RAM locations.
+
+For multi-call functions, we could have the instructions SRAB and RTSB,
+which would be store return address at $XX00,B, and return to address at
+$XX00,B.
+
+I can tell that implementing this isn't going to be fun!
+OK, I've done SRA and RTS in the microcode and hand-coded some examples
+to test. Now I've got to add special handling to the assembler for both.
+Example:
+	JSR fred	Allocate some RAM for the return address.
+			Do SRA fred, then tack on the return address.
+	RTS fred	Don't actually use fred, find fred's return address
+			location and use that instead.
+
+Sat 23 Mar 14:25:26 AEST 2019
+-----------------------------
+
+Here's a program that works:
+	SRA printA
+	JMP printA
+	LCA 'F'
+	OUTA
+x:	JMP x
+	NOP
+printA: LCA 'A'
+	OUTA
+	RTS printA
+
+Except that I have to store PC+8 in the SRA stream, and the SRA
+must be followed by a JMP. Looks like I'll just merge the two and
+make a single JSR instruction which will be seven (7!) bytes long:
+
+	JSR store address, return address, function address
+
+Argh! Alright, done and it works but it is SO ugly. Sigh.
+
+Sat 23 Mar 17:14:01 AEST 2019
+-----------------------------
+I've brought example09 over, which uses JSR/RTS. I've also just got
+minsky.s working as well, yay!
+
+Sat 23 Mar 17:37:53 AEST 2019
+-----------------------------
+I've brought the clc compiler over and made enough changes to compile
+himinsky.cl. I had to change the parsing in cas to parse the output.
+I just checked: all the assembly examples still work. But the himinsky.s
+output isn't working yet. Need to check the .s file first!
+
+The loop that prints out the spaces and the star is working. But it looks
+like X isn't being decremented. It stays at the same initial value.
+
+Yes, I hadn't properly changed clc. It now works for all six example .cl
+programs from the CSC8 Examples area. Yay!!
+
+Sun 24 Mar 10:26:05 AEST 2019
+-----------------------------
+I just RCS tagged all the current Verilog files with ALUROM. This is because
+I have written a new ALU in Verilog instead of using a ROM. I've just
+modified newcsv8.v to use this ALU, and have checked it in as version 1.12.
+All the Examples/example*.s work, but minsky.s doesn't work. It looks like
+something is going wrong with negative results. Not sure if it's the result
+or the flags yet. I wonder if I could write three FOR loops in Verilog to
+get out all the results and flags, then compare against the same for the ROM
+version.
+
+Working on diffing the results. I've fixed a few, live divide by zero.
+Now up to Op 20, A<<B. OK, I've fixed pretty much as much as I want to.
+There are different interpretations on how to error with BCD, and how to
+error with very big << shifts, but all the Examples/*.s and Examples/*.cl
+now run with new CSC8.
+
+Still a lot of microinstructions to write! But at least, if I wanted to
+try to synthesize it, I've got a smaller ALU now.
+
+Mon 25 Mar 13:41:16 AEST 2019
+-----------------------------
+The only things I could find from Friday's work were the diagram and the
+initial documents, so I've copied those into the directory with the
+weekend's work. I might start on the KiCad schematic, so I can see
+exactly what chips I need & where to put them.
+
+Mon 25 Mar 20:33:00 AEST 2019
+-----------------------------
+Working on the KiCad schematic. Things to add:
+
+Addressing: control lines for the PC buffers, CP and OE for ARhi & ARlo.
+
+ALU_Data: CP and OE for Areg and Breg
+	Some lines on the ALU ROM
+
+Memory and IO: WE and RD lines for the UART
+	OE, WE and CS lines for the RAM
+	OE, WE and CS lines for the ROM
+
+Decode: some control lines on the Decode ROM
+	CP and OE for the IR
+
+Tue 26 Mar 03:03:02 AEST 2019
+-----------------------------
+Awake with a crazy idea. Right now we have a fair bit of decode logic:
+
+LoadOp demux    74HC238, produces eight control lines
+DbusOp demux    Half of 74HC139, produces four control lines
+AddrOp demux    Half of 74HC139, produces four control lines
+
+That's two chips which produce sixteen control lines: actually fourteen
+as some are no-ops. Why not just have a second Decode ROM to produce these
+lines. We could then lose the 74HC238 and the 74HC139.
+
+OK, so we'd save a single chip. Damn, I thought it would be better than
+this. Oh well.
+
+Tue 26 Mar 06:28:36 AEST 2019
+-----------------------------
+I added the 74HC238 and 74HC139 multiplexers last night. The AddrOp mux
+isn't going to work, because I'm enabling the A and B registers but I
+need them for the ALU operation. For example, if I do:
+
+	STA $8000
+
+then I need to assert AH/AL and not A and not B, so A's value is high-Z
+and there is nothing to send into the ALU to place on the data bus.
+
+What it means, therefore, if I want to do indexed addressing, e.g. $8000,B,
+that I need to do AL=B through the data bus first. So I should be able to
+do this in microcode and not in hardware.
+
+Also, I think I need an inverter for the RAM/ROM CS chip select line and,
+because of the above change, and inverter for the PC/AR CS chip select line.
+Oh well, one more chip,sigh.
+
+Tue 26 Mar 09:48:20 AEST 2019
+-----------------------------
+
+OK, now rewriting the microcode to not use AR,B. I've got the two existing
+indexed operations working. Now on to JSR and RTS and I've fouled up somewhere.
+Right, fixed that up. I also changed the Verilog to only use a single line
+for the address bus control, not two lines for AddrOp. So now we have a spare
+control line!!
+
+Tue 26 Mar 10:58:21 AEST 2019
+-----------------------------
+I've made a first go at completing the KiCad schematic. We have left over:
+ - half a 74HC153 4:1 mux
+ - half a 74HC139 2:4 demux
+ - four inverters
+
+The two inverters I've used are:
+ - convert address bus adr15 into chip select for ROM and RAM
+ - convert PCaddr enable line for both PC and AR (~PCaddr for AR)
+
+I'd love to find a way to use those spare halves to replace the inverter!
+At present it is 22 chips including the clock crystal. Sigh. The PC itself
+is costing six chips!!!
+
+I asked on Hackaday and they suggested the 74HC593 which is an 8-bit
+register/counter with tri-state. The only drawback is that it reads/writes
+on the same port. I'll have to think if I can use this. Would drop the
+chip count from six to two chips for the PC.
+
+It could be possible. Looking at the microcode for a jump instruction:
+
+61 JA!=B: MEMresult AHload PCincr
+          MEMresult ALload PCincr
+          ALUresult A-Bspecial AR JumpZero uSreset
+
+We load AR with the address. We use the data bus to calculate A-B
+but only for the flags result. The jump logic then tells the PC to
+load a new value and we reset the microsequencer.
+
+So, yes we could wire up two 74HC593s directly to the address bus.
+I'll think about this some more.
+
+Here's what I think is the wiring:
+
+Gnd: G, RCKEN#, CCKEN
+Vcc: CCLR#
+Clk: CCK, RCK
+PCena: G#
+PCload: CLOAD#
+PCincr: CCKEN#
+
+RCO# from low chip to CCKEN# on high chip. RCO# on high chip is NC.
+
+Tue 26 Mar 15:22:28 AEST 2019
+-----------------------------
+Just noticed in the existing design that PCincr isn't connected to the
+161s! Also looked at the waveform diagram in the datasheet and it looks
+like PCincr is active high and connected to CET. But with the 593s it will
+be active low and connected to CLOAD#.
+
+Luckily, the Decode ROM looks after this so I'll only have to redo
+the microcode generation if required. Technically, it's required now because
+of the 161s :-)
+
+Just realised, the 593s have both G and G# to enable output, so we don't
+need an inverter to separate the PC and AR on the address bus. That's one
+inverter removed.
+
+Now can I create an inverter for the A15 address line so I can drive RAM
+and ROM, using the 139 2:4 demux half that is left? Or the 153 4:1 mux?
+I think so. That would bring the total chip count down to 17! Yay!
+
+Done and tested with all the Example .s files.
+
+Tue 26 Mar 21:33:54 AEST 2019
+-----------------------------
+I've brought the Docs and Figs up to date, and extended the coverage
+of the microsequences in the documentation. I've also started to call
+the design the CSCvon8 CPU, as it's crazy small, a von Neumann architecture
+and an 8-bit CPU.
+
+Wed 27 Mar 10:13:58 AEST 2019
+-----------------------------
+I have written some more documentation and renamed everywhere I could
+think of with the CSCvon8 name. It's getting close to be ready for
+release on GitHub.

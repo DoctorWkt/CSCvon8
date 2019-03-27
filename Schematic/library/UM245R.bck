@@ -1,0 +1,8 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP UM245R
+D Interface Development Tools USB to Parallel FIFO Dev Mod for FT245R
+F http://www.ftdichip.com/Support/Documents/DataSheets/Modules/DS_UM245R.pdf
+$ENDCMP
+#
+#End Doc Library

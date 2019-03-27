@@ -1,0 +1,8 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP M27C322-100F1
+D EPROM 32M (2Mx16) 100ns
+F https://componentsearchengine.com/Datasheets/1/M27C322-100F1.pdf
+$ENDCMP
+#
+#End Doc Library

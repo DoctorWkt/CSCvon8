@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP SN74LS273NE4
+D Flip Flops Octal D-Type Flip-Flop w/Clear
+K
+F http://www.ti.com/lit/ds/sdls090/sdls090.pdf
+$ENDCMP
+#
+#End Doc Library

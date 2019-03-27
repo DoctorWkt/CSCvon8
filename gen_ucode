@@ -1,0 +1,166 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Data::Dumper;
+
+# CSCVon8 microassembler, (C) 2019 Warren Toomey, GPL3
+#
+# Generate the ucode.rom from the microcode text file
+# and also create the opcodes file
+
+# Hash of control lines and their values
+my %Cline;
+
+# Hash of control lines indicating which ones are low
+my %Cislow;
+
+# Hash of previously seen opcodes
+my %Opcode;
+
+# Bitmask to set all active low lines off
+my $lowoffmask=0;
+
+# The ROM to write out
+my @ROM;
+
+# The current instruction, name and microsequence position.
+# Also, the number of instructions bytes 
+my $opcode=0;
+my $opname;
+my $seq=0;
+my $instrlen=0;
+
+# If set, this line is placed at position 0 in each microsequence
+my $startline;
+
+# Debug flag if needed. Current line number
+my $debug=0;
+my $linenum=0;
+
+# Given a string with space-separated control lines, parse each
+# word, and update the ROM with the microinstruction
+sub parse_lines {
+  my $input= shift;
+  print("Parsing $input\n") if ($debug);
+
+  # Start with all lines off
+  my $result= $lowoffmask;
+
+  foreach my $name (split(m{\s+}, $input)) {
+
+    die("Unrecognised line $name on line $linenum\n")
+	if (!defined($Cline{$name}));
+
+    # Set the named line in the result
+    printf("  %s: %04x => ", $name, $result) if ($debug);
+    if ($Cislow{$name}) {
+      $result ^= $Cline{$name};
+    } else {
+      $result |= $Cline{$name};
+    }
+    printf("%04x\n", $result) if ($debug);
+
+    # Increment the instruction length if we have a PCincr
+    $instrlen++ if ($name eq "PCincr");
+  }
+
+  # Set the ROM for opcode/sequence with this value and
+  # move to the next sequence position
+  $ROM[ ($opcode << 4) | $seq ] = $result; $seq++;
+}
+
+#### MAIN PROGRAM ####
+
+# Enable debugging
+while ( ( @ARGV >= 1 ) && ( $ARGV[0] ) eq "-d" ) {
+    $debug++;
+    shift(@ARGV);
+}
+
+# Overwrite the opcodes file
+open( my $OPOUT, ">", "opcodes" ) || die("Can't write to opcodes: $!\n");
+
+open(my $IN, "<", "microcode") || die("Can't read microcode: $!\n");
+while (<$IN>) {
+    chomp;
+    $linenum++;
+    s{#.*}{};     # Lose comments
+    s{^\s+}{};    # Lose leading whitespace
+    s{\s+$}{};    # Lose trailing whitespace
+    next if (m{^$});    # Ignore empty lines
+
+    # Starting microinstruction in a microsequence
+    if (m{:=\s*(.+)}) {
+      $startline= $1;
+      print("Got start line $startline\n") if ($debug);
+      next;
+    }
+
+    # Control line definition
+    if (m{^(\S+)\s*=\s*(\S+)}) {
+      my ($name, $val)= ($1, $2);
+
+      # Determine if it is active low
+      # Update the low mask if it is
+      my $islow=0;
+      if ($name=~ m{^@(.*)}) {
+	$name= $1; $islow=1;
+	$lowoffmask |= hex($val);
+      }
+
+      die("Control line $name redefined on line $linenum\n")
+	if (defined($Cline{$name}));
+      $Cline{$name}= hex($val);
+      $Cislow{$name}= $islow; next;
+    }
+
+    # First line in a microsequence
+    if (m{^(\S+)\s+(\S+)\s*:\s*(.+)}) {
+
+      # Get the new opcode number, name and list of control lines
+      my $newopcode= $1; my $newopname= $2; my $linelist=$3;
+      die("Opcode $opcode redefined on line $linenum\n")
+				if (defined($Opcode{$opcode}));
+
+      # Print out the details of the last opcode
+      printf($OPOUT "%02x %d %s\n", $opcode, $instrlen, $opname) if ($seq!=0);
+
+      # Replace with the new information and reset the sequence
+      $opcode= hex($newopcode); $opname= $newopname; $seq=0; $instrlen=0;
+
+      # If there is a start line, parse it first
+      parse_lines($startline) if (defined($startline));
+
+      # Parse the control lines
+      parse_lines($linelist); next;
+    }
+
+    # If we get here, the line must just be a list of control lines.
+    # Parse them
+    parse_lines($_);
+}
+close($IN);
+
+# Print out the details of the last opcode
+printf($OPOUT "%02x %d %s\n", $opcode, $instrlen, $opname) if ($seq!=0);
+close($OPOUT);
+
+# Find any instructions which were not defined and turn them into a NOP.
+# This assumes that instruction 00 is a NOP definition.
+my $irloadvalue= $ROM[0];
+my $nopvalue= $ROM[1];
+foreach my $i (0 .. 0xff) {
+  if (!defined($ROM[ ($i << 4) ])) {
+    $ROM[ ($i << 4) ] = $irloadvalue;
+    $ROM[ ($i << 4) + 1 ] = $nopvalue;
+  }
+}
+
+# Write the ROM out in hex
+open( my $OUT, ">", "ucode.rom" ) || die("Can't write to ucode.rom: $!\n");
+  for my $i ( 0 .. ( 2**12 - 1 ) ) {
+    printf( $OUT "%x ", $ROM[$i] ? $ROM[$i] : 0 );
+    print( $OUT "\n" ) if ( ( $i % 16 ) == 15 );
+}
+
+exit(0);

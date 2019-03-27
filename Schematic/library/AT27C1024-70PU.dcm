@@ -1,0 +1,8 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP AT27C1024-70PU
+D AT27C1024-70PU,  OTP EPROM Memory 1Mbit 64K x 16 bit 70ns 4.5  5.5 V 40-Pin PDIP
+F http://www.atmel.com/images/doc0019.pdf
+$ENDCMP
+#
+#End Doc Library

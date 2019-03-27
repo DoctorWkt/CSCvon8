@@ -1,0 +1,236 @@
+# Microcode for the CSCvon8 CPU. (C) 2019 Warren Toomey, GPL3
+#
+# First up, we have the definitions of the control line combinations.
+# A leading @ on a line means that this control line is active low.
+
+# ALU operations
+0          = 0000
+A          = 0001
+B          = 0002
+-A         = 0003
+-B         = 0004
+A+1        = 0005
+B+1        = 0006
+A-1        = 0007
+B-1        = 0008
+A+B        = 0009
+A+B+1      = 000A
+A-B        = 000B
+A-Bspecial = 000C
+B-A        = 000D
+A-B-1      = 000E
+B-A-1      = 000F
+A*BHI      = 0010
+A*BLO      = 0011
+A/B        = 0012
+A%B        = 0013
+A<<B       = 0014
+A>>BL      = 0015
+A>>BA      = 0016
+AROLB      = 0017
+ARORB      = 0018
+A&B        = 0019
+A|B        = 001A
+A^B        = 001B
+!A         = 001C
+!B         = 001D
+A+BCD      = 001E
+A-BCD      = 001F
+
+# Loads from the data bus
+IRload	   = 0020
+Aload	   = 0040
+Bload	   = 0060
+MEMload	   = 0080
+AHload	   = 00A0
+ALload	   = 00C0
+IOload	   = 00E0
+
+# Writers on the data bus
+MEMresult  = 0000
+ALUresult  = 0100
+UARTresult = 0200
+
+# Jump operations
+NoJump     = 0000
+JumpCarry  = 0400
+JumpZero   = 0800
+JumpNeg    = 0C00
+
+# Address bus writers: if no ARena then PC is implied
+@ARena	   = 1000
+
+# Other control lines
+@PCincr    = 2000
+@uSreset   = 4000
+
+# This line, if given, is placed at position zero for each microinstruction.
+# The purpose is to load the IR with the instruction and increment the PC.
+#
+START := MEMresult IRload PCincr
+
+# Now the microcode itself. Lines starting with two hex digits, a word and
+# a colon are the start of a microsequence. Lines after that are the following
+# microinstructions. There is no need to put in the first microinstruction to
+# load the IR. The last microinstruction in a microsequence must reset the
+# microsequencer.
+
+# NOP
+00 NOP: uSreset
+
+# Load A with constant $XX
+01 LCA: MEMresult Aload PCincr uSreset
+
+# Load B with constant $XX
+02 LCB: MEMresult Bload PCincr uSreset
+
+# Write A to the UART
+03 OUTA: ALUresult A IOload uSreset
+
+# Write B to the UART
+04 OUTB: ALUresult B IOload uSreset
+
+# Store A at absolute location $HHLL
+05 STA: MEMresult AHload PCincr
+        MEMresult ALload PCincr
+        ALUresult A ARena MEMload uSreset
+
+# Store B at absolute location $HHLL
+06 STB: MEMresult AHload PCincr
+        MEMresult ALload PCincr
+        ALUresult B ARena MEMload uSreset
+
+# Load A from absolute location $HHLL
+07 LDA: MEMresult AHload PCincr
+        MEMresult ALload PCincr
+        ARena MEMresult Aload uSreset
+
+# Load B from absolute location $HHLL
+08 LDB: MEMresult AHload PCincr
+        MEMresult ALload PCincr
+        ARena MEMresult Bload uSreset
+
+# ALU operations
+# Load A with zero
+10 A=0: ALUresult 0 Aload uSreset
+ 
+# Load B with zero
+11 B=0: ALUresult 0 Bload uSreset
+ 
+# Load A with B
+12 A=B: ALUresult B Aload uSreset
+
+# Load B with A
+13 B=A: ALUresult A Bload uSreset
+
+# Negate A
+14 A=-A: ALUresult -A Aload uSreset
+
+# Negate B
+15 B=-B: ALUresult -B Bload uSreset
+
+# Logical shift A right B times, store in A
+16 A=A>>BL: ALUresult A>>BL Aload uSreset
+
+17 A=A+B: ALUresult A+B Aload uSreset
+
+18 A=A&B: ALUresult A&B Aload uSreset
+
+19 A=A+1: ALUresult A+1 Aload uSreset
+20 B=B+1: ALUresult B+1 Bload uSreset
+
+21 A=A+B+1: ALUresult A+B+1 Aload uSreset
+22 A=A>>BA: ALUresult A>>BA Aload uSreset
+23 A=B-A: ALUresult B-A Aload uSreset
+24 B=A+B: ALUresult A+B Bload uSreset
+25 A=A-B: ALUresult A-B Aload uSreset
+
+3E A=A+BCD: ALUresult A+BCD Aload uSreset
+
+# Jump instructions
+# Always jump to $XXXX
+60 JMP: MEMresult AHload PCincr
+        MEMresult ALload PCincr
+	ALUresult 0 ARena JumpZero uSreset
+
+61 JA!=B: MEMresult AHload PCincr
+	  MEMresult ALload PCincr
+	  ALUresult A-Bspecial ARena JumpZero uSreset
+
+62 JA>B: MEMresult AHload PCincr
+	 MEMresult ALload PCincr
+	 ALUresult B-A ARena JumpNeg uSreset
+
+63 JA>=B: MEMresult AHload PCincr
+          MEMresult ALload PCincr
+          ALUresult B-A-1 ARena JumpNeg uSreset
+
+64 JA<B: MEMresult AHload PCincr
+         MEMresult ALload PCincr
+         ALUresult A-B ARena JumpNeg uSreset
+
+65 JA<=B: MEMresult AHload PCincr
+          MEMresult ALload PCincr
+          ALUresult A-B-1 ARena JumpNeg uSreset
+
+# Calculations which may cause a jump
+# Add A+B, store in A, jump to $XXXX if there is a carry
+68 A=A+BJC: MEMresult AHload PCincr
+	    MEMresult ALload PCincr
+	    ALUresult A+B Aload ARena JumpCarry uSreset
+69 B=B-1JN: MEMresult AHload PCincr
+	    MEMresult ALload PCincr
+	    ALUresult B-1 Bload ARena JumpNeg uSreset
+
+# Indexed instructions
+70 STBB: MEMresult AHload PCincr
+	 ALUresult B ALload
+	 ALUresult B ARena MEMload uSreset
+
+71 LDAB: MEMresult AHload PCincr
+	 ALUresult B ALload
+	 ARena MEMresult Aload uSreset
+
+# Nasty evil instructions
+
+# JSR (7 bytes long!): Store at $XXXX the return address $CCCC.
+# Then jump to subroutine at $SSSS. $XXXX then $CCCC then $SSSS.
+# We will destroy A and B in the process.
+#	Load AH and B with the $XXXX value.
+#	Load A with the first $CC byte.
+#	Store A to MEM[ AH,B ].
+#	B++
+#	Load A with the next $CC byte.
+#	Store A to MEM[ AH,B ].
+#	Load AH/AR with $SSSS and set PC to it.
+FE JSR: MEMresult AHload PCincr
+	MEMresult Bload PCincr
+	MEMresult Aload PCincr
+	ALUresult B ALload
+        ALUresult A ARena MEMload
+	ALUresult B+1 Bload
+	MEMresult Aload PCincr
+	ALUresult B ALload
+        ALUresult A ARena MEMload
+	MEMresult AHload PCincr
+        MEMresult ALload PCincr
+	ALUresult 0 ARena JumpZero uSreset
+
+# RTS: Jump through the address stored at the given address $XXXX
+# We will destroy A and B in the process.
+# 	Load AH and B with the $XXXX value.
+# 	Load A with MEM[ AH,B ].
+#	B++
+#	Load AL with MEM[ AH,B ].
+#	Load AH with A
+#	Load PC with AR
+#
+FF RTS: MEMresult AHload PCincr
+	MEMresult Bload PCincr
+	ALUresult B ALload
+	ARena MEMresult Aload
+	ALUresult B+1 Bload
+	ALUresult B ALload
+	ARena MEMresult ALload
+	ALUresult A AHload
+	ALUresult 0 ARena JumpZero uSreset
