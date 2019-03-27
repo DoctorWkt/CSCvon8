@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP QX14T50B1.843200B50TT
+D QX14T50B1.843200B50TT, Crystal Oscillator, 1.8432 MHz, +/-50ppm HCMOS 50pF, 14-pin PDIP, 20.8 x 13.2 x 5.08mm
+K
+F http://docs-emea.rs-online.com/webdocs/127f/0900766b8127fc57.pdf
+$ENDCMP
+#
+#End Doc Library

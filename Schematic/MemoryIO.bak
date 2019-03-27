@@ -249,8 +249,6 @@ Wire Bus Line
 	3400 4550 3400 1150
 Wire Bus Line
 	2100 4550 3400 4550
-Text GLabel 2100 4550 0    60   Input ~ 0
-AddressBus
 Entry Wire Line
 	6650 1050 6750 950 
 Entry Wire Line
@@ -287,8 +285,6 @@ Wire Bus Line
 	6750 850  6750 3550
 Wire Bus Line
 	6750 850  9800 850 
-Text GLabel 9800 850  2    60   Input ~ 0
-DataBus
 Wire Wire Line
 	5100 1050 6650 1050
 Wire Wire Line
@@ -601,28 +597,26 @@ Connection ~ 2700 4750
 Text Label 3400 5650 0    60   ~ 0
 adr15
 $Comp
-L GNDREF #PWR?
+L GNDREF #PWR09
 U 1 1 5C9A4A6B
-P 3750 6000
-F 0 "#PWR?" H 3750 5750 50  0001 C CNN
-F 1 "GNDREF" H 3750 5850 50  0000 C CNN
-F 2 "" H 3750 6000 50  0001 C CNN
-F 3 "" H 3750 6000 50  0001 C CNN
-	1    3750 6000
+P 3750 6200
+F 0 "#PWR09" H 3750 5950 50  0001 C CNN
+F 1 "GNDREF" H 3750 6050 50  0000 C CNN
+F 2 "" H 3750 6200 50  0001 C CNN
+F 3 "" H 3750 6200 50  0001 C CNN
+	1    3750 6200
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	3850 5500 3750 5500
 Wire Wire Line
-	3750 5500 3750 6000
-Wire Wire Line
-	3750 6000 3850 6000
+	3750 5500 3750 6200
 NoConn ~ 5550 5450
 NoConn ~ 5550 5850
 NoConn ~ 5550 6050
 Text Notes 4550 5750 0    60   ~ 0
 Inverter
-Text Notes 3900 6450 0    60   ~ 0
+Text Notes 3900 6700 0    60   ~ 0
 Rather than add one more chip to the\ndesign, we use this demux as an inverter
 Wire Wire Line
 	5100 2150 5700 2150
@@ -639,4 +633,33 @@ Wire Wire Line
 	3900 4650 3850 4650
 Wire Wire Line
 	3850 4650 3850 4550
+Text GLabel 2100 4550 0    60   Input ~ 0
+adr[0..15]
+Text GLabel 9800 850  2    60   Input ~ 0
+d[0..7]
+Text Notes 2450 4500 0    60   ~ 0
+AddressBus
+Text Notes 7050 800  0    60   ~ 0
+DataBus
+Wire Wire Line
+	3950 6100 3750 6100
+Connection ~ 3750 6100
+$Comp
+L VCC #PWR010
+U 1 1 5C9AF8FD
+P 3400 5900
+F 0 "#PWR010" H 3400 5750 50  0001 C CNN
+F 1 "VCC" H 3400 6050 50  0000 C CNN
+F 2 "" H 3400 5900 50  0001 C CNN
+F 3 "" H 3400 5900 50  0001 C CNN
+	1    3400 5900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3850 5800 3750 5800
+Connection ~ 3750 5800
+Wire Wire Line
+	3950 6000 3400 6000
+Wire Wire Line
+	3400 6000 3400 5900
 $EndSCHEMATC

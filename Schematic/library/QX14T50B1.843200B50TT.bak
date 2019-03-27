@@ -1,0 +1,29 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model QX14T50B1.843200B50TT
+#/240646/120973/2.37/4/4/Undefined or Miscellaneous
+DEF QX14T50B1.843200B50TT U 0 30 Y Y 1 F N
+F0 "U" 1050 300 50 H V L CNN
+F1 "QX14T50B1.843200B50TT" 1050 200 50 H V L CNN
+F2 "QX14T50B1.843200B50TT" 1050 100 50 H I L CNN
+F3 "http://docs-emea.rs-online.com/webdocs/127f/0900766b8127fc57.pdf" 1050 0 50 H I L CNN
+F4 "QX14T50B1.843200B50TT, Crystal Oscillator, 1.8432 MHz, +/-50ppm HCMOS 50pF, 14-pin PDIP, 20.8 x 13.2 x 5.08mm" 1050 -100 50 H I L CNN "Description"
+F5 "" 1050 -200 50 H I L CNN "Height"
+F6 "Qantek" 1050 -300 50 H I L CNN "Manufacturer_Name"
+F7 "QX14T50B1.843200B50TT" 1050 -400 50 H I L CNN "Manufacturer_Part_Number"
+F8 "" 1050 -500 50 H I L CNN "Mouser Part Number"
+F9 "" 1050 -600 50 H I L CNN "Mouser Price/Stock"
+F10 "1735868" 1050 -700 50 H I L CNN "RS Part Number"
+F11 "http://uk.rs-online.com/web/p/products/1735868" 1050 -800 50 H I L CNN "RS Price/Stock"
+F12 "70418025" 1050 -900 50 H I L CNN "Allied_Number"
+F13 "http://www.alliedelec.com/qantek-qx14t50b18-43200b50tt/70418025/" 1050 -1000 50 H I L CNN "Allied Price/Stock"
+DRAW
+X NC 1 0 0 200 R 50 50 0 0 B
+X GND 7 0 -100 200 R 50 50 0 0 B
+X OUTPUT 8 1200 0 200 L 50 50 0 0 B
+X +VDD 14 1200 -100 200 L 50 50 0 0 B
+P 5 0 1 6 200 100 1000 100 1000 -200 200 -200 200 100 N
+ENDDRAW
+ENDDEF
+#
+#End Library

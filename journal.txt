@@ -354,4 +354,19 @@ Wed 27 Mar 10:13:58 AEST 2019
 -----------------------------
 I have written some more documentation and renamed everywhere I could
 think of with the CSCvon8 name. It's getting close to be ready for
-release on GitHub.
+release on GitHub. OK, released on Github.
+
+I should try to do a timing analysis of the design to see what sort of
+maximum clock frequency I can expect.
+
+Longest path is Clock -> PC -> RAM/ROM -> IR -> Decode 
+
+	PC  108nS
+        RAM  70nS (ignore, lower than ROM)
+	ROM 150nS
+        IR   13nS
+      Decode 60nS
+      -----------
+      Total 330nS So that would be about 3MHz, yay, faster than 1Mhz 6502!
+
+Fixed up some schematic DRC problems.
