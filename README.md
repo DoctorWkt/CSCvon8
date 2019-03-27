@@ -9,7 +9,7 @@ clock circuitry.
 Right now CSCvon8 is still under development. Have a look at
 [Docs/CSCvon8_design.md](Docs/CSCvon8_design.md) for the overall
 design of the CPU so far. Also read the
-[Docs/getgoing_instructions.md](getting started guide).
+[getting started guide](Docs/getgoing_instructions.md).
 
 The files and folders in this repository are:
 - *Docs*, documents on the design and how to use the tools below
