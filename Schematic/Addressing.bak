@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:Schematic-rescue
 LIBS:power
 LIBS:device
 LIBS:switches
@@ -39,6 +40,7 @@ LIBS:SN74LS273NE4
 LIBS:UM245R
 LIBS:7400-ic
 LIBS:74LS593
+LIBS:74LS139
 LIBS:Schematic-cache
 EELAYER 25 0
 EELAYER END

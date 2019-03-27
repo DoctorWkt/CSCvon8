@@ -3,3 +3,9 @@ RCS
 *.rom
 *.vcd
 *.gtkw
+Schematic/Schematic.bin
+Schematic/Schematic.dsn
+Schematic/Schematic.kicad_pcb-bak
+Schematic/Schematic.net
+Schematic/Schematic.rules
+Schematic/Schematic.ses
