@@ -46,7 +46,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 5
+Sheet 1 6
 Title ""
 Date ""
 Rev ""
@@ -79,5 +79,11 @@ S 8150 4000 2150 2050
 U 5C9850E7
 F0 "Instruction Decode" 60
 F1 "IR_Decode.sch" 60
+$EndSheet
+$Sheet
+S 4850 4000 1900 1950
+U 5C9C00CC
+F0 "Analog" 60
+F1 "Analog.sch" 60
 $EndSheet
 $EndSCHEMATC

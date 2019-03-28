@@ -1,0 +1,602 @@
+EESchema Schematic File Version 2
+LIBS:Schematic-rescue
+LIBS:power
+LIBS:device
+LIBS:switches
+LIBS:relays
+LIBS:motors
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:M27C322-100F1
+LIBS:74LS574
+LIBS:AT27C1024-70PU
+LIBS:QX14T50B1.843200B50TT
+LIBS:SN74LS273NE4
+LIBS:UM245R
+LIBS:7400-ic
+LIBS:74LS593
+LIBS:74LS139
+LIBS:Schematic-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 6 6
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L QX14T50B1.843200B50TT U1
+U 1 1 5C9C0600
+P 2500 2000
+F 0 "U1" H 3050 2300 50  0000 L CNN
+F 1 "QX14T50B3.6864" H 2800 2200 50  0000 L CNN
+F 2 "QX14T50B1.843200B50TT" H 3550 2100 50  0001 L CNN
+F 3 "http://docs-emea.rs-online.com/webdocs/127f/0900766b8127fc57.pdf" H 3550 2000 50  0001 L CNN
+F 4 "QX14T50B1.843200B50TT, Crystal Oscillator, 1.8432 MHz, +/-50ppm HCMOS 50pF, 14-pin PDIP, 20.8 x 13.2 x 5.08mm" H 3550 1900 50  0001 L CNN "Description"
+F 5 "Qantek" H 3550 1700 50  0001 L CNN "Manufacturer_Name"
+F 6 "QX14T50B1.843200B50TT" H 3550 1600 50  0001 L CNN "Manufacturer_Part_Number"
+F 7 "1735868" H 3550 1300 50  0001 L CNN "RS Part Number"
+F 8 "http://uk.rs-online.com/web/p/products/1735868" H 3550 1200 50  0001 L CNN "RS Price/Stock"
+F 9 "70418025" H 3550 1100 50  0001 L CNN "Allied_Number"
+F 10 "http://www.alliedelec.com/qantek-qx14t50b18-43200b50tt/70418025/" H 3550 1000 50  0001 L CNN "Allied Price/Stock"
+	1    2500 2000
+	1    0    0    -1  
+$EndComp
+NoConn ~ 2500 2000
+$Comp
+L GNDREF #PWR046
+U 1 1 5C9C0702
+P 2250 2200
+F 0 "#PWR046" H 2250 1950 50  0001 C CNN
+F 1 "GNDREF" H 2250 2050 50  0000 C CNN
+F 2 "" H 2250 2200 50  0001 C CNN
+F 3 "" H 2250 2200 50  0001 C CNN
+	1    2250 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR047
+U 1 1 5C9C0719
+P 3850 1700
+F 0 "#PWR047" H 3850 1550 50  0001 C CNN
+F 1 "VCC" H 3850 1850 50  0000 C CNN
+F 2 "" H 3850 1700 50  0001 C CNN
+F 3 "" H 3850 1700 50  0001 C CNN
+	1    3850 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 2100 2250 2100
+Wire Wire Line
+	2250 2100 2250 2200
+Wire Wire Line
+	3700 2100 3850 2100
+Wire Wire Line
+	3850 2100 3850 1700
+Text GLabel 2400 2950 2    60   Input ~ 0
+Reset
+$Comp
+L R R1
+U 1 1 5C9C0777
+P 1500 3200
+F 0 "R1" V 1580 3200 50  0000 C CNN
+F 1 "10K" V 1500 3200 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical" V 1430 3200 50  0001 C CNN
+F 3 "" H 1500 3200 50  0001 C CNN
+	1    1500 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDREF #PWR048
+U 1 1 5C9C087D
+P 1500 3950
+F 0 "#PWR048" H 1500 3700 50  0001 C CNN
+F 1 "GNDREF" H 1500 3800 50  0000 C CNN
+F 2 "" H 1500 3950 50  0001 C CNN
+F 3 "" H 1500 3950 50  0001 C CNN
+	1    1500 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR049
+U 1 1 5C9C0891
+P 1500 2950
+F 0 "#PWR049" H 1500 2800 50  0001 C CNN
+F 1 "VCC" H 1500 3100 50  0000 C CNN
+F 2 "" H 1500 2950 50  0001 C CNN
+F 3 "" H 1500 2950 50  0001 C CNN
+	1    1500 2950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1500 2950 1500 3050
+Wire Wire Line
+	1500 3350 1500 3450
+Wire Wire Line
+	1500 3750 1500 3950
+$Comp
+L SW_Push_Dual SW1
+U 1 1 5C9C08DB
+P 2300 3600
+F 0 "SW1" H 2350 3700 50  0000 L CNN
+F 1 "SW_Push_Dual" V 2600 3700 50  0000 C CNN
+F 2 "Buttons_Switches_THT:Push_E-Switch_KS01Q01" H 2300 3800 50  0001 C CNN
+F 3 "" H 2300 3800 50  0001 C CNN
+	1    2300 3600
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2100 3800 2100 3850
+Wire Wire Line
+	2100 3850 1500 3850
+Connection ~ 1500 3850
+Wire Wire Line
+	1500 3400 2100 3400
+Connection ~ 1500 3400
+Wire Wire Line
+	2400 2950 2050 2950
+Wire Wire Line
+	2050 2950 2050 3400
+Connection ~ 2050 3400
+$Comp
+L GS3 J1
+U 1 1 5C9C09FD
+P 5100 2100
+F 0 "J1" H 5150 2300 50  0000 C CNN
+F 1 "GS3" H 5150 1901 50  0000 C CNN
+F 2 "Connectors:GS3" V 5188 2026 50  0001 C CNN
+F 3 "" H 5100 2100 50  0001 C CNN
+	1    5100 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R2
+U 1 1 5C9C0AEA
+P 3700 3200
+F 0 "R2" V 3780 3200 50  0000 C CNN
+F 1 "10K" V 3700 3200 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical" V 3630 3200 50  0001 C CNN
+F 3 "" H 3700 3200 50  0001 C CNN
+	1    3700 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDREF #PWR050
+U 1 1 5C9C0AF6
+P 3700 3950
+F 0 "#PWR050" H 3700 3700 50  0001 C CNN
+F 1 "GNDREF" H 3700 3800 50  0000 C CNN
+F 2 "" H 3700 3950 50  0001 C CNN
+F 3 "" H 3700 3950 50  0001 C CNN
+	1    3700 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR051
+U 1 1 5C9C0AFC
+P 3700 2950
+F 0 "#PWR051" H 3700 2800 50  0001 C CNN
+F 1 "VCC" H 3700 3100 50  0000 C CNN
+F 2 "" H 3700 2950 50  0001 C CNN
+F 3 "" H 3700 2950 50  0001 C CNN
+	1    3700 2950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3700 2950 3700 3050
+Wire Wire Line
+	3700 3350 3700 3450
+Wire Wire Line
+	3700 3750 3700 3950
+$Comp
+L SW_Push_Dual SW2
+U 1 1 5C9C0B05
+P 4500 3600
+F 0 "SW2" H 4550 3700 50  0000 L CNN
+F 1 "SW_Push_Dual" V 4800 3700 50  0000 C CNN
+F 2 "Buttons_Switches_THT:Push_E-Switch_KS01Q01" H 4500 3800 50  0001 C CNN
+F 3 "" H 4500 3800 50  0001 C CNN
+	1    4500 3600
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4300 3800 4300 3850
+Wire Wire Line
+	4300 3850 3700 3850
+Connection ~ 3700 3850
+Wire Wire Line
+	3700 3400 4300 3400
+Connection ~ 3700 3400
+Wire Wire Line
+	4250 2200 4250 3400
+Connection ~ 4250 3400
+Wire Wire Line
+	4950 2200 4250 2200
+Wire Wire Line
+	3700 2000 4950 2000
+Text GLabel 5500 2100 2    60   Input ~ 0
+Clk
+Wire Wire Line
+	5500 2100 5250 2100
+$Comp
+L C C12
+U 1 1 5C9C14F2
+P 4650 5450
+F 0 "C12" H 4675 5550 50  0000 L CNN
+F 1 "0.1uF" H 4675 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 4688 5300 50  0001 C CNN
+F 3 "" H 4650 5450 50  0001 C CNN
+	1    4650 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L CP C3
+U 1 1 5C9C159C
+P 2050 5450
+F 0 "C3" H 2075 5550 50  0000 L CNN
+F 1 "220uF" H 2075 5350 50  0000 L CNN
+F 2 "Capacitors_THT:CP_Radial_D10.0mm_P2.50mm" H 2088 5300 50  0001 C CNN
+F 3 "" H 2050 5450 50  0001 C CNN
+	1    2050 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR052
+U 1 1 5C9C1BA4
+P 1800 5100
+F 0 "#PWR052" H 1800 4950 50  0001 C CNN
+F 1 "VCC" H 1800 5250 50  0000 C CNN
+F 2 "" H 1800 5100 50  0001 C CNN
+F 3 "" H 1800 5100 50  0001 C CNN
+	1    1800 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDREF #PWR053
+U 1 1 5C9C1C55
+P 1800 5800
+F 0 "#PWR053" H 1800 5550 50  0001 C CNN
+F 1 "GNDREF" H 1800 5650 50  0000 C CNN
+F 2 "" H 1800 5800 50  0001 C CNN
+F 3 "" H 1800 5800 50  0001 C CNN
+	1    1800 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C13
+U 1 1 5C9C1F04
+P 4950 5450
+F 0 "C13" H 4975 5550 50  0000 L CNN
+F 1 "0.1uF" H 4975 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 4988 5300 50  0001 C CNN
+F 3 "" H 4950 5450 50  0001 C CNN
+	1    4950 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C14
+U 1 1 5C9C1F87
+P 5200 5450
+F 0 "C14" H 5225 5550 50  0000 L CNN
+F 1 "0.1uF" H 5225 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 5238 5300 50  0001 C CNN
+F 3 "" H 5200 5450 50  0001 C CNN
+	1    5200 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C15
+U 1 1 5C9C1F8D
+P 5500 5450
+F 0 "C15" H 5525 5550 50  0000 L CNN
+F 1 "0.1uF" H 5525 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 5538 5300 50  0001 C CNN
+F 3 "" H 5500 5450 50  0001 C CNN
+	1    5500 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C16
+U 1 1 5C9C208F
+P 5800 5450
+F 0 "C16" H 5825 5550 50  0000 L CNN
+F 1 "0.1uF" H 5825 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 5838 5300 50  0001 C CNN
+F 3 "" H 5800 5450 50  0001 C CNN
+	1    5800 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C17
+U 1 1 5C9C2095
+P 6100 5450
+F 0 "C17" H 6125 5550 50  0000 L CNN
+F 1 "0.1uF" H 6125 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 6138 5300 50  0001 C CNN
+F 3 "" H 6100 5450 50  0001 C CNN
+	1    6100 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C18
+U 1 1 5C9C209B
+P 6350 5450
+F 0 "C18" H 6375 5550 50  0000 L CNN
+F 1 "0.1uF" H 6375 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 6388 5300 50  0001 C CNN
+F 3 "" H 6350 5450 50  0001 C CNN
+	1    6350 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C19
+U 1 1 5C9C20A1
+P 6650 5450
+F 0 "C19" H 6675 5550 50  0000 L CNN
+F 1 "0.1uF" H 6675 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 6688 5300 50  0001 C CNN
+F 3 "" H 6650 5450 50  0001 C CNN
+	1    6650 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C4
+U 1 1 5C9C255C
+P 2400 5450
+F 0 "C4" H 2425 5550 50  0000 L CNN
+F 1 "0.1uF" H 2425 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 2438 5300 50  0001 C CNN
+F 3 "" H 2400 5450 50  0001 C CNN
+	1    2400 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C5
+U 1 1 5C9C2562
+P 2700 5450
+F 0 "C5" H 2725 5550 50  0000 L CNN
+F 1 "0.1uF" H 2725 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 2738 5300 50  0001 C CNN
+F 3 "" H 2700 5450 50  0001 C CNN
+	1    2700 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C6
+U 1 1 5C9C2568
+P 2950 5450
+F 0 "C6" H 2975 5550 50  0000 L CNN
+F 1 "0.1uF" H 2975 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 2988 5300 50  0001 C CNN
+F 3 "" H 2950 5450 50  0001 C CNN
+	1    2950 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C7
+U 1 1 5C9C256E
+P 3250 5450
+F 0 "C7" H 3275 5550 50  0000 L CNN
+F 1 "0.1uF" H 3275 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 3288 5300 50  0001 C CNN
+F 3 "" H 3250 5450 50  0001 C CNN
+	1    3250 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C8
+U 1 1 5C9C2574
+P 3550 5450
+F 0 "C8" H 3575 5550 50  0000 L CNN
+F 1 "0.1uF" H 3575 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 3588 5300 50  0001 C CNN
+F 3 "" H 3550 5450 50  0001 C CNN
+	1    3550 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C9
+U 1 1 5C9C257A
+P 3850 5450
+F 0 "C9" H 3875 5550 50  0000 L CNN
+F 1 "0.1uF" H 3875 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 3888 5300 50  0001 C CNN
+F 3 "" H 3850 5450 50  0001 C CNN
+	1    3850 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C10
+U 1 1 5C9C2580
+P 4100 5450
+F 0 "C10" H 4125 5550 50  0000 L CNN
+F 1 "0.1uF" H 4125 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 4138 5300 50  0001 C CNN
+F 3 "" H 4100 5450 50  0001 C CNN
+	1    4100 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C11
+U 1 1 5C9C2586
+P 4400 5450
+F 0 "C11" H 4425 5550 50  0000 L CNN
+F 1 "0.1uF" H 4425 5350 50  0000 L CNN
+F 2 "Capacitors_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm" H 4438 5300 50  0001 C CNN
+F 3 "" H 4400 5450 50  0001 C CNN
+	1    4400 5450
+	1    0    0    -1  
+$EndComp
+NoConn ~ 4500 3400
+NoConn ~ 4500 3800
+NoConn ~ 2300 3400
+NoConn ~ 2300 3800
+Wire Wire Line
+	6650 5300 6650 5200
+Wire Wire Line
+	6650 5200 1800 5200
+Wire Wire Line
+	1800 5200 1800 5100
+Wire Wire Line
+	6650 5600 6650 5700
+Wire Wire Line
+	6650 5700 1800 5700
+Wire Wire Line
+	1800 5700 1800 5800
+Wire Wire Line
+	2050 5200 2050 5300
+Connection ~ 2050 5200
+Wire Wire Line
+	2050 5600 2050 5700
+Connection ~ 2050 5700
+Wire Wire Line
+	2400 5200 2400 5300
+Connection ~ 2400 5200
+Wire Wire Line
+	2400 5600 2400 5700
+Connection ~ 2400 5700
+Wire Wire Line
+	2700 5600 2700 5700
+Connection ~ 2700 5700
+Wire Wire Line
+	2700 5300 2700 5200
+Connection ~ 2700 5200
+Wire Wire Line
+	2950 5200 2950 5300
+Connection ~ 2950 5200
+Wire Wire Line
+	2950 5600 2950 5700
+Connection ~ 2950 5700
+Wire Wire Line
+	3250 5200 3250 5300
+Connection ~ 3250 5200
+Wire Wire Line
+	3250 5600 3250 5700
+Connection ~ 3250 5700
+Wire Wire Line
+	3550 5200 3550 5300
+Connection ~ 3550 5200
+Wire Wire Line
+	3550 5600 3550 5700
+Connection ~ 3550 5700
+Wire Wire Line
+	3850 5200 3850 5300
+Connection ~ 3850 5200
+Wire Wire Line
+	3850 5600 3850 5700
+Connection ~ 3850 5700
+Wire Wire Line
+	4100 5200 4100 5300
+Connection ~ 4100 5200
+Wire Wire Line
+	4100 5600 4100 5700
+Connection ~ 4100 5700
+Wire Wire Line
+	4400 5200 4400 5300
+Connection ~ 4400 5200
+Wire Wire Line
+	4400 5600 4400 5700
+Connection ~ 4400 5700
+Wire Wire Line
+	4650 5200 4650 5300
+Connection ~ 4650 5200
+Wire Wire Line
+	4650 5600 4650 5700
+Connection ~ 4650 5700
+Wire Wire Line
+	4950 5200 4950 5300
+Connection ~ 4950 5200
+Wire Wire Line
+	4950 5600 4950 5700
+Connection ~ 4950 5700
+Wire Wire Line
+	5200 5200 5200 5300
+Connection ~ 5200 5200
+Wire Wire Line
+	5200 5600 5200 5700
+Connection ~ 5200 5700
+Wire Wire Line
+	5500 5200 5500 5300
+Connection ~ 5500 5200
+Wire Wire Line
+	5500 5600 5500 5700
+Connection ~ 5500 5700
+Wire Wire Line
+	5800 5200 5800 5300
+Connection ~ 5800 5200
+Wire Wire Line
+	5800 5600 5800 5700
+Connection ~ 5800 5700
+Wire Wire Line
+	6100 5200 6100 5300
+Connection ~ 6100 5200
+Wire Wire Line
+	6100 5600 6100 5700
+Connection ~ 6100 5700
+Wire Wire Line
+	6350 5200 6350 5300
+Connection ~ 6350 5200
+Wire Wire Line
+	6350 5600 6350 5700
+Connection ~ 6350 5700
+Text Notes 4450 2850 0    60   ~ 0
+By moving the jumper, the CPU can operate in\nfree-running mode or in single-step mode.\nBy removing the jumper, an external clock\nsignal can be applied to jumper pin 2.
+Text Notes 2700 2350 0    60   ~ 0
+3.68MHz oscillator
+$Comp
+L CP C1
+U 1 1 5C9C52F6
+P 1500 3600
+F 0 "C1" H 1525 3700 50  0000 L CNN
+F 1 "10uF" H 1525 3500 50  0000 L CNN
+F 2 "Capacitors_THT:CP_Radial_D5.0mm_P2.50mm" H 1538 3450 50  0001 C CNN
+F 3 "" H 1500 3600 50  0001 C CNN
+	1    1500 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L CP C2
+U 1 1 5C9C542C
+P 3700 3600
+F 0 "C2" H 3725 3700 50  0000 L CNN
+F 1 "10uF" H 3725 3500 50  0000 L CNN
+F 2 "Capacitors_THT:CP_Radial_D5.0mm_P2.50mm" H 3738 3450 50  0001 C CNN
+F 3 "" H 3700 3600 50  0001 C CNN
+	1    3700 3600
+	1    0    0    -1  
+$EndComp
+Text Notes 3850 5950 0    60   ~ 0
+Bypass capacitors
+$EndSCHEMATC

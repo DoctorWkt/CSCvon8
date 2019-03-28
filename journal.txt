@@ -370,3 +370,65 @@ Longest path is Clock -> PC -> RAM/ROM -> IR -> Decode
       Total 330nS So that would be about 3MHz, yay, faster than 1Mhz 6502!
 
 Fixed up some schematic DRC problems.
+
+Thu 28 Mar 06:35:09 AEST 2019
+-----------------------------
+Spent sone time last night playing with PCBnew in KiCad and freerouter.
+I think I've got the hang of it, but of course I'm sure I have missed
+a few things.
+
+Buy HCT as they are more compatible with LS, esp. if I have to buy two
+74LS593s.
+
+We need: coupling capacitors, a reset line, a hand-toggle for the clock,
+a jumper to disable the on-board clock. Look for anything on Nibbler and
+Gigatron which we should have.
+
+Looking at oscillators on Element14, perhaps one of these:
+QX14T50B3.686400B50TT	3.68MHz
+QX14T50B2.457600B50TT 	2.45MHz
+
+Same package dimensions, so I could do the PCB and try both.
+
+We can wire CCLR# on the PC chips to ground to reset the counter. Done.
+I've added the reset circuit, the single-step clock circuit and the
+bypass caps to the schematic on a new sheet. Now I might play with
+the PCB.
+
+For now I won't worry about getting the exact footprints right, just
+concentrate on the workflow.
+
+In schematic, do DRC check, run Cvpcb to associate footprints. Export
+the netlist. Go to PCBnew. Select everything, delete everything. Import
+the netlist. Lay out the footprints. Try to minimise the ratsnest as you do it.
+Orient things: ICs, caps, resistors where possible.
+Select the edge layer, and use the dashed diagonal line tool on the right
+to draw the edge layer. Double-click on the last point.
+Do the copper pours now before Freeroute!
+Now export and use Freeroute to route the nets.
+Back import the session, hit b to rebuild something.
+Run a DRC check.
+
+Copper pours: select the F.Cu layer on the right. Click on Add Filled Zones
+tool on the right. Click on the top-left edge layer. Choose GND net and the
+F.Cu layer (already chosen). Ensure you have thermal relief in the middle.
+Click on the other corners and double-click on the final corner.
+
+To copy to the back copper layer, right-click on the edge. Choose Zones ->
+Duplicate Zone, and choose B.Cu in the dialog box.
+
+Got back, right-click on the edge. Choose each zone in turn and Fill Zones.
+Then on the left, use the Show Filled Areas button to show them.
+
+To rip up all the tracks, select everything. In the Block Operations dialog,
+only tick Tracks. Then right-click and Delete Block.
+
+OK, I'm pretty happy with the results. Now, I need to really cross-check:
+
+  - is the schematic correct, what wiring mistakes have I made?
+  - select the absolute correct footprints and view the board and
+    the 3D model before running Freeroute.
+
+I'd also like to synthesize the Verilog on to the ULX3S board that I have.
+There should be enough block RAM to synthesize the ROM ALU as well as the
+Decode ROM and the RAM & ROM.
