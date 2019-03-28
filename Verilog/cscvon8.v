@@ -11,12 +11,12 @@
 `include "rom.v"
 `include "uart.v"
 
-module cscvon8 (clk, databus, controlbus, Aval, Bval, PCval, IRload);
+module cscvon8 (i_clk, databus, controlbus, Aval, Bval, PCval, IRload);
 
   parameter AddressSize = 16;
   parameter WordSize = 8;
 
-  input 		    clk;	// Clock signal
+  input 		    i_clk;	// Clock signal
   output [WordSize-1:0]     databus;	// The value on the data bus
   output [AddressSize-1:0]  controlbus;	// The values of the control lines
 					// Outputs of other internal lines.
@@ -55,12 +55,13 @@ module cscvon8 (clk, databus, controlbus, Aval, Bval, PCval, IRload);
 
   // Do the mapping, active low. Multiplex the output from both
   wire ROMselect= (addressbus[15]==0) ? 0 : 1;
-  wire RAMselect= (addressbus[15]==1) ? 0 : 1;
   wire [WordSize-1:0] MEMresult= (ROMselect==0) ? ROMresult : RAMresult;
 
   // Values that can be loaded onto the data bus as well as MEMresult.
   wire [WordSize-1:0] ALUresult;
+  /* verilator lint_off UNDRIVEN */
   wire [WordSize-1:0] UARTresult;
+  /* verilator lint_on UNDRIVEN */
 
   // Multiplex a value onto the data bus
   assign databus= (DbusOp == 2'b00) ? MEMresult : 
@@ -99,26 +100,26 @@ module cscvon8 (clk, databus, controlbus, Aval, Bval, PCval, IRload);
 
   // Components
   // On the address bus
-  counter  PC(clk, PCload, PCincr, addressbus, PCval);
-  register AH(clk, AHload, databus, AHval);
-  register AL(clk, ALload, databus, ALval);
+  counter  PC(i_clk, PCload, PCincr, addressbus, PCval);
+  register AH(i_clk, AHload, databus, AHval);
+  register AL(i_clk, ALload, databus, ALval);
 
   // On the data bus
-  register A(clk, Aload, databus, Aval);
-  register B(clk, Bload, databus, Bval);
-  register IR(clk, IRload, databus, IRval);
+  register A(i_clk, Aload, databus, Aval);
+  register B(i_clk, Bload, databus, Bval);
+  register IR(i_clk, IRload, databus, IRval);
 
   // Instruction decode
-  counter #(.WordSize(4)) uSequencer(clk, uSreset, 1'b0, 4'b0000, uSval);
+  counter #(.WordSize(4)) uSequencer(i_clk, uSreset, 1'b0, 4'b0000, uSval);
   rom #(.AddressSize(12), .WordSize(AddressSize), .FileName("ucode.rom"))
-	Decoder(Decodeindex, controlbus, 1'b0, 1'b0);
+        Decoder(Decodeindex, controlbus, 1'b0, 1'b0);
 
   // Memory and UART
   ram #(.AddressSize(15))
-	RAM(clk, addressbus[14:0], databus, RAMresult, 1'b0, MEMload, MEMena);
+	RAM(i_clk, addressbus[14:0], databus, RAMresult, 1'b0, MEMload, MEMena);
   rom #(.AddressSize(15), .FileName("instr.rom"))
 	ROM(addressbus[14:0], ROMresult, 1'b0, 1'b0);
-  uart UART(clk, databus, IOload);
+  uart UART(i_clk, databus, IOload);
 
   // The ALU
   otheralu ALU(Aval, Bval, ALUop, ALUresult, ALUcarry, ALUzero, ALUnegative);

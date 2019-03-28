@@ -432,3 +432,47 @@ OK, I'm pretty happy with the results. Now, I need to really cross-check:
 I'd also like to synthesize the Verilog on to the ULX3S board that I have.
 There should be enough block RAM to synthesize the ROM ALU as well as the
 Decode ROM and the RAM & ROM.
+
+Thu 28 Mar 12:26:24 AEST 2019
+-----------------------------
+Component shopping
+
+RAM	LY62256		element14 $3.57
+ROM  	28C256		not at element14, eBay $1.64
+UART   	UM245R 		Already got it
+ALU  	M27C322		not at element14, eBay around $12
+ARhi  	74HCT574 	element14 $1.11
+ARlo  	74HCT574 	element14 $1.11
+IR  	74HCT574 	element14 $1.11
+A reg  	74HCT574  	element14 $1.11
+Breg  	74HCT574  	element14 $1.11
+PC  2x	74LS593		X-On eBay sells 74LS593 for $30ea
+Jump 	74HCT153  	DIPs not at element14, eBay $20 10 pieces
+Decode 	M27C1024	not at element14, eBay around $10
+uSeq  	74HCT161 	element14 $0.37
+Other 	74HCT139	element14 $1.36
+	74HCT238	element14 $1.87
+Crystal QX14T50B3.686	element14 $4.78
+
+Just ordered some of the stuff from utsource, mainly the memory and
+stuff I can't get from element14.
+
+I tried to synthesize the system for the ULX3S but yosys didn't like the
+RAM & ROM and threw everything away. So I might try with Verilator first.
+
+Thu 28 Mar 22:05:28 AEST 2019
+-----------------------------
+Actually I tried with yosys. The ALU ROM causes yosys to die with a malloc()
+error, so I'm back using the other ALU. There's a loop involving the BCDcarry,
+so I've tweaked that out for now. I can compile it with Verilator. Now I'm
+comparing it against the Icarus VCD waveforms and they are different. Not
+sure why yet.
+
+OK, some progress. In ~/Z2 I have a version which works both with Icarus
+and with Verilator. I need to merge this back into the Git version, and
+then worry about the ULX3S version.
+
+Fri 29 Mar 06:12:52 AEST 2019
+-----------------------------
+Imported the Verilator version back into my NNN folder and made sure
+it all still works with Icarus.

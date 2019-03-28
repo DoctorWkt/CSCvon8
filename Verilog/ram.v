@@ -24,7 +24,7 @@ module ram (clk, Address, InData, OutData, CS, WE, OE);
 
   always @(posedge clk) begin
     if (!CS && !WE) begin
-      Mem[Address] = InData;
+      Mem[Address] <= InData;
     end
 
     if (!WE && !OE)
