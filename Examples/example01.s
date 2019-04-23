@@ -2,8 +2,10 @@
 #
 hello:	LCA $34
 	LCB $23
-fred:	A=A+B
-	OUTA
+fred:	LDA A+B
+	OUT A
+L1:	JOU L1
 	LCA $0A
-	OUTA
-end:	JMP end
+	OUT A
+L2:	JOU L2
+end:	JMP $FFFF

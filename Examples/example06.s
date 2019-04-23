@@ -1,10 +1,12 @@
 	JSR printA
 	LCA 'F'
-	OUTA
-x:	JMP x
+	OUT A
+L1:	JOU L1
+x:	JMP $FFFF
 	NOP
 	NOP
 	NOP
 printA: LCA 'A'
-	OUTA
+	OUT A
+L2:	JOU L2
 	RTS printA

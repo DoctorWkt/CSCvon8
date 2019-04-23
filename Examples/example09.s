@@ -11,82 +11,85 @@ reshi:	EQU $8005
 hexarg: EQU $8006
 
 main:	LCA $23		# Set X to $2345
-	STA xhi
+	STO A xhi
 	LCA $45
-	STA xlo
+	STO A xlo
 
 	LCA $11		# Set Y to $1111
-	STA yhi
+	STO A yhi
 	LCA $FF
-	STA ylo
+	STO A ylo
 
 	LDA xhi		# Print X out
-	STA hexarg
+	STO A hexarg
 	JSR prhex
 	LDA xlo
-	STA hexarg
+	STO A hexarg
 	JSR prhex
 
 	LCA '+'		# Print out a '+'
-	OUTA
+	OUT A
+L1:	JOU L1
 
 	LDA yhi		# Print Y out
-	STA hexarg
+	STO A hexarg
 	JSR prhex
 	LDA ylo
-	STA hexarg
+	STO A hexarg
 	JSR prhex
 
 	LCA '='		# Print out a '='
-	OUTA
+	OUT A
+L2:	JOU L2
 
 	LDA xlo		# Calculate low result
 	LDB ylo		# and jump if carry
-	A=A+BJC acarry
-	STA reslo
+	LDA A+B JC acarry
+	STO A reslo
 	LDA xhi		# Calculate high result
 	LDB yhi
-	A=A+B
-	STA reshi
+	STO A+B reshi
 	JMP preslt
-acarry:	STA reslo
+acarry:	STO A reslo
 	LDA xhi		# Calc hi result with carry
 	LDB yhi
-	A=A+B+1
-	STA reshi
+	STO A+B+1 reshi
 preslt: LDA reshi	# Print result out
-	STA hexarg
+	STO A hexarg
 	JSR prhex
 	LDA reslo
-	STA hexarg
+	STO A hexarg
 	JSR prhex
 	LCA $0A		# and newline
-	OUTA
+	OUT A
+L3:	JOU L3
 
-end:	JMP end
+end:	JMP $FFFF
 
 # prhex function: Print the value in A
 # out as two hex digits
 prhex:	LDA hexarg	# Load a copy of A
 	LCB $04		# Get high nibble of A
-	A=A>>BL
+	LDA A>>B
 	LCB $09
-	JA>B AtoFhi	# Skip if in range A to F
+	JGT AtoFhi	# Skip if in range A to F
 	LCB $30		# Otherwise add '0'
 	JMP putchi	# and print it
 AtoFhi:	LCB $37		# Add 55 to get it in 'A' to 'F'
-putchi: A=A+B
-	OUTA
+putchi: LDA A+B
+	OUT A
+L4:	JOU L4
 
 	LDA hexarg	# Get A back again
 	LCB $0F		# Get the low nibble of A
-	A=A&B
+	LDA A&B
 	LCB $09
-	JA>B AtoFlo	# Skip if in range A to F
+	JGT AtoFlo	# Skip if in range A to F
 	LCB $30		# Otherwise add '0'
 	JMP putclo	# and print it
 AtoFlo:	LCB $37		# Add 55 to get it in 'A' to 'F'
-putclo: A=A+B
-	OUTA
+putclo: LDA A+B
+	OUT A
+L5:	JOU L5
 # xyz:	JMP xyz
 	RTS prhex

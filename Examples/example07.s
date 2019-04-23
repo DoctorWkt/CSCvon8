@@ -1,26 +1,29 @@
-# Seventh program. Add to BCD values and store
+# Seventh program. Add two BCD values and store
 # it into a RAM location. Then print it out as
 # two ASCII digits followed by a newline.
 
 	LCA $35			# Treat this as 35 BCD
 	LCB $47			# Treat this as 47 BCD
-	A=A+BCD			# Add them to get 82 BCD
-	STA $8002
+	LDA A+BCD		# Add them to get 82 BCD
+	STO A $8002
 
 	LDA $8002		# Reload the value
 	LCB $04			# Shift it right 4 bits
-	A=A>>BL
+	LDA A>>B
 	LCB $30			# Add on $30: convert to ASCII
-	A=A+B
-	OUTA
+	LDA A+B
+	OUT A
+L1:	JOU L1
 
 	LDA $8002		# Reload the value
 	LCB $0F			# Keep the low nibble
-	A=A&B
+	LDA A&B
 	LCB $30			# Add on $30: convert to ASCII
-	A=A+B
-	OUTA
+	LDA A+B
+	OUT A
+L2:	JOU L2
 	LCA $0A			# Now a newline
-	OUTA
+	OUT A
+L3:	JOU L3
 
-end:	JMP end
+end:	JMP $FFFF

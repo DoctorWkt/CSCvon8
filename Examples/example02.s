@@ -1,14 +1,20 @@
 # Second working program.
 #
 hello:	LCA 'H'
-	OUTA
+	OUT A
+L1:	JOU L1
 	LCA 'e'
-	OUTA
+	OUT A
+L2:	JOU L2
 	LCA 'l'
-	OUTA
-	OUTA
+	OUT A
+L3:	JOU L3
+	OUT A
+L4:	JOU L4
 	LCA 'o'
-	OUTA
+	OUT A
+L5:	JOU L5
 	LCA $0A
-	OUTA
-end:	JMP end
+	OUT A
+L6:	JOU L6
+end:	JMP $FFFF

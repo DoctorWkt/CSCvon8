@@ -3,9 +3,11 @@
 
 	LCB $7F		# We end when we reach 0x7F
 	LCA $20		# Start with a space
-loop:	OUTA		# Print A out
-	A=A+1		# Increment A
-	JA!=B loop	# Loop back until we get to 0x7F
+loop:	OUT A		# Print A out
+L1:	JOU L1
+	LDA A+1		# Increment A
+	JNE loop	# Loop back until we get to 0x7F
 	LCA $0A
-	OUTA		# Print a newline
-end:	JMP end		# and stop
+	OUT A		# Print a newline
+L2:	JOU L2
+end:	JMP $FFFF	# and stop
