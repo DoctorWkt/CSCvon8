@@ -14,17 +14,17 @@ I've browsed the datasheets for the chips that I'm using, and here are the
 propagation delays that I've set in this design.
 
 | Component(s) | Chip| Propagation Delay |
-|--------------|-----|-------------------|
-| Databus reader demux | 74HCT138 |: 21nS :|
-| Databus writer demux | 74HCT139 |: 25nS :|
-| Microsequencer       | 74HCT161 |: 22nS :|
-| Jump logic           | 74HCT251 |: 20nS :|
-| Several registers    | 74HCT574 |: 30nS :|
-| Program counter      | 74LS593  |: 30nS :|
-| RAM memory           | AS6C62256 |: 55nS :|
-| ALU ROM	       | M27C322  |: 45nS :|
-| Decode ROM	       | AT27C1024 |: 45nS :|
-| Instruction ROM      | 28C256   |: 150nS :|
+|--------------|:---:|:-----------------:|
+| Databus reader demux | 74HCT138 |  21nS  |
+| Databus writer demux | 74HCT139 |  25nS  |
+| Microsequencer       | 74HCT161 |  22nS  |
+| Jump logic           | 74HCT251 |  20nS  |
+| Several registers    | 74HCT574 |  30nS  |
+| Program counter      | 74LS593  |  30nS  |
+| RAM memory           | AS6C62256 |  55nS  |
+| ALU ROM	       | M27C322  |  45nS  |
+| Decode ROM	       | AT27C1024 |  45nS  |
+| Instruction ROM      | 28C256   |  150nS  |
 
 These delays cause a whole bunch of complications to the design of the CPU.
 Here are just a few examples of the complications caused by the delays and
