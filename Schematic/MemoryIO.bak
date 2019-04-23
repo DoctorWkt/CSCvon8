@@ -61,8 +61,8 @@ L HM62256BLP-7 IC1
 U 1 1 5C997E5D
 P 4600 1800
 F 0 "IC1" H 4600 2800 50  0000 C CNN
-F 1 "HM62256BLP-7" H 4550 2700 50  0000 C CNN
-F 2 "Housings_DIP:DIP-28_W7.62mm_Socket" H 4600 1800 50  0001 C CIN
+F 1 "AS6C62256" H 4600 2700 50  0000 C CNN
+F 2 "Housings_DIP:DIP-28_W15.24mm_Socket" H 4600 1800 50  0001 C CIN
 F 3 "" H 4600 1800 50  0001 C CNN
 	1    4600 1800
 	1    0    0    -1  
@@ -357,7 +357,7 @@ U 1 1 5C998F7D
 P 7950 1600
 F 0 "IC3" H 8550 1900 50  0000 L CNN
 F 1 "UM245R" H 8450 1800 50  0000 L CNN
-F 2 "Housings_DIP:DIP-24_W7.62mm_Socket" H 9000 1700 50  0001 L CNN
+F 2 "Housings_DIP:DIP-24_W15.24mm_Socket" H 9000 1700 50  0001 L CNN
 F 3 "http://www.ftdichip.com/Support/Documents/DataSheets/Modules/DS_UM245R.pdf" H 9000 1600 50  0001 L CNN
 F 4 "Interface Development Tools USB to Parallel FIFO Dev Mod for FT245R" H 9000 1500 50  0001 L CNN "Description"
 F 5 "10.5" H 9000 1400 50  0001 L CNN "Height"
@@ -468,8 +468,6 @@ Wire Wire Line
 Connection ~ 9350 1600
 NoConn ~ 9150 1800
 NoConn ~ 9150 1900
-NoConn ~ 9150 2000
-NoConn ~ 9150 2100
 NoConn ~ 9150 2200
 NoConn ~ 9150 2300
 NoConn ~ 9150 2400
@@ -477,35 +475,24 @@ NoConn ~ 9150 2500
 NoConn ~ 9150 2600
 NoConn ~ 7950 2600
 Text GLabel 7400 2500 0    60   Input ~ 0
-UARTresult
+~UARTresult
 Wire Wire Line
 	7400 2500 7950 2500
 Text GLabel 7200 2400 0    60   Input ~ 0
-IOload
+~IOload
 Wire Wire Line
 	7200 2400 7950 2400
 Text GLabel 6150 2000 2    60   Input ~ 0
-MEMload
+~MEMload
 Wire Wire Line
 	5100 2000 6150 2000
 Text GLabel 6100 1900 2    60   Input ~ 0
-MEMresult
+~MEMresult
 Wire Wire Line
 	5100 1900 6100 1900
-$Comp
-L VCC #PWR04
-U 1 1 5C997F19
-P 3850 4550
-F 0 "#PWR04" H 3850 4400 50  0001 C CNN
-F 1 "VCC" H 3850 4700 50  0000 C CNN
-F 2 "" H 3850 4550 50  0001 C CNN
-F 3 "" H 3850 4550 50  0001 C CNN
-	1    3850 4550
-	1    0    0    -1  
-$EndComp
 Entry Wire Line
 	2250 4550 2350 4650
-Text Label 3550 4750 0    60   ~ 0
+Text Label 3300 4750 0    60   ~ 0
 adr15
 Text Notes 4500 1750 0    60   ~ 0
 RAM
@@ -514,10 +501,10 @@ ROM
 Text Notes 8450 2100 0    60   ~ 0
 UART
 $Comp
-L GNDREF #PWR05
+L GNDREF #PWR04
 U 1 1 5C999C9E
 P 5250 2450
-F 0 "#PWR05" H 5250 2200 50  0001 C CNN
+F 0 "#PWR04" H 5250 2200 50  0001 C CNN
 F 1 "GNDREF" H 5250 2300 50  0000 C CNN
 F 2 "" H 5250 2450 50  0001 C CNN
 F 3 "" H 5250 2450 50  0001 C CNN
@@ -525,10 +512,10 @@ F 3 "" H 5250 2450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR06
+L VCC #PWR05
 U 1 1 5C999CBE
 P 5250 2350
-F 0 "#PWR06" H 5250 2200 50  0001 C CNN
+F 0 "#PWR05" H 5250 2200 50  0001 C CNN
 F 1 "VCC" H 5250 2500 50  0000 C CNN
 F 2 "" H 5250 2350 50  0001 C CNN
 F 3 "" H 5250 2350 50  0001 C CNN
@@ -551,10 +538,10 @@ F 3 "" H 4600 3850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDREF #PWR07
+L GNDREF #PWR06
 U 1 1 5C99A4F7
 P 5300 4750
-F 0 "#PWR07" H 5300 4500 50  0001 C CNN
+F 0 "#PWR06" H 5300 4500 50  0001 C CNN
 F 1 "GNDREF" H 5300 4600 50  0000 C CNN
 F 2 "" H 5300 4750 50  0001 C CNN
 F 3 "" H 5300 4750 50  0001 C CNN
@@ -562,10 +549,10 @@ F 3 "" H 5300 4750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR08
+L VCC #PWR07
 U 1 1 5C99A542
 P 5300 4650
-F 0 "#PWR08" H 5300 4500 50  0001 C CNN
+F 0 "#PWR07" H 5300 4500 50  0001 C CNN
 F 1 "VCC" H 5300 4800 50  0000 C CNN
 F 2 "" H 5300 4650 50  0001 C CNN
 F 3 "" H 5300 4650 50  0001 C CNN
@@ -576,58 +563,15 @@ Wire Wire Line
 	5200 4650 5300 4650
 Wire Wire Line
 	5200 4750 5300 4750
-$Comp
-L 74LS139-RESCUE-Schematic IC15
-U 2 1 5C9A3AED
-P 4700 5750
-AR Path="/5C9A3AED" Ref="IC15"  Part="2" 
-AR Path="/5C984F41/5C9A3AED" Ref="IC15"  Part="2" 
-F 0 "IC15" H 4700 6300 50  0000 C CNN
-F 1 "74LS139" H 4700 6200 50  0000 C CNN
-F 2 "Housings_DIP:DIP-16_W7.62mm_Socket" H 4700 5750 50  0001 C CNN
-F 3 "" H 4700 5750 50  0001 C CNN
-	2    4700 5750
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2450 4750 3900 4750
 Wire Wire Line
 	2450 4750 2350 4650
-Wire Wire Line
-	3850 5650 2700 5650
-Wire Wire Line
-	2700 5650 2700 4750
 Connection ~ 2700 4750
-Text Label 3400 5650 0    60   ~ 0
+Text Label 3300 5300 0    60   ~ 0
 adr15
-$Comp
-L GNDREF #PWR09
-U 1 1 5C9A4A6B
-P 3750 6200
-F 0 "#PWR09" H 3750 5950 50  0001 C CNN
-F 1 "GNDREF" H 3750 6050 50  0000 C CNN
-F 2 "" H 3750 6200 50  0001 C CNN
-F 3 "" H 3750 6200 50  0001 C CNN
-	1    3750 6200
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3850 5500 3750 5500
-Wire Wire Line
-	3750 5500 3750 6200
-NoConn ~ 5550 5450
-NoConn ~ 5550 5850
-NoConn ~ 5550 6050
-Text Notes 4550 5750 0    60   ~ 0
-Inverter
-Text Notes 3900 6700 0    60   ~ 0
-Rather than add one more chip to the\ndesign, we use this demux as an inverter
 Wire Wire Line
 	5100 2150 5700 2150
-Wire Wire Line
-	5700 2150 5700 5650
-Wire Wire Line
-	5700 5650 5550 5650
 Wire Wire Line
 	5950 1900 5950 4050
 Wire Wire Line
@@ -635,35 +579,45 @@ Wire Wire Line
 Connection ~ 5950 1900
 Wire Wire Line
 	3900 4650 3850 4650
-Wire Wire Line
-	3850 4650 3850 4550
 Text GLabel 2100 4550 0    60   Input ~ 0
 adr[0..15]
-Text GLabel 9800 850  2    60   Input ~ 0
+Text GLabel 9800 850  2    60   BiDi ~ 0
 d[0..7]
 Text Notes 2450 4500 0    60   ~ 0
 AddressBus
 Text Notes 7050 800  0    60   ~ 0
 DataBus
-Connection ~ 3750 6100
+Text GLabel 9350 2100 2    60   Output ~ 0
+~TXready
+Text GLabel 9350 2000 2    60   Output ~ 0
+~RXready
 Wire Wire Line
-	3850 5800 3750 5800
-Connection ~ 3750 5800
+	9150 2000 9350 2000
 Wire Wire Line
-	3400 6000 3400 5900
+	9150 2100 9350 2100
+Text GLabel 3850 4650 0    60   Input ~ 0
+Hi
+Text Notes 600  1200 0    60   ~ 0
+The RAM and ROM components are 32Kbytes\neach. The adr15 line is inverted so that ROM\noccupies the lower 32K of the address space,\nand RAM in the upper 32K. Both output to the\ndata bus, controlled by the MEMresult line.
+Text Notes 600  1800 0    60   ~ 0
+The UART is also connected to the\ndata bus, and it has separate output\nand input control lines.  There are two\nready lines which are sent to the Jump\nlogic.
 $Comp
-L VCC #PWR010
-U 1 1 5C9AF8FD
-P 3400 5900
-F 0 "#PWR010" H 3400 5750 50  0001 C CNN
-F 1 "VCC" H 3400 6050 50  0000 C CNN
-F 2 "" H 3400 5900 50  0001 C CNN
-F 3 "" H 3400 5900 50  0001 C CNN
-	1    3400 5900
+L 74LS04 IC17
+U 6 1 5CA2F410
+P 4600 5300
+F 0 "IC17" H 4795 5415 50  0000 C CNN
+F 1 "74LS04" H 4790 5175 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 4600 5300 50  0001 C CNN
+F 3 "" H 4600 5300 50  0001 C CNN
+	6    4600 5300
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3950 6000 3400 6000
+	4150 5300 2700 5300
 Wire Wire Line
-	3950 6100 3750 6100
+	2700 5300 2700 4750
+Wire Wire Line
+	5700 2150 5700 5300
+Wire Wire Line
+	5700 5300 5050 5300
 $EndSCHEMATC

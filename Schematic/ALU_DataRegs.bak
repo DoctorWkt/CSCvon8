@@ -82,7 +82,7 @@ L 74LS574-RESCUE-Schematic IC5
 U 1 1 5C986B56
 P 3800 5000
 F 0 "IC5" H 3800 5700 50  0000 C CNN
-F 1 "74LS574" H 3800 5600 50  0000 C CNN
+F 1 "74HCT574" H 3800 5600 50  0000 C CNN
 F 2 "Housings_DIP:DIP-20_W7.62mm_Socket" H 3800 5000 50  0001 C CNN
 F 3 "" H 3800 5000 50  0001 C CNN
 	1    3800 5000
@@ -93,7 +93,7 @@ L 74LS574-RESCUE-Schematic IC4
 U 1 1 5C987475
 P 3800 3400
 F 0 "IC4" H 3800 4100 50  0000 C CNN
-F 1 "74LS574" H 3800 4000 50  0000 C CNN
+F 1 "74HCT574" H 3800 4000 50  0000 C CNN
 F 2 "Housings_DIP:DIP-20_W7.62mm_Socket" H 3800 3400 50  0001 C CNN
 F 3 "" H 3800 3400 50  0001 C CNN
 	1    3800 3400
@@ -168,22 +168,22 @@ d6
 Text Label 2900 2900 0    60   ~ 0
 d7
 Entry Wire Line
-	8650 5200 8750 5100
+	9200 5200 9300 5100
 Entry Wire Line
-	8650 5100 8750 5000
+	9200 5100 9300 5000
 Entry Wire Line
-	8650 5000 8750 4900
+	9200 5000 9300 4900
 Entry Wire Line
-	8650 4900 8750 4800
+	9200 4900 9300 4800
 Entry Wire Line
-	8650 4800 8750 4700
+	9200 4800 9300 4700
 Entry Wire Line
-	8650 4700 8750 4600
+	9200 4700 9300 4600
 Entry Wire Line
-	8650 4600 8750 4500
+	9200 4600 9300 4500
 Entry Wire Line
-	8650 4500 8750 4400
-Text GLabel 9000 4100 2    60   Input ~ 0
+	9200 4500 9300 4400
+Text GLabel 9550 4100 2    60   Output ~ 0
 d[0..7]
 Entry Wire Line
 	6650 3100 6750 3200
@@ -207,22 +207,20 @@ Text Label 6750 3200 0    60   ~ 0
 Op4
 Text GLabel 6100 2350 0    60   Input ~ 0
 Op[0..4]
-Text GLabel 9000 3950 2    60   Input ~ 0
+Text GLabel 9550 3950 2    60   Output ~ 0
 Carry
-Text GLabel 9000 3800 2    60   Input ~ 0
+Text GLabel 9500 3650 2    60   Output ~ 0
 Zero
-Text GLabel 9000 3650 2    60   Input ~ 0
+Text GLabel 9500 3500 2    60   Output ~ 0
 Negative
 NoConn ~ 8100 3700
 NoConn ~ 8100 3800
 NoConn ~ 8100 3900
-NoConn ~ 8100 4000
-NoConn ~ 8100 4100
 $Comp
-L VCC #PWR011
+L VCC #PWR08
 U 1 1 5C99BBA6
 P 8300 3200
-F 0 "#PWR011" H 8300 3050 50  0001 C CNN
+F 0 "#PWR08" H 8300 3050 50  0001 C CNN
 F 1 "VCC" H 8300 3350 50  0000 C CNN
 F 2 "" H 8300 3200 50  0001 C CNN
 F 3 "" H 8300 3200 50  0001 C CNN
@@ -230,10 +228,10 @@ F 3 "" H 8300 3200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR012
+L VCC #PWR09
 U 1 1 5C99BBC1
 P 4900 3800
-F 0 "#PWR012" H 4900 3650 50  0001 C CNN
+F 0 "#PWR09" H 4900 3650 50  0001 C CNN
 F 1 "VCC" H 4900 3950 50  0000 C CNN
 F 2 "" H 4900 3800 50  0001 C CNN
 F 3 "" H 4900 3800 50  0001 C CNN
@@ -241,10 +239,10 @@ F 3 "" H 4900 3800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR013
+L VCC #PWR010
 U 1 1 5C99BC3B
 P 4450 5400
-F 0 "#PWR013" H 4450 5250 50  0001 C CNN
+F 0 "#PWR010" H 4450 5250 50  0001 C CNN
 F 1 "VCC" H 4450 5550 50  0000 C CNN
 F 2 "" H 4450 5400 50  0001 C CNN
 F 3 "" H 4450 5400 50  0001 C CNN
@@ -252,10 +250,10 @@ F 3 "" H 4450 5400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDREF #PWR014
+L GNDREF #PWR011
 U 1 1 5C99BDAD
 P 4900 3900
-F 0 "#PWR014" H 4900 3650 50  0001 C CNN
+F 0 "#PWR011" H 4900 3650 50  0001 C CNN
 F 1 "GNDREF" H 4900 3750 50  0000 C CNN
 F 2 "" H 4900 3900 50  0001 C CNN
 F 3 "" H 4900 3900 50  0001 C CNN
@@ -263,10 +261,10 @@ F 3 "" H 4900 3900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDREF #PWR015
+L GNDREF #PWR012
 U 1 1 5C99BDC8
 P 4450 5500
-F 0 "#PWR015" H 4450 5250 50  0001 C CNN
+F 0 "#PWR012" H 4450 5250 50  0001 C CNN
 F 1 "GNDREF" H 4450 5350 50  0000 C CNN
 F 2 "" H 4450 5500 50  0001 C CNN
 F 3 "" H 4450 5500 50  0001 C CNN
@@ -277,39 +275,17 @@ Text GLabel 2250 3800 0    60   Input ~ 0
 Aload
 Text GLabel 2300 5400 0    60   Input ~ 0
 Bload
+Text GLabel 9500 3150 2    60   Input ~ 0
+~ALUresult
 $Comp
-L GNDREF #PWR016
-U 1 1 5C99728E
-P 2950 3900
-F 0 "#PWR016" H 2950 3650 50  0001 C CNN
-F 1 "GNDREF" H 2950 3750 50  0000 C CNN
-F 2 "" H 2950 3900 50  0001 C CNN
-F 3 "" H 2950 3900 50  0001 C CNN
-	1    2950 3900
-	1    0    0    -1  
-$EndComp
-$Comp
-L GNDREF #PWR017
-U 1 1 5C9972A9
-P 2950 5500
-F 0 "#PWR017" H 2950 5250 50  0001 C CNN
-F 1 "GNDREF" H 2950 5350 50  0000 C CNN
-F 2 "" H 2950 5500 50  0001 C CNN
-F 3 "" H 2950 5500 50  0001 C CNN
-	1    2950 5500
-	1    0    0    -1  
-$EndComp
-Text GLabel 8950 3500 2    60   Input ~ 0
-ALUresult
-$Comp
-L GNDREF #PWR018
+L GNDREF #PWR013
 U 1 1 5C99887D
-P 8600 3300
-F 0 "#PWR018" H 8600 3050 50  0001 C CNN
-F 1 "GNDREF" H 8600 3150 50  0000 C CNN
-F 2 "" H 8600 3300 50  0001 C CNN
-F 3 "" H 8600 3300 50  0001 C CNN
-	1    8600 3300
+P 8650 3300
+F 0 "#PWR013" H 8650 3050 50  0001 C CNN
+F 1 "GNDREF" H 8650 3150 50  0000 C CNN
+F 2 "" H 8650 3300 50  0001 C CNN
+F 3 "" H 8650 3300 50  0001 C CNN
+	1    8650 3300
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -413,25 +389,25 @@ Wire Wire Line
 Wire Wire Line
 	2850 5200 3100 5200
 Wire Bus Line
-	8750 4100 8750 5100
+	9300 4100 9300 5100
 Wire Bus Line
-	8750 4100 9000 4100
+	9300 4100 9550 4100
 Wire Wire Line
-	8650 4500 8100 4500
+	8100 4500 9200 4500
 Wire Wire Line
-	8650 4600 8100 4600
+	8100 4600 9200 4600
 Wire Wire Line
-	8650 4700 8100 4700
+	8100 4700 9200 4700
 Wire Wire Line
-	8650 4800 8100 4800
+	8100 4800 9200 4800
 Wire Wire Line
-	8650 4900 8100 4900
+	8100 4900 9200 4900
 Wire Wire Line
-	8650 5000 8100 5000
+	8100 5000 9200 5000
 Wire Wire Line
-	8650 5100 8100 5100
+	8100 5100 9200 5100
 Wire Wire Line
-	8650 5200 8100 5200
+	8100 5200 9200 5200
 Wire Wire Line
 	6900 3200 6750 3200
 Wire Wire Line
@@ -447,24 +423,6 @@ Wire Bus Line
 Wire Bus Line
 	6650 2350 6100 2350
 Wire Wire Line
-	8550 4400 8100 4400
-Wire Wire Line
-	8550 3950 8550 4400
-Wire Wire Line
-	8550 3950 9000 3950
-Wire Wire Line
-	8400 4300 8100 4300
-Wire Wire Line
-	8400 3800 8400 4300
-Wire Wire Line
-	8400 3800 9000 3800
-Wire Wire Line
-	8100 4200 8250 4200
-Wire Wire Line
-	8250 4200 8250 3650
-Wire Wire Line
-	8250 3650 9000 3650
-Wire Wire Line
 	8100 3200 8300 3200
 Wire Wire Line
 	4400 3800 4900 3800
@@ -478,33 +436,13 @@ Wire Wire Line
 	2250 3800 3100 3800
 Wire Wire Line
 	2300 5400 3100 5400
-Wire Wire Line
-	2950 3900 3100 3900
-Wire Wire Line
-	2950 5500 3100 5500
-Wire Wire Line
-	8950 3500 8450 3500
-Wire Wire Line
-	8450 3500 8450 3600
-Wire Wire Line
-	8450 3600 8100 3600
-Wire Wire Line
-	8100 3300 8600 3300
-Wire Wire Line
-	8250 3500 8100 3500
-Wire Wire Line
-	8250 3300 8250 3500
-Connection ~ 8250 3300
-Wire Wire Line
-	8100 3400 8250 3400
-Connection ~ 8250 3400
 Text GLabel 1950 5300 0    60   Input ~ 0
 d[0..7]
 Text Notes 2200 5250 0    60   ~ 0
 DataBus
 Text Notes 6250 2300 0    60   ~ 0
 ALUop
-Text Notes 8800 4300 0    60   ~ 0
+Text Notes 9350 4300 0    60   ~ 0
 DataBus
 Text Label 8250 5200 0    60   ~ 0
 d0
@@ -522,4 +460,65 @@ Text Label 8250 4600 0    60   ~ 0
 d6
 Text Label 8250 4500 0    60   ~ 0
 d7
+Text GLabel 9500 3350 2    60   Output ~ 0
+DivByZero
+Text GLabel 9550 3800 2    60   Output ~ 0
+Overflow
+Wire Wire Line
+	9550 3950 9200 3950
+Wire Wire Line
+	9200 3950 9200 4400
+Wire Wire Line
+	9200 4400 8100 4400
+Wire Wire Line
+	9550 3800 9150 3800
+Wire Wire Line
+	9150 3800 9150 4300
+Wire Wire Line
+	9150 4300 8100 4300
+Wire Wire Line
+	9500 3650 9100 3650
+Wire Wire Line
+	8100 4200 9100 4200
+Wire Wire Line
+	9500 3500 9050 3500
+Wire Wire Line
+	8100 4100 9050 4100
+Wire Wire Line
+	9100 4200 9100 3650
+Wire Wire Line
+	9050 4100 9050 3500
+Wire Wire Line
+	9500 3350 9000 3350
+Wire Wire Line
+	9000 3350 9000 4000
+Wire Wire Line
+	9000 4000 8100 4000
+Wire Wire Line
+	9500 3150 8900 3150
+Wire Wire Line
+	8100 3300 8650 3300
+Wire Wire Line
+	8100 3500 8900 3500
+Connection ~ 8300 3300
+Wire Wire Line
+	8100 3400 8300 3400
+Text GLabel 3050 3900 0    60   Input ~ 0
+Lo
+Text GLabel 3050 5500 0    60   Input ~ 0
+Lo
+Wire Wire Line
+	3050 3900 3100 3900
+Wire Wire Line
+	3050 5500 3100 5500
+Wire Wire Line
+	8300 3400 8300 3300
+Text GLabel 8300 3600 2    60   Input ~ 0
+Lo
+Text Notes 850  2300 0    60   ~ 0
+The A and B registers can load\nfrom the data bus. Their outputs\nare directly connected to the ALU.\n\nThe ALU also receives the 5-bit ALU\noperation from the instruction\ndecoder logic.\n\nThe ALU outputs the 8-bit\nresult plus five flags that\ndescribe the type of output.\n\nThe ALUresult control line\nenables the ALU output onto\nthe data bus.
+Wire Wire Line
+	8900 3500 8900 3150
+Wire Wire Line
+	8100 3600 8300 3600
 $EndSCHEMATC

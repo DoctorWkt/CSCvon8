@@ -59,15 +59,15 @@ $EndDescr
 $Comp
 L 74LS574-RESCUE-Schematic IC12
 U 1 1 5C994531
-P 2900 3400
-F 0 "IC12" H 2900 4100 50  0000 C CNN
-F 1 "74LS574" H 2900 4000 50  0000 C CNN
-F 2 "Housings_DIP:DIP-20_W7.62mm_Socket" H 2900 3400 50  0001 C CNN
-F 3 "" H 2900 3400 50  0001 C CNN
-	1    2900 3400
+P 2300 3400
+F 0 "IC12" H 2300 4100 50  0000 C CNN
+F 1 "74HCT574" H 2300 4000 50  0000 C CNN
+F 2 "Housings_DIP:DIP-20_W7.62mm_Socket" H 2300 3400 50  0001 C CNN
+F 3 "" H 2300 3400 50  0001 C CNN
+	1    2300 3400
 	1    0    0    -1  
 $EndComp
-Text Notes 2850 3250 0    60   ~ 0
+Text Notes 2250 3250 0    60   ~ 0
 IR
 Entry Wire Line
 	6400 4000 6500 4100
@@ -79,7 +79,7 @@ Entry Wire Line
 	6400 3700 6500 3800
 Entry Wire Line
 	6400 3600 6500 3700
-Text GLabel 6600 4300 2    60   Input ~ 0
+Text GLabel 6600 4300 2    60   Output ~ 0
 Op[0..4]
 Text Label 6000 4000 0    60   ~ 0
 Op0
@@ -91,36 +91,389 @@ Text Label 6000 3700 0    60   ~ 0
 Op3
 Text Label 6000 3600 0    60   ~ 0
 Op4
+Text GLabel 6650 2600 2    60   Output ~ 0
+PCincr
+Text GLabel 6650 2500 2    60   Output ~ 0
+~uSreset
+Entry Wire Line
+	1100 2800 1200 2900
+Entry Wire Line
+	1100 2900 1200 3000
+Entry Wire Line
+	1100 3000 1200 3100
+Entry Wire Line
+	1100 3100 1200 3200
+Entry Wire Line
+	1100 3200 1200 3300
+Entry Wire Line
+	1100 3300 1200 3400
+Entry Wire Line
+	1100 3400 1200 3500
+Entry Wire Line
+	1100 3500 1200 3600
+Text Label 1250 3600 0    60   ~ 0
+d0
+Text Label 1250 3500 0    60   ~ 0
+d1
+Text Label 1250 3400 0    60   ~ 0
+d2
+Text Label 1250 3300 0    60   ~ 0
+d3
+Text Label 1250 3200 0    60   ~ 0
+d4
+Text Label 1250 3100 0    60   ~ 0
+d5
+Text Label 1250 3000 0    60   ~ 0
+d6
+Text Label 1250 2900 0    60   ~ 0
+d7
+Text GLabel 1750 5700 0    60   Input ~ 0
+~uSreset
+NoConn ~ 2200 4700
+NoConn ~ 2200 4800
+NoConn ~ 2200 4900
+NoConn ~ 2200 5000
+Text Notes 5200 3550 0    60   ~ 0
+Decode\n ROM
+Text Notes 2650 5200 0    60   ~ 0
+uSequence\n  Counter
+$Comp
+L GNDREF #PWR024
+U 1 1 5C99C89C
+P 7250 2250
+F 0 "#PWR024" H 7250 2000 50  0001 C CNN
+F 1 "GNDREF" H 7250 2100 50  0000 C CNN
+F 2 "" H 7250 2250 50  0001 C CNN
+F 3 "" H 7250 2250 50  0001 C CNN
+	1    7250 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDREF #PWR025
+U 1 1 5C99C8B7
+P 3150 3900
+F 0 "#PWR025" H 3150 3650 50  0001 C CNN
+F 1 "GNDREF" H 3150 3750 50  0000 C CNN
+F 2 "" H 3150 3900 50  0001 C CNN
+F 3 "" H 3150 3900 50  0001 C CNN
+	1    3150 3900
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDREF #PWR026
+U 1 1 5C99C8CB
+P 3750 5700
+F 0 "#PWR026" H 3750 5450 50  0001 C CNN
+F 1 "GNDREF" H 3750 5550 50  0000 C CNN
+F 2 "" H 3750 5700 50  0001 C CNN
+F 3 "" H 3750 5700 50  0001 C CNN
+	1    3750 5700
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR027
+U 1 1 5C99C8DE
+P 3150 3800
+F 0 "#PWR027" H 3150 3650 50  0001 C CNN
+F 1 "VCC" H 3150 3950 50  0000 C CNN
+F 2 "" H 3150 3800 50  0001 C CNN
+F 3 "" H 3150 3800 50  0001 C CNN
+	1    3150 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR028
+U 1 1 5C99C8F9
+P 3750 5600
+F 0 "#PWR028" H 3750 5450 50  0001 C CNN
+F 1 "VCC" H 3750 5750 50  0000 C CNN
+F 2 "" H 3750 5600 50  0001 C CNN
+F 3 "" H 3750 5600 50  0001 C CNN
+	1    3750 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR029
+U 1 1 5C99C910
+P 6150 1950
+F 0 "#PWR029" H 6150 1800 50  0001 C CNN
+F 1 "VCC" H 6150 2100 50  0000 C CNN
+F 2 "" H 6150 1950 50  0001 C CNN
+F 3 "" H 6150 1950 50  0001 C CNN
+	1    6150 1950
+	1    0    0    -1  
+$EndComp
+NoConn ~ 2200 5150
+Text GLabel 1700 5550 0    60   Input ~ 0
+Clk
+Text GLabel 6750 2800 2    60   Output ~ 0
+JumpOp[0..2]
+NoConn ~ 4800 2250
+$Comp
+L 74LS139-RESCUE-Schematic IC15
+U 1 1 5C990E8F
+P 8900 3300
+AR Path="/5C990E8F" Ref="IC15"  Part="1" 
+AR Path="/5C9850E7/5C990E8F" Ref="IC15"  Part="1" 
+F 0 "IC15" H 8900 3850 50  0000 C CNN
+F 1 "74HCT139" H 8900 3750 50  0000 C CNN
+F 2 "Housings_DIP:DIP-16_W7.62mm_Socket" H 8900 3300 50  0001 C CNN
+F 3 "" H 8900 3300 50  0001 C CNN
+	1    8900 3300
+	1    0    0    -1  
+$EndComp
+Text GLabel 6750 2700 2    60   Output ~ 0
+~ARena
+Text GLabel 10600 4050 2    60   Output ~ 0
+IRload
+Text GLabel 10600 4350 2    60   Output ~ 0
+Aload
+Text GLabel 10600 4650 2    60   Output ~ 0
+Bload
+Text GLabel 10500 5600 2    60   Output ~ 0
+~MEMload
+Text GLabel 10600 4950 2    60   Output ~ 0
+AHload
+Text GLabel 10600 5250 2    60   Output ~ 0
+ALload
+Text GLabel 10600 5800 2    60   Output ~ 0
+~IOload
+NoConn ~ 8700 4550
+Text GLabel 10100 3000 2    60   Output ~ 0
+~MEMresult
+Text GLabel 10100 3200 2    60   Output ~ 0
+~ALUresult
+Text GLabel 10100 3400 2    60   Output ~ 0
+~UARTresult
+NoConn ~ 9750 3600
+Text Label 7450 3200 0    60   ~ 0
+DbusOp0
+Text Label 7450 3100 0    60   ~ 0
+DbusOp1
+Text Label 6350 3500 0    60   ~ 0
+LoadOp0
+Text Label 6350 3400 0    60   ~ 0
+LoadOp1
+Text Label 6350 3300 0    60   ~ 0
+LoadOp2
+$Comp
+L 74LS161-wkt IC13
+U 1 1 5C997BC7
+P 2900 5200
+F 0 "IC13" H 2900 5900 50  0000 C CNN
+F 1 "74HCT161" H 2900 5800 50  0000 C CNN
+F 2 "Housings_DIP:DIP-16_W7.62mm_Socket" H 2900 5200 50  0001 C CNN
+F 3 "" H 2900 5200 50  0001 C CNN
+	1    2900 5200
+	1    0    0    -1  
+$EndComp
+Text Notes 8750 3400 0    60   ~ 0
+Databus\nWriter\ndemux
+Text Notes 8000 5750 0    60   ~ 0
+Databus\nReader\ndemux
+$Comp
+L GNDREF #PWR030
+U 1 1 5C99920E
+P 7550 3750
+F 0 "#PWR030" H 7550 3500 50  0001 C CNN
+F 1 "GNDREF" H 7550 3600 50  0000 C CNN
+F 2 "" H 7550 3750 50  0001 C CNN
+F 3 "" H 7550 3750 50  0001 C CNN
+	1    7550 3750
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74LS138 IC16
+U 1 1 5C9992C4
+P 8100 4900
+F 0 "IC16" H 8100 5700 50  0000 C CNN
+F 1 "74HCT138" H 8100 5600 50  0000 C CNN
+F 2 "Housings_DIP:DIP-16_W7.62mm_Socket" H 8100 4900 50  0001 C CNN
+F 3 "" H 8100 4900 50  0001 C CNN
+	1    8100 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDREF #PWR031
+U 1 1 5C99955D
+P 7800 5550
+F 0 "#PWR031" H 7800 5300 50  0001 C CNN
+F 1 "GNDREF" H 7800 5400 50  0000 C CNN
+F 2 "" H 7800 5550 50  0001 C CNN
+F 3 "" H 7800 5550 50  0001 C CNN
+	1    7800 5550
+	1    0    0    -1  
+$EndComp
+Text GLabel 1150 3800 0    60   Input ~ 0
+IRload
+$Comp
+L AT27C1024-70PU IC14
+U 1 1 5C994A95
+P 4800 2050
+F 0 "IC14" H 5350 2300 50  0000 L CNN
+F 1 "AT27C1024-70PU" H 5050 2200 50  0000 L CNN
+F 2 "Housings_DIP:DIP-40_W15.24mm_Socket" H 5750 2150 50  0001 L CNN
+F 3 "http://www.atmel.com/images/doc0019.pdf" H 5750 2050 50  0001 L CNN
+F 4 "AT27C1024-70PU,  OTP EPROM Memory 1Mbit 64K x 16 bit 70ns 4.5  5.5 V 40-Pin PDIP" H 5750 1950 50  0001 L CNN "Description"
+F 5 "4.826" H 5750 1850 50  0001 L CNN "Height"
+F 6 "Microchip" H 5750 1750 50  0001 L CNN "Manufacturer_Name"
+F 7 "AT27C1024-70PU" H 5750 1650 50  0001 L CNN "Manufacturer_Part_Number"
+F 8 "556-AT27C102470PU" H 5750 1550 50  0001 L CNN "Mouser Part Number"
+F 9 "https://www.mouser.com/Search/Refine.aspx?Keyword=556-AT27C102470PU" H 5750 1450 50  0001 L CNN "Mouser Price/Stock"
+F 10 "6962768" H 5750 1350 50  0001 L CNN "RS Part Number"
+F 11 "http://uk.rs-online.com/web/p/products/6962768" H 5750 1250 50  0001 L CNN "RS Price/Stock"
+	1    4800 2050
+	1    0    0    -1  
+$EndComp
+Text GLabel 950  2500 0    60   Input ~ 0
+d[0..7]
+Text Notes 700  2450 0    60   ~ 0
+DataBus
+Text Notes 6200 4200 0    60   ~ 0
+ALUop
+$Comp
+L VCC #PWR032
+U 1 1 5C9AFDC5
+P 8500 4300
+F 0 "#PWR032" H 8500 4150 50  0001 C CNN
+F 1 "VCC" H 8500 4450 50  0000 C CNN
+F 2 "" H 8500 4300 50  0001 C CNN
+F 3 "" H 8500 4300 50  0001 C CNN
+	1    8500 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR033
+U 1 1 5C9B044B
+P 7550 3500
+F 0 "#PWR033" H 7550 3350 50  0001 C CNN
+F 1 "VCC" H 7550 3650 50  0000 C CNN
+F 2 "" H 7550 3500 50  0001 C CNN
+F 3 "" H 7550 3500 50  0001 C CNN
+	1    7550 3500
+	1    0    0    -1  
+$EndComp
+Entry Wire Line
+	6350 2850 6450 2950
+Entry Wire Line
+	6350 2900 6450 3000
+Entry Wire Line
+	6350 2950 6450 3050
+Text Label 5900 3000 0    60   ~ 0
+JumpOp0
+Text Label 5900 2900 0    60   ~ 0
+JumpOp1
+Text Label 5900 2800 0    60   ~ 0
+JumpOp2
+Text GLabel 1400 3900 0    60   Input ~ 0
+Lo
+Text GLabel 4400 2600 0    60   Input ~ 0
+Lo
+Text GLabel 6150 2350 2    60   Input ~ 0
+Lo
+Text GLabel 7900 3350 0    60   Input ~ 0
+Lo
+Text GLabel 7250 5250 0    60   Input ~ 0
+Lo
+Text GLabel 7250 5050 0    60   Input ~ 0
+Hi
+Text GLabel 4400 2050 0    60   Input ~ 0
+Hi
+Text GLabel 4400 2150 0    60   Input ~ 0
+Hi
+Text Notes 1000 1350 0    60   ~ 0
+CSCvon8 is a microsequenced CPU. The Instruction register, combined with the microsequence counter, selects the next microinstruction to perform.\nThis is "looked up" in the Decode ROM, which produces the sixteen control lines for the specific microinstruction. The ALUop goes to the ALU. The\nJumpOp goes to the Jump logic. The three LoadOp lines are demultiplexed to choose one device to load from the databus. The two DbusOp lines are\ndemultiplexed to choose one device to write onto the databus.\n\nNormally, the microsequence counter increments, but if uSreset goes low it will reset back to value zero. All microsequences have their "zero"\nmicroinstruction to load the Instruction register from the data bus (ROM or RAM) and to increment the Instruction register.
+Text GLabel 1850 5250 0    60   Input ~ 0
+Hi
+Text GLabel 1850 5350 0    60   Input ~ 0
+Hi
+Text GLabel 1850 5450 0    60   Input ~ 0
+Hi
+$Comp
+L 74LS04 IC17
+U 1 1 5CA2DFE0
+P 10000 4050
+F 0 "IC17" H 10195 4165 50  0000 C CNN
+F 1 "74LS04" H 10190 3925 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 4050 50  0001 C CNN
+F 3 "" H 10000 4050 50  0001 C CNN
+	1    10000 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74LS04 IC17
+U 2 1 5CA2E147
+P 10000 4350
+F 0 "IC17" H 10195 4465 50  0000 C CNN
+F 1 "74LS04" H 10190 4225 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 4350 50  0001 C CNN
+F 3 "" H 10000 4350 50  0001 C CNN
+	2    10000 4350
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74LS04 IC17
+U 3 1 5CA2E18A
+P 10000 4650
+F 0 "IC17" H 10195 4765 50  0000 C CNN
+F 1 "74LS04" H 10190 4525 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 4650 50  0001 C CNN
+F 3 "" H 10000 4650 50  0001 C CNN
+	3    10000 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74LS04 IC17
+U 4 1 5CA2E1D7
+P 10000 4950
+F 0 "IC17" H 10195 5065 50  0000 C CNN
+F 1 "74LS04" H 10190 4825 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 4950 50  0001 C CNN
+F 3 "" H 10000 4950 50  0001 C CNN
+	4    10000 4950
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74LS04 IC17
+U 5 1 5CA2E289
+P 10000 5250
+F 0 "IC17" H 10195 5365 50  0000 C CNN
+F 1 "74LS04" H 10190 5125 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 5250 50  0001 C CNN
+F 3 "" H 10000 5250 50  0001 C CNN
+	5    10000 5250
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
-	3600 2900 4800 2900
+	3000 2900 4800 2900
 Wire Wire Line
-	3600 3000 4800 3000
+	3000 3000 4800 3000
 Wire Wire Line
-	3600 3100 4800 3100
+	3000 3100 4800 3100
 Wire Wire Line
-	3600 3200 4800 3200
+	3000 3200 4800 3200
 Wire Wire Line
-	3600 3300 4800 3300
+	3000 3300 4800 3300
 Wire Wire Line
-	3600 3400 4800 3400
+	3000 3400 4800 3400
 Wire Wire Line
-	3600 3500 4800 3500
+	3000 3500 4800 3500
 Wire Wire Line
-	3600 3600 4800 3600
+	3000 3600 4800 3600
 Wire Wire Line
 	4800 3700 4450 3700
 Wire Wire Line
 	4450 3700 4450 4700
 Wire Wire Line
-	4450 4700 3600 4700
+	3600 4700 5300 4700
 Wire Wire Line
 	4800 3800 4550 3800
 Wire Wire Line
 	4550 3800 4550 4800
 Wire Wire Line
-	4550 4800 3600 4800
+	3600 4800 5300 4800
 Wire Wire Line
-	3600 4900 4650 4900
+	3600 4900 5300 4900
 Wire Wire Line
 	4650 4900 4650 3900
 Wire Wire Line
@@ -130,7 +483,7 @@ Wire Wire Line
 Wire Wire Line
 	4750 4000 4750 5000
 Wire Wire Line
-	4750 5000 3600 5000
+	3600 5000 5300 5000
 Wire Bus Line
 	6500 3700 6500 4300
 Wire Bus Line
@@ -156,183 +509,43 @@ Wire Wire Line
 Wire Wire Line
 	5900 3200 8050 3200
 Wire Wire Line
-	5900 2900 6650 2900
+	1200 2900 1600 2900
 Wire Wire Line
-	5900 3000 6650 3000
+	1200 3000 1600 3000
 Wire Wire Line
-	5900 2800 6650 2800
-Text GLabel 6650 2700 2    60   Input ~ 0
-PCincr
-Text GLabel 6650 2600 2    60   Input ~ 0
-uSreset
+	1200 3100 1600 3100
 Wire Wire Line
-	5900 2600 6650 2600
+	1200 3200 1600 3200
 Wire Wire Line
-	5900 2700 6650 2700
-Entry Wire Line
-	1700 2800 1800 2900
-Entry Wire Line
-	1700 2900 1800 3000
-Entry Wire Line
-	1700 3000 1800 3100
-Entry Wire Line
-	1700 3100 1800 3200
-Entry Wire Line
-	1700 3200 1800 3300
-Entry Wire Line
-	1700 3300 1800 3400
-Entry Wire Line
-	1700 3400 1800 3500
-Entry Wire Line
-	1700 3500 1800 3600
+	1200 3300 1600 3300
 Wire Wire Line
-	1800 2900 2200 2900
+	1200 3400 1600 3400
 Wire Wire Line
-	1800 3000 2200 3000
-Wire Wire Line
-	1800 3100 2200 3100
-Wire Wire Line
-	1800 3200 2200 3200
-Wire Wire Line
-	1800 3300 2200 3300
-Wire Wire Line
-	1800 3400 2200 3400
-Wire Wire Line
-	1800 3500 2200 3500
+	1200 3500 1600 3500
 Wire Bus Line
-	1700 2500 1700 3500
+	1100 2500 1100 3500
 Wire Bus Line
-	1700 2500 1200 2500
-Text Label 1850 3600 0    60   ~ 0
-d0
-Text Label 1850 3500 0    60   ~ 0
-d1
-Text Label 1850 3400 0    60   ~ 0
-d2
-Text Label 1850 3300 0    60   ~ 0
-d3
-Text Label 1850 3200 0    60   ~ 0
-d4
-Text Label 1850 3100 0    60   ~ 0
-d5
-Text Label 1850 3000 0    60   ~ 0
-d6
-Text Label 1850 2900 0    60   ~ 0
-d7
-Text GLabel 1750 5700 0    60   Input ~ 0
-uSreset
+	1100 2500 950  2500
 Wire Wire Line
 	2200 5700 1750 5700
-NoConn ~ 2200 4700
-NoConn ~ 2200 4800
-NoConn ~ 2200 4900
-NoConn ~ 2200 5000
-Text Notes 5200 3550 0    60   ~ 0
-Decode\n ROM
-Text Notes 2650 5200 0    60   ~ 0
-uSequence\n  Counter
-$Comp
-L GNDREF #PWR031
-U 1 1 5C99C89C
-P 7250 2250
-F 0 "#PWR031" H 7250 2000 50  0001 C CNN
-F 1 "GNDREF" H 7250 2100 50  0000 C CNN
-F 2 "" H 7250 2250 50  0001 C CNN
-F 3 "" H 7250 2250 50  0001 C CNN
-	1    7250 2250
-	1    0    0    -1  
-$EndComp
-$Comp
-L GNDREF #PWR032
-U 1 1 5C99C8B7
-P 3750 3900
-F 0 "#PWR032" H 3750 3650 50  0001 C CNN
-F 1 "GNDREF" H 3750 3750 50  0000 C CNN
-F 2 "" H 3750 3900 50  0001 C CNN
-F 3 "" H 3750 3900 50  0001 C CNN
-	1    3750 3900
-	1    0    0    -1  
-$EndComp
-$Comp
-L GNDREF #PWR033
-U 1 1 5C99C8CB
-P 3750 5700
-F 0 "#PWR033" H 3750 5450 50  0001 C CNN
-F 1 "GNDREF" H 3750 5550 50  0000 C CNN
-F 2 "" H 3750 5700 50  0001 C CNN
-F 3 "" H 3750 5700 50  0001 C CNN
-	1    3750 5700
-	1    0    0    -1  
-$EndComp
-$Comp
-L VCC #PWR034
-U 1 1 5C99C8DE
-P 3750 3800
-F 0 "#PWR034" H 3750 3650 50  0001 C CNN
-F 1 "VCC" H 3750 3950 50  0000 C CNN
-F 2 "" H 3750 3800 50  0001 C CNN
-F 3 "" H 3750 3800 50  0001 C CNN
-	1    3750 3800
-	1    0    0    -1  
-$EndComp
-$Comp
-L VCC #PWR035
-U 1 1 5C99C8F9
-P 3750 5600
-F 0 "#PWR035" H 3750 5450 50  0001 C CNN
-F 1 "VCC" H 3750 5750 50  0000 C CNN
-F 2 "" H 3750 5600 50  0001 C CNN
-F 3 "" H 3750 5600 50  0001 C CNN
-	1    3750 5600
-	1    0    0    -1  
-$EndComp
-$Comp
-L VCC #PWR036
-U 1 1 5C99C910
-P 6150 1950
-F 0 "#PWR036" H 6150 1800 50  0001 C CNN
-F 1 "VCC" H 6150 2100 50  0000 C CNN
-F 2 "" H 6150 1950 50  0001 C CNN
-F 3 "" H 6150 1950 50  0001 C CNN
-	1    6150 1950
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	5900 2250 7250 2250
 Wire Wire Line
-	3500 3800 3750 3800
+	2900 3800 3150 3800
 Wire Wire Line
-	3500 3900 3750 3900
+	2900 3900 3150 3900
 Wire Wire Line
 	3500 5600 3750 5600
 Wire Wire Line
 	3500 5700 3750 5700
-NoConn ~ 2200 5150
-$Comp
-L VCC #PWR037
-U 1 1 5C99CB09
-P 1850 5150
-F 0 "#PWR037" H 1850 5000 50  0001 C CNN
-F 1 "VCC" H 1850 5300 50  0000 C CNN
-F 2 "" H 1850 5150 50  0001 C CNN
-F 3 "" H 1850 5150 50  0001 C CNN
-	1    1850 5150
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	1850 5350 2200 5350
 Wire Wire Line
-	1850 5150 1850 5450
-Wire Wire Line
 	1850 5450 2200 5450
-Connection ~ 1850 5350
-Text GLabel 1700 5550 0    60   Input ~ 0
-Clk
 Wire Wire Line
 	1700 5550 2200 5550
 Wire Wire Line
 	2200 5250 1850 5250
-Connection ~ 1850 5250
 Wire Wire Line
 	5900 2150 6000 2150
 Wire Wire Line
@@ -342,300 +555,212 @@ Wire Wire Line
 	5900 2350 6150 2350
 Wire Wire Line
 	5900 2050 6150 2050
-Text GLabel 6650 3000 2    60   Input ~ 0
-JumpC
-Text GLabel 6650 2900 2    60   Input ~ 0
-JumpZ
-$Comp
-L GNDREF #PWR038
-U 1 1 5C99F486
-P 4150 2700
-F 0 "#PWR038" H 4150 2450 50  0001 C CNN
-F 1 "GNDREF" H 4150 2550 50  0000 C CNN
-F 2 "" H 4150 2700 50  0001 C CNN
-F 3 "" H 4150 2700 50  0001 C CNN
-	1    4150 2700
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	4650 2800 4800 2800
 Wire Wire Line
 	4650 2350 4650 2800
 Connection ~ 4650 2700
 Wire Wire Line
-	4150 2600 4800 2600
+	4400 2600 4800 2600
 Wire Wire Line
 	4800 2500 4650 2500
 Connection ~ 4650 2600
 Wire Wire Line
 	6150 2050 6150 1950
 Wire Wire Line
-	6150 2350 6150 2250
-Connection ~ 6150 2250
-Wire Wire Line
 	4800 2350 4650 2350
 Connection ~ 4650 2500
-NoConn ~ 4800 2250
-$Comp
-L VCC #PWR039
-U 1 1 5C99F6F5
-P 4400 1900
-F 0 "#PWR039" H 4400 1750 50  0001 C CNN
-F 1 "VCC" H 4400 2050 50  0000 C CNN
-F 2 "" H 4400 1900 50  0001 C CNN
-F 3 "" H 4400 1900 50  0001 C CNN
-	1    4400 1900
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	4400 2150 4800 2150
-Wire Wire Line
-	4400 1900 4400 2150
-$Comp
-L 74LS139-RESCUE-Schematic IC15
-U 1 1 5C990E8F
-P 8900 3300
-AR Path="/5C990E8F" Ref="IC15"  Part="1" 
-AR Path="/5C9850E7/5C990E8F" Ref="IC15"  Part="1" 
-F 0 "IC15" H 8900 3850 50  0000 C CNN
-F 1 "74LS139" H 8900 3750 50  0000 C CNN
-F 2 "Housings_DIP:DIP-16_W7.62mm_Socket" H 8900 3300 50  0001 C CNN
-F 3 "" H 8900 3300 50  0001 C CNN
-	1    8900 3300
-	1    0    0    -1  
-$EndComp
-Text GLabel 6650 2800 2    60   Input ~ 0
-ARena
-Text GLabel 9500 4650 2    60   Input ~ 0
-IRload
-Text GLabel 9550 4750 2    60   Input ~ 0
-Aload
-Text GLabel 9550 4850 2    60   Input ~ 0
-Bload
-Text GLabel 9550 4950 2    60   Input ~ 0
-MEMload
-Text GLabel 9550 5050 2    60   Input ~ 0
-AHload
-Text GLabel 9550 5150 2    60   Input ~ 0
-ALload
-Text GLabel 9550 5250 2    60   Input ~ 0
-IOload
-NoConn ~ 9300 4550
-Wire Wire Line
-	9300 4650 9500 4650
-Wire Wire Line
-	9300 4750 9550 4750
-Wire Wire Line
-	9300 4850 9550 4850
-Wire Wire Line
-	9300 4950 9550 4950
-Wire Wire Line
-	9300 5050 9550 5050
-Wire Wire Line
-	9300 5150 9550 5150
-Wire Wire Line
-	9300 5250 9550 5250
-Text GLabel 10100 3000 2    60   Input ~ 0
-MEMresult
-Text GLabel 10100 3200 2    60   Input ~ 0
-ALUresult
-Text GLabel 10100 3400 2    60   Input ~ 0
-UARTresult
-NoConn ~ 9750 3600
 Wire Wire Line
 	9750 3000 10100 3000
 Wire Wire Line
 	9750 3200 10100 3200
 Wire Wire Line
 	9750 3400 10100 3400
-NoConn ~ 5900 2500
 Wire Wire Line
 	7900 3100 7900 3050
 Wire Wire Line
 	7900 3050 8050 3050
-Text Label 7450 3200 0    60   ~ 0
-DbusOp0
-Text Label 7450 3100 0    60   ~ 0
-DbusOp1
-Text Label 6350 3500 0    60   ~ 0
-LoadOp0
-Text Label 6350 3400 0    60   ~ 0
-LoadOp1
-Text Label 6350 3300 0    60   ~ 0
-LoadOp2
-$Comp
-L 74LS161-wkt IC13
-U 1 1 5C997BC7
-P 2900 5200
-F 0 "IC13" H 2900 5900 50  0000 C CNN
-F 1 "74LS161-wkt" H 2900 5800 50  0000 C CNN
-F 2 "Housings_DIP:DIP-16_W7.62mm_Socket" H 2900 5200 50  0001 C CNN
-F 3 "" H 2900 5200 50  0001 C CNN
-	1    2900 5200
-	1    0    0    -1  
-$EndComp
-Text Notes 8750 3400 0    60   ~ 0
-Databus\nWriter\ndemux
-Text Notes 8600 5750 0    60   ~ 0
-Databus\nReader\ndemux
-$Comp
-L GNDREF #PWR040
-U 1 1 5C99920E
-P 8000 3900
-F 0 "#PWR040" H 8000 3650 50  0001 C CNN
-F 1 "GNDREF" H 8000 3750 50  0000 C CNN
-F 2 "" H 8000 3900 50  0001 C CNN
-F 3 "" H 8000 3900 50  0001 C CNN
-	1    8000 3900
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74LS138 IC16
-U 1 1 5C9992C4
-P 8700 4900
-F 0 "IC16" H 8700 5700 50  0000 C CNN
-F 1 "74LS138" H 8700 5600 50  0000 C CNN
-F 2 "Housings_DIP:DIP-16_W7.62mm_Socket" H 8700 4900 50  0001 C CNN
-F 3 "" H 8700 4900 50  0001 C CNN
-	1    8700 4900
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	7250 3300 7250 4750
 Wire Wire Line
-	7250 4750 8100 4750
-Wire Wire Line
 	7200 3400 7200 4650
-Wire Wire Line
-	7200 4650 8100 4650
 Wire Wire Line
 	7150 3500 7150 4550
 Wire Wire Line
-	7150 4550 8100 4550
-$Comp
-L GNDREF #PWR041
-U 1 1 5C99955D
-P 7850 5550
-F 0 "#PWR041" H 7850 5300 50  0001 C CNN
-F 1 "GNDREF" H 7850 5400 50  0000 C CNN
-F 2 "" H 7850 5550 50  0001 C CNN
-F 3 "" H 7850 5550 50  0001 C CNN
-	1    7850 5550
-	1    0    0    -1  
-$EndComp
+	7250 5250 7500 5250
 Wire Wire Line
-	7850 5250 8100 5250
+	7500 5150 7400 5150
 Wire Wire Line
-	8100 5150 8000 5150
+	7400 5150 7400 5250
+Connection ~ 7400 5250
 Wire Wire Line
-	8000 5150 8000 5250
-Connection ~ 8000 5250
-$Comp
-L VCC #PWR042
-U 1 1 5C999650
-P 7850 5050
-F 0 "#PWR042" H 7850 4900 50  0001 C CNN
-F 1 "VCC" H 7850 5200 50  0000 C CNN
-F 2 "" H 7850 5050 50  0001 C CNN
-F 3 "" H 7850 5050 50  0001 C CNN
-	1    7850 5050
-	1    0    0    -1  
-$EndComp
+	7500 5050 7250 5050
 Wire Wire Line
-	8100 5050 7850 5050
-$Comp
-L GNDREF #PWR043
-U 1 1 5C9996EE
-P 2000 3900
-F 0 "#PWR043" H 2000 3650 50  0001 C CNN
-F 1 "GNDREF" H 2000 3750 50  0000 C CNN
-F 2 "" H 2000 3900 50  0001 C CNN
-F 3 "" H 2000 3900 50  0001 C CNN
-	1    2000 3900
-	1    0    0    -1  
-$EndComp
-Text GLabel 1750 3800 0    60   Input ~ 0
-IRload
-Wire Wire Line
-	2200 3800 1750 3800
-$Comp
-L AT27C1024-70PU IC14
-U 1 1 5C994A95
-P 4800 2050
-F 0 "IC14" H 5350 2300 50  0000 L CNN
-F 1 "AT27C1024-70PU" H 5050 2200 50  0000 L CNN
-F 2 "Housings_DIP:DIP-40_W25.4mm_Socket" H 5750 2150 50  0001 L CNN
-F 3 "http://www.atmel.com/images/doc0019.pdf" H 5750 2050 50  0001 L CNN
-F 4 "AT27C1024-70PU,  OTP EPROM Memory 1Mbit 64K x 16 bit 70ns 4.5  5.5 V 40-Pin PDIP" H 5750 1950 50  0001 L CNN "Description"
-F 5 "4.826" H 5750 1850 50  0001 L CNN "Height"
-F 6 "Microchip" H 5750 1750 50  0001 L CNN "Manufacturer_Name"
-F 7 "AT27C1024-70PU" H 5750 1650 50  0001 L CNN "Manufacturer_Part_Number"
-F 8 "556-AT27C102470PU" H 5750 1550 50  0001 L CNN "Mouser Part Number"
-F 9 "https://www.mouser.com/Search/Refine.aspx?Keyword=556-AT27C102470PU" H 5750 1450 50  0001 L CNN "Mouser Price/Stock"
-F 10 "6962768" H 5750 1350 50  0001 L CNN "RS Part Number"
-F 11 "http://uk.rs-online.com/web/p/products/6962768" H 5750 1250 50  0001 L CNN "RS Price/Stock"
-	1    4800 2050
-	1    0    0    -1  
-$EndComp
+	1600 3800 1150 3800
 Wire Wire Line
 	4800 2050 4400 2050
-Connection ~ 4400 2050
 Wire Wire Line
-	2000 3900 2200 3900
+	1400 3900 1600 3900
 Wire Wire Line
-	1800 3600 2200 3600
-Wire Wire Line
-	4150 2600 4150 2700
+	1200 3600 1600 3600
 Wire Wire Line
 	4800 2700 4650 2700
-Text GLabel 1200 2500 0    60   Input ~ 0
-d[0..7]
-Text Notes 1300 2450 0    60   ~ 0
-DataBus
-Text Notes 6200 4200 0    60   ~ 0
-ALUop
+Wire Wire Line
+	8100 4450 8100 4300
+Wire Wire Line
+	8100 4300 8500 4300
+Wire Wire Line
+	8100 5350 8100 5450
+Wire Wire Line
+	8100 5450 7800 5450
+Wire Wire Line
+	7900 3350 8050 3350
+Wire Wire Line
+	7550 3650 8150 3650
+Wire Wire Line
+	8150 3550 7550 3550
+Wire Wire Line
+	7550 3550 7550 3500
+Wire Bus Line
+	6750 2800 6450 2800
+Wire Bus Line
+	6450 2800 6450 3050
+Wire Wire Line
+	5900 2900 6350 2900
+Wire Wire Line
+	5900 3000 6350 3000
+Wire Wire Line
+	6350 3000 6350 2950
+Wire Wire Line
+	5900 2800 6350 2800
+Wire Wire Line
+	6350 2800 6350 2850
+Wire Wire Line
+	5900 2500 6650 2500
+Wire Wire Line
+	5900 2600 6650 2600
+Wire Wire Line
+	5900 2700 6750 2700
+Wire Wire Line
+	7550 3650 7550 3750
+Wire Wire Line
+	7800 5450 7800 5550
+Connection ~ 4450 4700
+Connection ~ 4550 4800
+Connection ~ 4650 4900
+Connection ~ 4750 5000
+Wire Wire Line
+	3200 1900 3200 2900
+Connection ~ 3200 2900
+Wire Wire Line
+	3300 1900 3300 3000
+Connection ~ 3300 3000
+Wire Wire Line
+	3400 1900 3400 3100
+Connection ~ 3400 3100
+Wire Wire Line
+	3500 1900 3500 3200
+Connection ~ 3500 3200
+Wire Wire Line
+	3600 1900 3600 3300
+Connection ~ 3600 3300
+Wire Wire Line
+	3700 1900 3700 3400
+Connection ~ 3700 3400
+Wire Wire Line
+	3800 1900 3800 3500
+Connection ~ 3800 3500
+Wire Wire Line
+	3900 1900 3900 3600
+Connection ~ 3900 3600
+Wire Wire Line
+	7150 4550 7500 4550
+Wire Wire Line
+	7200 4650 7500 4650
+Wire Wire Line
+	7250 4750 7500 4750
+Wire Wire Line
+	10600 5800 8800 5800
+Wire Wire Line
+	8800 5800 8800 5250
+Wire Wire Line
+	8800 5250 8700 5250
+Wire Wire Line
+	10500 5600 8900 5600
+Wire Wire Line
+	8900 5600 8900 5150
+Wire Wire Line
+	8900 5150 8700 5150
+Wire Wire Line
+	9000 5050 8700 5050
+Wire Wire Line
+	9550 5250 9000 5250
+Wire Wire Line
+	9000 5250 9000 5050
+Wire Wire Line
+	9550 4950 8700 4950
+Wire Wire Line
+	9550 4050 8800 4050
+Wire Wire Line
+	8800 4050 8800 4650
+Wire Wire Line
+	8800 4650 8700 4650
+Wire Wire Line
+	9550 4350 8900 4350
+Wire Wire Line
+	8900 4350 8900 4750
+Wire Wire Line
+	8900 4750 8700 4750
+Wire Wire Line
+	9550 4650 9000 4650
+Wire Wire Line
+	9000 4650 9000 4850
+Wire Wire Line
+	9000 4850 8700 4850
+Wire Wire Line
+	10600 5250 10450 5250
+Wire Wire Line
+	10600 4950 10450 4950
+Wire Wire Line
+	10600 4650 10450 4650
+Wire Wire Line
+	10600 4350 10450 4350
+Wire Wire Line
+	10600 4050 10450 4050
+Text Notes 7750 6250 0    60   ~ 0
+It's so annoying that the 74HCT574 has an active high load line,\nand the RAM and UART have active low load lines. One extra\nchip just to deal with that, sigh.
 $Comp
-L VCC #PWR044
-U 1 1 5C9AFDC5
-P 9100 4300
-F 0 "#PWR044" H 9100 4150 50  0001 C CNN
-F 1 "VCC" H 9100 4450 50  0000 C CNN
-F 2 "" H 9100 4300 50  0001 C CNN
-F 3 "" H 9100 4300 50  0001 C CNN
-	1    9100 4300
-	1    0    0    -1  
+L Conn_01x06_Male J4
+U 1 1 5CA352F7
+P 5500 5000
+F 0 "J4" H 5600 5300 50  0000 C CNN
+F 1 "uSeq Pin Header" H 5550 5400 50  0000 C CNN
+F 2 "Socket_Strips:Socket_Strip_Straight_1x06_Pitch2.54mm" H 5500 5000 50  0001 C CNN
+F 3 "" H 5500 5000 50  0001 C CNN
+	1    5500 5000
+	-1   0    0    1   
 $EndComp
+NoConn ~ 5300 5100
+Text GLabel 5150 5200 0    60   Input ~ 0
+Lo
 Wire Wire Line
-	8700 4450 8700 4300
-Wire Wire Line
-	8700 4300 9100 4300
-Wire Wire Line
-	7850 5550 7850 5250
-Wire Wire Line
-	8700 5350 8700 5450
-Wire Wire Line
-	8700 5450 7850 5450
-Connection ~ 7850 5450
+	5150 5200 5300 5200
 $Comp
-L VCC #PWR045
-U 1 1 5C9B044B
-P 7700 3500
-F 0 "#PWR045" H 7700 3350 50  0001 C CNN
-F 1 "VCC" H 7700 3650 50  0000 C CNN
-F 2 "" H 7700 3500 50  0001 C CNN
-F 3 "" H 7700 3500 50  0001 C CNN
-	1    7700 3500
-	1    0    0    -1  
+L Conn_01x10_Male J5
+U 1 1 5CA357E9
+P 3700 1700
+F 0 "J5" V 3500 1700 50  0000 C CNN
+F 1 "IR Pin Header" V 3600 1650 50  0000 C CNN
+F 2 "Socket_Strips:Socket_Strip_Straight_1x10_Pitch2.54mm" H 3700 1700 50  0001 C CNN
+F 3 "" H 3700 1700 50  0001 C CNN
+	1    3700 1700
+	0    1    1    0   
 $EndComp
+Text GLabel 4100 1950 3    60   Input ~ 0
+Lo
 Wire Wire Line
-	8000 3900 8000 3350
-Wire Wire Line
-	8000 3350 8050 3350
-Wire Wire Line
-	8150 3650 8000 3650
-Connection ~ 8000 3650
-Wire Wire Line
-	8150 3550 7700 3550
-Wire Wire Line
-	7700 3550 7700 3500
+	4100 1950 4100 1900
+NoConn ~ 4000 1900
 $EndSCHEMATC
