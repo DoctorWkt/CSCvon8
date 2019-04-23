@@ -1,0 +1,16 @@
+This is a Verilog version of the CSCvon8 CPU. It is built with Verilog
+models that try to faithfully reproduce the behaviour of the 7400 chips
+that will be used to build the hardware version of the CPU. This includes
+the propagation delays of the chips.
+
+There are some issues, mainly the fact that I can't work out how to get
+inout ports to work.
+
+What this version does give me is a timing-accurate model of the system.
+It has helped me to work out how to modify the wiring of the system to
+ensure that the control values get set to deal with the delays of the ROMs
+and other devices.
+
+Many thanks to Tim Rudy who created many of the 7400 models used in this
+version; you can find these models here:
+https://github.com/TimRudy/ice-chips-verilog
