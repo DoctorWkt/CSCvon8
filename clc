@@ -80,11 +80,20 @@ sub emit_twoop_operation {
       $var2 = checkvar( $var2, 1 );
       printf( $OUT "\tLDB %s\n", $var2);
     }
-    printf( $OUT "\tA=A%sB\n", $op);
-    printf( $OUT "\tSTA $lvar\n");
+    printf( $OUT "\tLDA A%sB\n", $op);
+    printf( $OUT "\tSTO A $lvar\n");
 }
 
-# Emit a comparison
+# Emit a comparison. Use the hash to convert the op to the
+# matching instruction
+my %CvtOp= (
+  '==' => 'JEQ',
+  '!=' => 'JNE',
+  '>'  => 'JGT',
+  '<'  => 'JLT',
+  '>=' => 'JGE',
+  '<=' => 'JLE'
+);
 sub emit_comparison {
     my ( $startlabel, $var1, $op, $var2, $endlabel ) = @_;
     $var1 = checkvar( $var1, 1 );
@@ -96,7 +105,7 @@ sub emit_comparison {
       $var2 = checkvar( $var2, 1 );
       printf( $OUT "\tLDB %s\n", $var2);
     }
-    printf( $OUT "\tJA%sB $endlabel\n", $op);
+    printf( $OUT "\t%s $endlabel\n", $CvtOp{$op});
 }
 
 # Deal with the end of a function
@@ -118,7 +127,7 @@ sub do_function_call {
           if ( $Funcparam{$name} eq "" );
         $argument = checkvar( $argument, 1 );
         print( $OUT "\tLDA $argument\n" );
-        print( $OUT "\tSTA $Funcparam{$name}\n" );
+        print( $OUT "\tSTO A $Funcparam{$name}\n" );
     }
 
     # Print out the call
@@ -127,7 +136,7 @@ sub do_function_call {
     # If we have an lvar, copy from the param back to the lvar
     if ( defined($lvar) ) {
         print( $OUT "\tLDA $Funcparam{$name}\n" );
-        print( $OUT "\tSTA $lvar\n" );
+        print( $OUT "\tSTO A $lvar\n" );
     }
 }
 
@@ -141,7 +150,7 @@ die("output file name same as input file $outfile\n")
 open( $OUT,   ">", $outfile ) || die("Cannot write $outfile: $!\n");
 open( my $IN, "<", $ARGV[0] ) || die("Cannot open $ARGV[0]: $!\n");
 print( $OUT "\tJSR main\n" );    # Initial function call
-print( $OUT "end:\tJMP end\n" );
+print( $OUT "end:\tJMP \$FFFF\n" );
 while (<$IN>) {
     chomp;
 
@@ -248,7 +257,8 @@ while (<$IN>) {
         my $arg = checkvar( $origarg, 0 );
         if ( defined($arg) ) {
             printf( $OUT "\tLDA %s\t\t# putchar $arg\n", $arg );
-            printf( $OUT "\tOUTA\n" );
+            printf( $OUT "\tOUT A\n" );
+            printf( $OUT "\tJOU .\n");
         } else {
 	    $arg= undef;
             $arg = 10      if ( $origarg eq "'\\n'" );
@@ -256,7 +266,8 @@ while (<$IN>) {
 	    die("Unrecognised putchar argument $origarg\n")
 			   if (!defined($arg));
             printf( $OUT "\tLCA \$%02x\t\t# putchar $arg\n", $arg );
-            printf( $OUT "\tOUTA\n" );
+            printf( $OUT "\tOUT A\n" );
+            printf( $OUT "\tJOU .\n");
         }
         next;
     }
@@ -266,36 +277,39 @@ while (<$IN>) {
       my ($n, $arg)= ($1, $2);
       $arg = checkvar( $arg, 1 );
 
-      # Get two new labels
+      # Get new labels
       my $l1= newlabel();
       my $l2= newlabel();
       printf( $OUT "\tLDA %s\t\t# prhex$n $arg high nibble\n", $arg);
       printf( $OUT "\tLCB \$04\n");
-      printf( $OUT "\tA=A>>BL\n");
+      printf( $OUT "\tLDA A>>B\n");
       printf( $OUT "\tLCB \$09\n");
-      printf( $OUT "\tJA>B $l1\n");
+      printf( $OUT "\tJGT $l1\n");
       printf( $OUT "\tLCB \$30\n");
       printf( $OUT "\tJMP $l2\n");
       printf( $OUT "$l1:\tLCB \$37\n");
-      printf( $OUT "$l2:\tA=A+B\n");
-      printf( $OUT "\tOUTA\n");
+      printf( $OUT "$l2:\tLDA A+B\n");
+      printf( $OUT "\tOUT A\n");
+      printf( $OUT "\tJOU .\n");
 
-      # Get two new labels
+      # Get new labels
       $l1= newlabel();
       $l2= newlabel();
       printf( $OUT "\tLDA %s\t\t# prhex$n $arg low nibble\n", $arg);
       printf( $OUT "\tLCB \$0F\n");
-      printf( $OUT "\tA=A&B\n");
+      printf( $OUT "\tLDA A&B\n");
       printf( $OUT "\tLCB \$09\n");
-      printf( $OUT "\tJA>B $l1\n");
+      printf( $OUT "\tJGT $l1\n");
       printf( $OUT "\tLCB \$30\n");
       printf( $OUT "\tJMP $l2\n");
       printf( $OUT "$l1:\tLCB \$37\n");
-      printf( $OUT "$l2:\tA=A+B\n");
-      printf( $OUT "\tOUTA\n");
+      printf( $OUT "$l2:\tLDA A+B\n");
+      printf( $OUT "\tOUT A\n");
+      printf( $OUT "\tJOU .\n");
       if ($n eq 'n') {
         printf( $OUT "\tLCA \$0A\n");
-        printf( $OUT "\tOUTA\n");
+        printf( $OUT "\tOUT A\n");
+        printf( $OUT "\tJOU .\n");
       }
       next;
     }
@@ -305,8 +319,8 @@ while (<$IN>) {
         my $var1 = $1;
         $var1 = checkvar( $var1, 1 );
         printf( $OUT "\tLDA %s\n", $var1 );
-        printf( $OUT "\tA=A+1\n" );
-        printf( $OUT "\tSTA %s\n", $var1 );
+        printf( $OUT "\tLDA A+1\n" );
+        printf( $OUT "\tSTO A %s\n", $var1 );
         next;
     }
 
@@ -322,8 +336,8 @@ while (<$IN>) {
           $var2 = checkvar( $var2, 1 );
           printf( $OUT "\tLDB %s\n", $var2);
         }
-        printf( $OUT "\tA=A>>BA\n" );
-        printf( $OUT "\tSTA %s\n", $lvar );
+        printf( $OUT "\tLDA A>>BA\n" );
+        printf( $OUT "\tSTO A %s\n", $lvar );
         next;
     }
 
@@ -349,7 +363,7 @@ while (<$IN>) {
 
     # Exit: inifinite loop
     if (m{exit;}) {
-        print( $OUT "end:\tJMP end\n" );
+        print( $OUT "end:\tJMP \$FFFF\n" );
         next;
     }
 
@@ -378,7 +392,7 @@ while (<$IN>) {
         my $retvar = $1;
         $retvar = checkvar( $retvar, 1 );
         printf( $OUT "\tLDA %s\t\t# Return $retvar\n", $retvar );
-        printf( $OUT "\tSTA %s\n",  $Funcparam{$funcname} );
+        printf( $OUT "\tSTO A %s\n",  $Funcparam{$funcname} );
         printf( $OUT "\tRTS $funcname\n");
         next;
     }
@@ -414,7 +428,7 @@ while (<$IN>) {
 	  my $rhsvar= checkvar( $val, 1);
           printf( $OUT "\tLDA %s\t\t\t# $var = $val\n", $rhsvar);
 	}
-        printf( $OUT "\tSTA %s\n", $var);
+        printf( $OUT "\tSTO A %s\n", $var);
 	next;
     }
 

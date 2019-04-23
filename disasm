@@ -8,6 +8,10 @@ use Data::Dumper;
 my %Inst;
 my @ROM;
 
+# Disassemble the instruction ROM filename on the cmd-line,
+# or instr.rom if not given.
+my $romfile= (@ARGV == 1) ? $ARGV[0] : "instr.rom";
+
 open( my $IN, "<", "opcodes" ) || die("Cannot read opcodes: $!\n");
 while (<$IN>) {
   chomp;
@@ -16,7 +20,7 @@ while (<$IN>) {
 }
 close($IN);
 
-open($IN, "<", "instr.rom") || die("Cannot read instr.rom: $!\n");
+open($IN, "<", $romfile) || die("Cannot read $romfile: $!\n");
 while (<$IN>) {
   chomp; push(@ROM, split(m{\s+}, $_));
 }
@@ -27,16 +31,32 @@ close($IN);
 
 my $i=0;
 while ($i < 0x7FFF) {
-  printf("%04x: ", $i);
+  my $suffix="";
   my $inst= $ROM[$i];
-  die("Unknown instruction $inst\n") if (!defined($Inst{$inst}));
+  printf("%04x: %02s ", $i, $inst);
+
+  # Just print the byte if not a defined instruction
+  if (!defined($Inst{$inst})) {
+    print("\n"); $i++; next;
+  }
+
   my ($name, $len)= @{ $Inst{$inst} };
-  print("$name\t");
+
+  # Lose the underscores
+  $name=~ s{_}{ }g;
+
+  # Find a suffix
+  if ($name=~ m{(.*) (,[AB]$)}) {
+    $suffix= $2; $name=$1;
+  }
+
+  print("$name ");
   printf("\$%02s", $ROM[$i+1]) if ($len==2);
   printf("\$%02s%02s", $ROM[$i+1], $ROM[$i+2]) if ($len==3);
   printf("\$%02s%02s \$%02s%02s \$%02s%02s",
 	$ROM[$i+1], $ROM[$i+2], $ROM[$i+3], $ROM[$i+4], $ROM[$i+5], $ROM[$i+6])
 		if ($len==7);
+  print("00$suffix") if ($suffix);
   print("\n");
   $i += $len;
 }

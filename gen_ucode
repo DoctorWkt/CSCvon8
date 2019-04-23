@@ -3,10 +3,12 @@ use strict;
 use warnings;
 use Data::Dumper;
 
-# CSCVon8 microassembler, (C) 2019 Warren Toomey, GPL3
+# CSCVon8 microcode generator, (C) 2019 Warren Toomey, GPL3
 #
-# Generate the ucode.rom from the microcode text file
-# and also create the opcodes file
+# Generate the ucode.rom from the microcode text file,
+# and create the opcodes file. Also generate a ROM file,
+# 27Cucode.rom which is ready to write to the read ROM
+# using minipro.
 
 # Hash of control lines and their values
 my %Cline;
@@ -62,6 +64,7 @@ sub parse_lines {
 
     # Increment the instruction length if we have a PCincr
     $instrlen++ if ($name eq "PCincr");
+    print("len $instrlen as PCincr\n") if ($debug && $name eq "PCincr");
   }
 
   # Set the ROM for opcode/sequence with this value and
@@ -119,6 +122,7 @@ while (<$IN>) {
 
       # Get the new opcode number, name and list of control lines
       my $newopcode= $1; my $newopname= $2; my $linelist=$3;
+      print("$newopcode $newopname:\n") if ($debug);
       die("Opcode $opcode redefined on line $linenum\n")
 				if (defined($Opcode{$opcode}));
 
@@ -158,9 +162,18 @@ foreach my $i (0 .. 0xff) {
 
 # Write the ROM out in hex
 open( my $OUT, ">", "ucode.rom" ) || die("Can't write to ucode.rom: $!\n");
-  for my $i ( 0 .. ( 2**12 - 1 ) ) {
+for my $i ( 0 .. ( 2**12 - 1 ) ) {
     printf( $OUT "%x ", $ROM[$i] ? $ROM[$i] : 0 );
     print( $OUT "\n" ) if ( ( $i % 16 ) == 15 );
 }
+close($OUT);
+
+# Write the minipro binary ROM file, little-endian 16-bit values.
+# The ROM has 16 bits of addressing, so we have to write 2^16 values.
+open($OUT, '>:raw', '27Cucode.rom') or die "Unable to open: $!";
+for my $i ( 0 .. ( 2**16 - 1 ) ) {
+    print($OUT pack("v", $ROM[$i] ? $ROM[$i] : 0 ));
+}
+close($OUT);
 
 exit(0);

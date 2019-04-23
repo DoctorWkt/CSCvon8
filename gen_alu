@@ -8,22 +8,26 @@ use Storable;
 # (C) 2019 Warren Toomey, GPL3
 #
 # The ROM takes these 21 bits of input.
-# - bit 7-0,   the B value
-# - bit 15-8,  the A value
 # - bit 20-16, the ALU operation
+# - bit 15-8,  the A value
+# - bit 7-0,   the B value
 #
-# There are 11 bits of output.
-# - bit 7-0,   the result.
-# - bit   8,   the inverted carry     (C) bit
-# - bit   9,   the inverted zero      (Z) bit
-# - bit  10,   the inverted negative  (N) bit
+# There are 13 bits of output.
+# - bit  12,   the divide-by-zero (D) bit, active high
+# - bit  11,   the negative       (N) bit, active high
+# - bit  10,   the zero           (Z) bit, active high
+# - bit   9,   the overflow       (V) bit, active high
+# - bit   8,   the carry          (C) bit, active high
+# - bit 7-0,   the result
 #
 # All other output bits are unused and not wired up.
 
-use constant CMASK     => 0x1ff; # Mask to keep carry bit from Perl operation
-use constant CARRYFLAG => 0x100; # Location of the carry flag in the result
-use constant ZEROFLAG  => 0x200; # The bit which is the zero flag in the result
-use constant NEGFLAG   => 0x400; # The bit which is the -ve flag in the result
+use constant DIVFLAG   => 0x1000; # The divide-by-zero flag
+use constant NEGFLAG   => 0x0800; # The negative flag
+use constant ZEROFLAG  => 0x0400; # The zero flag
+use constant OFLOWFLAG => 0x0200; # The overflow flag
+use constant CARRYFLAG => 0x0100; # The carry flag
+use constant CMASK     => 0x01ff; # Mask to keep carry bit from Perl operation
 
 # Global variables to make writing the anonymous subs easier
 our ($A, $B, $result);		# A and B inputs, and ALU result
@@ -171,29 +175,40 @@ init_bcd_tables();
 # Loop across all possible ALU inputs
 foreach my $aluop (0x00 .. 0x1f) {
 
-  # Cache the ALU op subroutine
+  # Cache the ALU op subroutine and if it's a div or mod
   my $opsub= $Opsub[$aluop];
+  my $isdivmod = ($aluop==18 || $aluop==19) ? 1 : 0;
  
   foreach $A (0x00 .. 0xff) {
+
+    # Cache A's sign
+    my $asign= $A & 0x80;
+
     foreach $B (0x00 .. 0xff) {
+      my $bsign= $B & 0x80;
 
       # Run the subroutine to calculate the result
       $opsub->();
+      my $rsign= $result & 0x80;
 
-      # At this point we have an active high carry flag
+      # At this point we have an active high carry flag in bit 8
       # and an active high negative bit in bit 7
 
-      # Add on any active low zero flag
-      $result |= ZEROFLAG if (($result&0xff)!=0);
+      # Add on any zero flag
+      $result |= ZEROFLAG if (($result&0xff)==0);
 
       # Flip the zero bit for special ALUop 12
       $result ^= ZEROFLAG if ($aluop==12);
 
-      # Flip the carry bit to make it active low
-      $result ^= CARRYFLAG;
-
       # Add on any active low negative flag
-      $result |= NEGFLAG if (($result&0x80)==0);
+      $result |= NEGFLAG if ($rsign);
+
+      # If A's sign is the same as B's sign, and the
+      # result sign is different, set the overflow flag
+      $result |= OFLOWFLAG if (($asign==$bsign) && ($asign != $rsign));
+
+      # Put in the divide-by-zero flag if B is zero and we did a DIV or MOD
+      $result |= DIVFLAG if ($isdivmod && $B==0);
 
       # Put the result into the ROM
       $ROM[ ($aluop<<16) | ($A<<8) | $B ] = $result;
