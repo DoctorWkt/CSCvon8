@@ -26,7 +26,8 @@ The files and folders in this repository are:
 There is also a Verilog version with the top-level file being
 *ttlcsvon8.v*, the testbench is *icarus_tb.v* and the *Makefile* will
 build and run the Verilog testbench. Some notes on this implementation
-are in the [*implementation_notes.md*](implementation_notes.md) file.
+are in the
+[*Docs/implementation_notes.md*](Docs/implementation_notes.md) file.
 
 If you want to leave any comments, feel free to use the
 [GitHub issues page](https://github.com/DoctorWkt/CSCvon8/issues)
