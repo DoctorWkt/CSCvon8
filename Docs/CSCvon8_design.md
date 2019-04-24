@@ -15,9 +15,8 @@ provide inputs to the ALU. The ALU's output can then be delivered
 across the data bus into these data registers, stored in the RAM, or output on the UART.
 
 Main memory is provided by a 32K ROM and a 32K RAM device. Instructions and
-static data can be stored in the ROM. The RAM can store data which
-changes, and also store instructions which have been received over
-the UART link.
+static data can be stored in the ROM. The RAM can store data and
+instructions. This allows programs to be downloaded over the UART link.
 
 The 16-bit address bus provides the memory access address to the ROM and ROM.
 This can be provided either by the 16-bit program counter (*PC*) or from an
@@ -149,16 +148,25 @@ The *CSCvon8* CPU, unlike its [CSCv2 predecessor](https://minnie.tuhs.org/Progra
 register. However, the CPU still needs the ability to change the flow of
 instruction execution based on data comparisons.
 
-This is done by the ALU outputting both an 8-bit result and three active low flag values: a negative result (N), a carry (C) and a zero result (Z).
+This is done by the ALU outputting both an 8-bit result and five flag values:
+a (D)ivide by zero, a negative result (N), an overflow(V), a carry (C)
+and/or a zero result (Z).
 
-The Z, C, N bits and a one bit are sent to the Jump logic which is a 74HC153 4:1 multiplexer. This is controlled by  two *Jumpsel* bits using this table:
+The D, N, Z, V and C bits are sent to the Jump logic along with two
+UART status lines: UART is ready to send a character, UART has a character
+ready to be received. The Jump logic is a 74HC153 4:1 multiplexer.
+This is controlled by  three *Jumpsel* bits using this table:
 
 | Jumpsel | PCjump (active low) is set to |
 |-------------|-----------------------|
-|     0       |        1, i.e. no jump |
+|     0       |  No jump |
 |    1      |    C, i.e. jump if carry |
 |    2     |    Z, i.e. jump if zero |
-|   3     |     N, i.e jump if negative |
+|   3     |     V, i.e jump if overflow |
+|   4     |     N, i.e jump if negative |
+|   5     |     D, i.e jump if divide by zero |
+|   6     |     Jump if not ready to transmit |
+|   7     |     Jump if not ready to receive |
 
 The CPU can thus conditionally jump based on the flags calculated on the ALU's result. The ALU also provides several operations (see above) to assist with the types of
 conditional jumps that a CPU is expected to provide:
@@ -182,6 +190,7 @@ The Decode Logic ROM outputs 16 bits of control lines for each microinstruction,
 
 The lowest 5 bits are the ALU operation (0x00 to 0x1F). Above that, the lines are mnemonically known as:
 
+```
 	# Loads from the data bus
 	IRload     = 0020
 	Aload      = 0040
@@ -197,18 +206,23 @@ The lowest 5 bits are the ALU operation (0x00 to 0x1F). Above that, the lines ar
 	UARTresult = 0200
 	
 	# Jump operations
-	NoJump     = 0000
-	JumpCarry  = 0400
-	JumpZero   = 0800
-	JumpNeg    = 0C00
+	NoJump      = 0000
+	JumpCarry   = 0400
+	JumpOflow   = 0800
+	JumpZero    = 0C00
+	JumpNeg     = 1000
+	JumpDivZero = 1400
+	JumpNoTx    = 1800
+	JumpNoRx    = 1C00
 	
 	# Address bus writers: if no ARena then
 	# the PC is writing on the address bus
-	ARena#     = 1000	(active low)
+	ARena#     = 2000	(active low)
 	
 	# Other control lines
-	PCincr#    = 2000	(active low)
-	uSreset#   = 4000	(active low)
+	PCincr    = 4000	(active high)
+	uSreset#  = 8000	(active low)
+```
 	
 A high-level instruction is encoded as one instruction byte followed by zero or more bytes. For example, the instruction to increment B is one byte long.
 
@@ -219,34 +233,51 @@ An instruction to reference a memory location is three bytes long: the instructi
 Each high-level instruction is encoded as one or more microinstructions in a microsequence.
 Every microsequence starts with the following microinstruction to load the IR from memory and increment the PC:
 
+```
     START := MEMresult IRload PCincr
+```
     
 Some microsequences are quite short. For example, here is the sequence to load A with a constant:
 
+```
 	# Load A with constant $XX
-	01 LCA: MEMresult Aload PCincr uSreset
+	60 LCA: MEMresult Aload PCincr uSreset
+```
 
-The 01 is instruction #1 with menmonic *LCA*. Other microsequences are longer, for example:
+The 60 is instruction byte 0x60 with menmonic *LCA*.
+Other microsequences are longer, for example:
 
+```
 	# Store A at absolute location $HHLL
-	05 STA: MEMresult AHload PCincr
-	        MEMresult ALload PCincr
-	        ALUresult A ARena MEMload uSreset
+	41 STO_A: MEMresult AHload PCincr
+        	  MEMresult ALload PCincr
+        	  ALUresult A ARena MEMload
+        	  uSreset
+```
 	        
 ALU operations that store results in the A and B registers are quite short:
 
-	19 A=A+1:   ALUresult A+1   Aload uSreset
-	20 B=B+1:   ALUresult B+1   Bload uSreset
-	21 A=A+B+1: ALUresult A+B+1 Aload uSreset
-	22 A=A>>BA: ALUresult A>>BA Aload uSreset
-	23 A=B-A:   ALUresult B-A   Aload uSreset
-	24 B=A+B:   ALUresult A+B   Bload uSreset
-	25 A=A-B:   ALUresult A-B   Aload uSreset
+```
+	01 LDA_0:       ALUresult 0 Aload
+                	uSreset
+	02 LDA_B:       ALUresult B Aload
+                	uSreset
+	03 LDA_-A:      ALUresult -A Aload
+                	uSreset
+	04 LDA_-B:      ALUresult -B Aload
+                	uSreset
+	05 LDA_A+1:     ALUresult A+1 Aload
+                	uSreset
+```
+
 	
 Here is an example of an indexed instruction to load A from the $HH00,B location:
 
-	71 LDAB: MEMresult AHload PCincr
-	         ALUresult B ALload
-	         ARena MEMresult Aload uSreset
-	         
+```
+	90 LDA_,B: MEMresult AHload PCincr
+        	   ALUresult B ALload ARena
+        	   ARena MEMresult Aload
+        	   uSreset
+```
+
 In terms of design, microcoding gives you more flexibility with the design of the instruction set architecture, but this comes at a cost of a large ROM to store the microcode.

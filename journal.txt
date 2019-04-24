@@ -1653,3 +1653,7 @@ Wed 24 Apr 07:50:23 AEST 2019
 I've got a few different work areas at various stages, so I started work
 on merging them back into one area now that the design and wiring is
 starting to settle down.
+
+OK, that's mostly done. I moved the original Verilog version into an Old
+directory. I've tried to bring most of the documents up to date, but I
+still need to fix up the cas documentation.
