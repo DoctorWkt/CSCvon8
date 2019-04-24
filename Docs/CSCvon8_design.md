@@ -93,8 +93,8 @@ address $2000,B.
 
 The diagram above shows fourteen logical components in the CPU design. In
 reality, each logical component is constructed from one or more physical chips.
-Sixteen chips and one clock crystal are needed to build this CPU. All chips use the 0V/5V TTL
-levels for logic zero and one, respectively.
+Seventeen chips and one clock crystal are needed to build this CPU. All chips
+use the 0V/5V TTL levels for logic zero and one, respectively.
 
 The following table identifies each component and the physical chips that
 construct it. 
@@ -114,9 +114,9 @@ construct it.
 | Jump Logic | 74HC153 | 
 | Decode Logic | M27C1024 64Kx16 EEPROM | 
 | Microsequencer | 74HC161 |
-| Other chips | 74HC139, 74HC238 |
+| Other chips | 74HC138, 74HC139 |
 
-A 74HC139 4:1 mux and a 74HC238  2:4 demux are needed for some decode logic.
+A 74HC138 3:8 demux and a 74H139 2:4 demux are needed for some decode logic.
 
 ## The ALU and Its Operations
 
@@ -154,15 +154,15 @@ and/or a zero result (Z).
 
 The D, N, Z, V and C bits are sent to the Jump logic along with two
 UART status lines: UART is ready to send a character, UART has a character
-ready to be received. The Jump logic is a 74HC153 4:1 multiplexer.
+ready to be received. The Jump logic is a 74HC138 3:8 demultiplexer.
 This is controlled by  three *Jumpsel* bits using this table:
 
 | Jumpsel | PCjump (active low) is set to |
 |-------------|-----------------------|
 |     0       |  No jump |
 |    1      |    C, i.e. jump if carry |
-|    2     |    Z, i.e. jump if zero |
-|   3     |     V, i.e jump if overflow |
+|    2     |    V, i.e. jump if overflow |
+|   3     |     Z, i.e jump if negative |
 |   4     |     N, i.e jump if negative |
 |   5     |     D, i.e jump if divide by zero |
 |   6     |     Jump if not ready to transmit |
@@ -173,9 +173,9 @@ conditional jumps that a CPU is expected to provide:
 
 | ALU operation | Jumpsel | Action peformed |
 |--------------------|-------------|-----------------------|
-| 0                     |    2 (Z)   |   Always jump   |
-| A - B                 |    2 (Z)   |  Jump if A == B |
-| A - B (special) |    2 (Z)   |  Jump if A != B |
+| 0                     |    3 (Z)   |   Always jump   |
+| A - B                 |    3 (Z)   |  Jump if A == B |
+| A - B (special) |    3 (Z)   |  Jump if A != B |
 | B - A         |   1 (C)       | Jump if A > B |
 | A - B         |   1 (C)       | Jump if B > A |
 | B - A - 1             |   1 (C)       | Jump if A >= B |
