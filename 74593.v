@@ -34,8 +34,9 @@ begin
     Cntr <= {WIDTH{1'b0}};	// Reset the counter when CCLR_bar is low
   else if (!CLOAD_bar)
     Cntr <= R;			// Copy R -> counter when CLOAD_bar is low
-  else if (CCK && (CCKEN && ~CCKEN_bar))
-    Cntr <= Cntr_next;
+  else if (CCK && (CCKEN || ~CCKEN_bar))
+    Cntr <= Cntr_next;		// Increment counter on rising CCK with
+				// either enable lines in their correct state
 
 				// Load R with the input on a rising RCK
 				// when RCKEN_bar is low

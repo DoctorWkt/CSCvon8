@@ -146,9 +146,9 @@ module ttlcsvon8 (i_clk, reset, PCval);
   wire PCload;
   wire PCload_bar;
   ttl_74593 PClo(ARena, 1'b0, clk_bar, PCincr,
-		 1'b0, PCload_bar, reset, PCload,
+		 1'b1, PCload_bar, reset, PCload,
 		 ARena, PCcarry, PCloval, addressbus[7:0]);
-  ttl_74593 PChi(ARena, 1'b0, clk_bar, 1'b1,
+  ttl_74593 PChi(ARena, 1'b0, clk_bar, 1'b0,
 		 PCcarry, PCload_bar, reset, PCload,
 		 ARena, PCunused, PChival, addressbus[15:8]);
   assign addressbus= PCval;
