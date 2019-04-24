@@ -3,6 +3,7 @@ RCS
 *.rom
 *.vcd
 *.gtkw
+alu.hex
 Schematic/Schematic.bin
 Schematic/Schematic.dsn
 Schematic/Schematic.kicad_pcb-bak
