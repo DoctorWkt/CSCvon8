@@ -1,7 +1,7 @@
 
 # CSCvon8 Assembler Documentation
 
-Warren Toomey,  27th March, 2019
+Warren Toomey,  24th April, 2019
 
 ## Introduction
 
@@ -47,20 +47,13 @@ which lists the current high-level instructions defined by the
 bytes in memory that the instruction occupies, and the opcode name for
 the instruction.
 
-## Pseudo-instructions
-
-The assembler defines some other pseudo-instructions (one so far):
-
-| Pseudoinstruction | Meaning |
-|--------------------------|-------------|
-| EQU | give a value to a label |
-
 ## Additional Operand: Literal Values
 
 A literal value can be expressed in several ways:
  - four hex digits preceded by a dollar sign, e.g. $23AB. This represents an unsigned 16-bit value. 
  - two hex digits preceded by a dollar sign, e.g. $4D. This is used to express an 8-bit unsigned value which can be loaded into a register.
- - a single ASCII character surrounded by single quotes, e.g. 'F'. Note that, because of the space-separated rule, the literal character ' ' cannot be parsed. There is, as yet, no support for escaped literal characters such as '\n'.
+ - a single ASCII character surrounded by single quotes, e.g. 'F'. There is
+   support for '\n', '\t' and '\r'.
  - a previously defined label name. The value of the label is substitued for its name.
  - an indexed address of the format "$XX00,B" where XX are two hex
  digits. The other two hex digits must be zero characters.
@@ -68,32 +61,65 @@ A literal value can be expressed in several ways:
 The assembler supports the "label,A"  and "label,B" syntax. This has
 the effect of appending the register letter to the end of the opcode name.
 Example: LDA $2000,B becomes LDAB $2000. This requires that the *microcode*
-file contain index instructions with the -A and -B suffix.
+file contain index instructions with the ,A and ,B suffix.
 
+## Pseudo-instructions
+
+The assembler defines some other pseudo-instructions (one so far):
+
+| Pseudoinstruction | Meaning |
+|--------------------------|-------------|
+| EQU | give a value to a label |
+| ORG | set the address of the next thing to a specific value |
+| STR | Define a NUL-terminated string in memory |
+| LHA | Load the high byte of an address or label into A |
+| LHB | Load the high byte of an address or label into B |
+| PAG | Set the next address so it will on a 256-byte page alignment |
+
+Here are some examples of their use:
+
+```
+fred:	EQU $8000		# Fred is a byte stored at $8000
+
+	ORG $4002		# Move down to middle ROM
+mystr:  STR "abcdefg"		# Store a string at $4002 onwards
+	PAG
+	STR "xyz"		# Store a string at $4100 onwards
+
+	ORG $0000		# Back to the start of ROM
+	LHA mystr		# Load $40 into A
+	LCB mystr		# Load $02 into B
+```
+ 
 ## Example Code
 
 Here is at least one example program to help you visualise the CSCvon8
 assembly syntax.  Note that the Verilog CSCvon8 simulator will stop when
-a jump instruction jumps back to itself.
+a jump instruction jumps to location $FFFF.
 
-    # Fifth program. Store ASCII characters
-    # in an array in memory, read them back,
-    # and print them.
-    #
-    
-            LCA $7F         # We end when we reach 0x7F
-            LCB $20         # Start with a space
-    loop1:  STB $8000,B     # Store B in $8000+B
-            B=B+1           # Increment B
-            JA!=B loop1     # Loop back until we get to 0x7F
-    
-            LCB $20         # Start with a space
-    loop2:  LDA $8000,B     # Load the stored value back in
-            JA!=B nl        # Stop when we get something we didn't store
-            OUTA            # Print it out
-            B=B+1           # Increment B
-            JMP loop2
-    
-    nl:     LCA $0A
-            OUTA            # Print a newline
-    end:    JMP end         # and stop
+
+```
+# Fifth program. Store ASCII characters
+# in an array in memory, read them back,
+# and print them.
+#
+
+	LCA $7F		# We end when we reach 0x7F
+	LCB $20		# Start with a space
+loop1:	STO B $8000,B	# Store B in $8000+B
+	LDB B+1		# Increment B
+	JNE loop1	# Loop back until we get to 0x7F
+
+	LCB $20		# Start with a space
+loop2:	LDA $8000,B	# Load the stored value back in
+	JNE nl		# Stop when we get something we didn't store
+	OUT A		# Print it out
+L1:	JOU L1		# Loop waiting for it to print
+	LDB B+1		# Increment B
+	JMP loop2
+
+nl:	LCA $0A
+	OUT A		# Print a newline
+L2:	JOU L2		# Loop waiting for it to print
+end:	JMP $FFFF	# and stop
+```
