@@ -1657,3 +1657,14 @@ starting to settle down.
 OK, that's mostly done. I moved the original Verilog version into an Old
 directory. I've tried to bring most of the documents up to date, but I
 still need to fix up the cas documentation.
+
+Thu 25 Apr 11:44:08 AEST 2019
+-----------------------------
+cas documentation fixed up. I brought the schematic wiring up to date
+with the TTL verilog version. But now there's a bug. I forgot to wire
+ROMselect and MEMena to the Instruction ROM chip in the TTL verilog version.
+I've done this and now examples 8, 9 and the print_* examples fail. Damn.
+
+Not a microcode bug. It means I have to increase the minimum clock
+cycle duration to 460uS, which is a max 2.17MHz clock. While I'm tinkering,
+let's see the effect of a 57C71C EPROM with 70nS access time.

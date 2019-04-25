@@ -9,7 +9,7 @@ module icarus_tb();
 
   parameter AddressSize = 16;
   parameter WordSize = 8;
-  parameter HalfClock = 200;		// Half a clock cycle in nS
+  parameter HalfClock = 230;		// Half a clock cycle in nS
 
   reg clk= 0;
   reg reset= 0;
