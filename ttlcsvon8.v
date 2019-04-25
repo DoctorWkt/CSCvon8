@@ -55,7 +55,7 @@ module ttlcsvon8 (i_clk, reset, PCval);
   wire		IOload;         // Active low, send data to UART
   wire       	PCincr;         // Active high, increment the PC
   wire       	ARena;     	// Actve low, place AR on the address bus
-  wire          MEMena;         // Active low, put RAM value on data bus
+  wire          MEMena;         // Active low, put memory value on data bus
   wire          ALUena;         // Active low, put ALU value on data bus
 
   // Decodeindex is the address going into the Decode ROM
@@ -89,7 +89,7 @@ module ttlcsvon8 (i_clk, reset, PCval);
 
   rom #(.AddressSize(15), .Filename("instr.rom"),
 	.DELAY_RISE(150), .DELAY_FALL(150))
-        ROM(addressbus[14:0], ROMresult, 1'b0, 1'b0);
+        ROM(addressbus[14:0], ROMresult, ROMselect, MEMena);
 
   ram #(.AddressSize(15))
         RAM(addressbus[14:0], databus, RAMselect, MEMload, MEMena, RAMresult);
@@ -113,8 +113,8 @@ module ttlcsvon8 (i_clk, reset, PCval);
   assign #(5, 5) IRload= ~dread_out[1];		// NOT gate #3
   assign #(5, 5) Aload=  ~dread_out[2];		// NOT gate #4
   assign #(5, 5) Bload=  ~dread_out[3];		// NOT gate #5
-  assign #(5, 5) AHload= ~dread_out[5];		// NOT gate #6
   assign 	 MEMload= dread_out[4];
+  assign #(5, 5) AHload= ~dread_out[5];		// NOT gate #6
   assign #(5, 5) ALload= ~dread_out[6];		// NOT gate #7
   assign	 IOload=  dread_out[7];
 

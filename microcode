@@ -354,11 +354,13 @@ START := MEMresult IRload PCincr
 
 # Write A to the UART
 64 OUT_A: ALUresult A
-	  ALUresult A IOload uSreset
+	  ALUresult A IOload
+	  uSreset
 
 # Write B to the UART
 65 OUT_B: ALUresult B
-	  ALUresult B IOload uSreset
+	  ALUresult B IOload
+	  uSreset
 
 # Load A from the UART
 66 INA: UARTresult Aload
