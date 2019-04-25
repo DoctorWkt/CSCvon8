@@ -77,9 +77,7 @@ going to be built with real chips, it's too complex. OK, I've added
 this to the Verilog design and checked that the couple of instructions
 I've already got still work. Yes they do. The control lines are now:
 
-```
-  uSreset, PCincr, AddrOp(2), JumpOp(2), DbusOp(2), LoadOp(3), ALUop(5)
-```
+ - uSreset, PCincr, AddrOp(2), JumpOp(2), DbusOp(2), LoadOp(3), ALUop(5)
 
 But it does mean I need one 3:8 demux, three 2:4 demuxers, sigh.
 And because the 74HC161 PC chips don't do tri-state, I need two
@@ -116,10 +114,8 @@ OK, so I decided to rewrite the microcode generator. Then I decided to
 start work on the assembler. Now I have these instructions and they
 seem to work.
 
-```
-    EQU, NOP, LCA, LCB, OUTA, OUTB, STA, STB, LDA, LDB,
-    A=0, B=0, A=B, B=A, A=-A, B=-B, JMP 
-```
+ - EQU, NOP, LCA, LCB, OUTA, OUTB, STA, STB, LDA, LDB, A=0, B=0, A=B,
+   B=A, A=-A, B=-B, JMP 
 
 There were a few bugs along the way, mainly microcode ones! But overall
 it's going well. I'm wondering if 256 instructions is enough.
@@ -263,9 +259,9 @@ Decode: some control lines on the Decode ROM
 Awake with a crazy idea. Right now we have a fair bit of decode logic:
 
 ```
-LoadOp demux    74HC238, produces eight control lines
-DbusOp demux    Half of 74HC139, produces four control lines
-AddrOp demux    Half of 74HC139, produces four control lines
+LoadOp demux: 74HC238, produces eight control lines
+DbusOp demux: Half of 74HC139, produces four control lines
+AddrOp demux: Half of 74HC139, produces four control lines
 ```
 
 That's two chips which produce sixteen control lines: actually fourteen
@@ -551,11 +547,11 @@ block RAM. Also, it came under the 12MHz timing limit with 3MHz. When minsky
 runs, I get:
 
 ```
- *                                                                                                     with 0x04 after the \n
-    *                                                                                                  
-       *                                                                                               
-          *                                                                                            
-             *                                                                                         
+ *  		with 0x04 after the \n
+    *
+       *
+          *
+             *
                 *
 ```
 
@@ -1031,12 +1027,12 @@ I don't think it's worth a redesign if I'm not saving chips.
 I thought about things while we were out. At present:
 
  - ALUop, 5 bits
- - LoadOp, 3 bits		- reader from the data bus
- - DbusOp, 2 bits		- writer to the data bus
+ - LoadOp, 3 bits, reader from the data bus
+ - DbusOp, 2 bits, writer to the data bus
  - new phase, 4 bits
- - ARena, 1 bit			- who writes on the address bus
- - PCincr, 1 bit		- increment the PC
- - PCload, 1 bit		- load the PC
+ - ARena, 1 bit, who writes on the address bus
+ - PCincr, 1 bit, increment the PC
+ - PCload, 1 bit, load the PC
 
 17 bits total.
 
@@ -1469,36 +1465,39 @@ Increment PC	 E
 
 ## Sun 14 Apr 21:18:07 AEST 2019
 
-OK, things are not working as I expected. Firstly, I'm seeing transients on the ROM
-output such that a line, which should stay high, has a ~1uS transient down to 0V on
-a rising clock edge. Not all the time, but sporadically. I'm guessing that the address
-lines are changing and that, as the ROM adjusts to the new address, some intermediate
-address gets accessed and I see the output drop temporarily.
+OK, things are not working as I expected. Firstly, I'm seeing transients
+on the ROM output such that a line, which should stay high, has a ~1uS
+transient down to 0V on a rising clock edge. Not all the time, but
+sporadically. I'm guessing that the address lines are changing and that,
+as the ROM adjusts to the new address, some intermediate address gets
+accessed and I see the output drop temporarily.
 
-I was going to put in two inverters to add a clock delay, but that would only add about
-25nS to the clock, much smaller than the 1uS issue.
+I was going to put in two inverters to add a clock delay, but that would
+only add about 25nS to the clock, much smaller than the 1uS issue.
 
-Then I had the idea. I could use one of the ROM output pins as the clock signal. Then the
-clock signal will have the same propagation delay as the other ROM pins. It won't help with
-the transient I'm seeing, but it may delay the clock edge to the point where the transient
-doesn't matter. I'll try this out tomorrow.
+Then I had the idea. I could use one of the ROM output pins as the clock
+signal. Then the clock signal will have the same propagation delay as
+the other ROM pins. It won't help with the transient I'm seeing, but
+it may delay the clock edge to the point where the transient doesn't
+matter. I'll try this out tomorrow.
 
 I'm putting my 593 testing notes up as a blog post here:
 https://minnie.tuhs.org/Blog/2019_04_12_74LS593_notes.html
 
-As an extra note, when I monitor the pins of the 161 counter with my Bitscope Micro
-DSO, I don't see any transients even when the 161 pin stays high across the rising
-clock edge. So it has to be a ROM issue. I've got a 0.1uF bypass cap right on Vcc and
-a 200uF cap on the power rails as well.
+As an extra note, when I monitor the pins of the 161 counter with my
+Bitscope Micro DSO, I don't see any transients even when the 161 pin stays
+high across the rising clock edge. So it has to be a ROM issue. I've got a
+0.1uF bypass cap right on Vcc and a 200uF cap on the power rails as well.
 
 We'll see how using the ROM as the clock goes. 
 
 ## Mon 15 Apr 11:36:38 AEST 2019
 
-Did work, and I had sort of given up. Then I looked at the waveform in the datasheet.
-I'm going to try this now. Wire G and RCKEN# together as ARena#, goes low when AR on
-the bus. Make RCK an active high PCincr, but inverted as CLOAD#. So assert ARena# low
-then RCK high to load the PC from the AR.
+Did work, and I had sort of given up. Then I looked at the waveform in
+the datasheet.  I'm going to try this now. Wire G and RCKEN# together
+as ARena#, goes low when AR on the bus. Make RCK an active high PCincr,
+but inverted as CLOAD#. So assert ARena# low then RCK high to load the
+PC from the AR.
 
 ## Mon 15 Apr 16:27:54 AEST 2019
 
@@ -1527,6 +1526,7 @@ For the 27C1024s I have to ignore the ID check but I can read and write
 the two ROMs that I have. However, one of the 28C256s is dead.
 
 I'm thinking of building the control logic on some breadboards:
+
 ```
  74HCT161 counter
  74HCT574 IR
@@ -1785,3 +1785,25 @@ Not a microcode bug. It means I have to increase the minimum clock
 cycle duration to 460uS, which is a max 2.17MHz clock. While I'm tinkering,
 let's see the effect of a 57C71C EPROM with 70nS access time. Yes, down
 to a 310uS cycle duration or a max 3.22MHz clock. Interesting.
+
+## Thu 25 Apr 15:58:24 AEST 2019
+
+I did some more breadboard wiring. I now have the clock, IR register wired to
+a constant, Decode ROM, uSeq, jump logic, databus load demux, the two ARs
+and the two PC chips. For some reason the PC is loading when it should be
+incrementing. What I think I need to do is to make up some special Decode
+ROM contents for testing. I can try it out in the TTL simulator version and
+then in the real hardware.
+
+With a Decode ROM with the first (00) instruction consisting of sixteen
+"MEMresult PCincr" microinstructions, yes the PC increments and goes from
+0xFF to 0x100 all fine and good. I suppose next I could try a couple of
+increments, a do nothing, a load from AR etc. I've got two EPROMs so I
+can erase one while I'm trying the other one out. Silly me, it does help
+to take the black tape off the glass before trying to erase an EPROM!
+
+Next ROM code: increment the PC, do nothing, load the AR, start incrementing
+again. Interesting. I see the PC increment, I see it pause, I see the display of
+the AR value for one clock. The the counter goes back to it's old value
+and increments; it doesn't increment the loaded AR value. I'll have to
+go back to my blog and see if I can work out what's going on.
