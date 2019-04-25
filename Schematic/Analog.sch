@@ -962,4 +962,36 @@ NoConn ~ 950  3100
 Connection ~ 1450 2600
 Text Notes 750  7650 0    60   ~ 0
 555 circuit from https://electronics.stackexchange.com/questions/180716/555-timer-one-shot-trigger
+$Comp
+L 74LS139 IC15
+U 2 1 5CC0FB47
+P 7750 4700
+F 0 "IC15" H 7750 5250 50  0000 C CNN
+F 1 "74HCT139" H 7750 5150 50  0000 C CNN
+F 2 "" H 7750 4700 50  0001 C CNN
+F 3 "" H 7750 4700 50  0001 C CNN
+	2    7750 4700
+	1    0    0    -1  
+$EndComp
+Text GLabel 6650 4600 0    60   Input ~ 0
+Clk
+Wire Wire Line
+	6900 4600 6650 4600
+Text GLabel 6600 4450 0    60   Input ~ 0
+Lo
+Text GLabel 6600 4950 0    60   Input ~ 0
+Lo
+Wire Wire Line
+	6600 4450 6900 4450
+Wire Wire Line
+	6600 4950 6900 4950
+Text GLabel 9250 4600 0    60   Output ~ 0
+~Clkbar
+Wire Wire Line
+	8600 4600 8900 4600
+NoConn ~ 8600 4400
+NoConn ~ 8600 4800
+NoConn ~ 8600 5000
+Text Notes 6400 5400 0    60   ~ 0
+Clkbar is an inverted Clk signal, used to initiate events on the\nfalling edge of Clk. We use the spare 139 half as an inverter.
 $EndSCHEMATC

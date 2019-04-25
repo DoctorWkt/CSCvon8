@@ -513,8 +513,6 @@ F 3 "" H 8550 1700 50  0001 C CNN
 $EndComp
 Text GLabel 7950 3900 2    60   Input ~ 0
 ~ARena
-Text GLabel 4950 4100 0    60   Input ~ 0
-PCincr
 $Comp
 L VCC #PWR023
 U 1 1 5C9A2F13
@@ -651,8 +649,6 @@ Wire Wire Line
 	5100 5350 5450 5350
 Wire Wire Line
 	5100 5450 5450 5450
-Text GLabel 7100 1850 2    60   Input ~ 0
-Hi
 Wire Wire Line
 	8550 1550 8550 1300
 Wire Wire Line
@@ -672,7 +668,7 @@ Wire Wire Line
 Text GLabel 7100 3400 2    60   Input ~ 0
 Lo
 Text GLabel 7100 4100 2    60   Input ~ 0
-Lo
+Hi
 Text GLabel 5250 6050 0    60   Input ~ 0
 Lo
 Wire Wire Line
@@ -739,10 +735,14 @@ Wire Wire Line
 	7050 3800 7300 3800
 Wire Wire Line
 	7000 4100 7100 4100
-Text GLabel 7300 3800 2    60   Input ~ 0
-PCincr
 Wire Wire Line
 	7050 1850 7100 1850
+Text GLabel 4950 4100 0    60   Input ~ 0
+~Clkbar
+Text GLabel 7300 3800 2    60   Input ~ 0
+PCincr
 Text GLabel 4800 2150 0    60   Input ~ 0
+~Clkbar
+Text GLabel 7100 1850 2    60   Input ~ 0
 PCincr
 $EndSCHEMATC

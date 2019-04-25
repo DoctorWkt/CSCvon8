@@ -127,12 +127,8 @@ Text Label 1250 3000 0    60   ~ 0
 d6
 Text Label 1250 2900 0    60   ~ 0
 d7
-Text GLabel 1750 5700 0    60   Input ~ 0
+Text GLabel 1850 5250 0    60   Input ~ 0
 ~uSreset
-NoConn ~ 2200 4700
-NoConn ~ 2200 4800
-NoConn ~ 2200 4900
-NoConn ~ 2200 5000
 Text Notes 5200 3550 0    60   ~ 0
 Decode\n ROM
 Text Notes 2650 5200 0    60   ~ 0
@@ -203,7 +199,6 @@ F 3 "" H 6150 1950 50  0001 C CNN
 	1    6150 1950
 	1    0    0    -1  
 $EndComp
-NoConn ~ 2200 5150
 Text GLabel 1700 5550 0    60   Input ~ 0
 Clk
 Text GLabel 6750 2800 2    60   Output ~ 0
@@ -230,11 +225,11 @@ Text GLabel 10600 4350 2    60   Output ~ 0
 Aload
 Text GLabel 10600 4650 2    60   Output ~ 0
 Bload
-Text GLabel 10500 5600 2    60   Output ~ 0
+Text GLabel 10600 4850 2    60   Output ~ 0
 ~MEMload
-Text GLabel 10600 4950 2    60   Output ~ 0
+Text GLabel 10600 5050 2    60   Output ~ 0
 AHload
-Text GLabel 10600 5250 2    60   Output ~ 0
+Text GLabel 10600 5350 2    60   Output ~ 0
 ALload
 Text GLabel 10600 5800 2    60   Output ~ 0
 ~IOload
@@ -373,7 +368,7 @@ Text GLabel 6150 2350 2    60   Input ~ 0
 Lo
 Text GLabel 7900 3350 0    60   Input ~ 0
 Lo
-Text GLabel 7250 5250 0    60   Input ~ 0
+Text GLabel 7250 5150 0    60   Input ~ 0
 Lo
 Text GLabel 7250 5050 0    60   Input ~ 0
 Hi
@@ -383,8 +378,6 @@ Text GLabel 4400 2150 0    60   Input ~ 0
 Hi
 Text Notes 1000 1350 0    60   ~ 0
 CSCvon8 is a microsequenced CPU. The Instruction register, combined with the microsequence counter, selects the next microinstruction to perform.\nThis is "looked up" in the Decode ROM, which produces the sixteen control lines for the specific microinstruction. The ALUop goes to the ALU. The\nJumpOp goes to the Jump logic. The three LoadOp lines are demultiplexed to choose one device to load from the databus. The two DbusOp lines are\ndemultiplexed to choose one device to write onto the databus.\n\nNormally, the microsequence counter increments, but if uSreset goes low it will reset back to value zero. All microsequences have their "zero"\nmicroinstruction to load the Instruction register from the data bus (ROM or RAM) and to increment the Instruction register.
-Text GLabel 1850 5250 0    60   Input ~ 0
-Hi
 Text GLabel 1850 5350 0    60   Input ~ 0
 Hi
 Text GLabel 1850 5450 0    60   Input ~ 0
@@ -425,23 +418,23 @@ $EndComp
 $Comp
 L 74LS04 IC17
 U 4 1 5CA2E1D7
-P 10000 4950
-F 0 "IC17" H 10195 5065 50  0000 C CNN
-F 1 "74LS04" H 10190 4825 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 4950 50  0001 C CNN
-F 3 "" H 10000 4950 50  0001 C CNN
-	4    10000 4950
+P 10000 5050
+F 0 "IC17" H 10195 5165 50  0000 C CNN
+F 1 "74LS04" H 10190 4925 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 5050 50  0001 C CNN
+F 3 "" H 10000 5050 50  0001 C CNN
+	4    10000 5050
 	1    0    0    -1  
 $EndComp
 $Comp
 L 74LS04 IC17
 U 5 1 5CA2E289
-P 10000 5250
-F 0 "IC17" H 10195 5365 50  0000 C CNN
-F 1 "74LS04" H 10190 5125 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 5250 50  0001 C CNN
-F 3 "" H 10000 5250 50  0001 C CNN
-	5    10000 5250
+P 10000 5350
+F 0 "IC17" H 10195 5465 50  0000 C CNN
+F 1 "74LS04" H 10190 5225 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 5350 50  0001 C CNN
+F 3 "" H 10000 5350 50  0001 C CNN
+	5    10000 5350
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -591,10 +584,7 @@ Wire Wire Line
 Wire Wire Line
 	7250 5250 7500 5250
 Wire Wire Line
-	7500 5150 7400 5150
-Wire Wire Line
-	7400 5150 7400 5250
-Connection ~ 7400 5250
+	7250 5150 7500 5150
 Wire Wire Line
 	7500 5050 7250 5050
 Wire Wire Line
@@ -688,19 +678,9 @@ Wire Wire Line
 Wire Wire Line
 	8800 5250 8700 5250
 Wire Wire Line
-	10500 5600 8900 5600
+	8700 5150 9000 5150
 Wire Wire Line
-	8900 5600 8900 5150
-Wire Wire Line
-	8900 5150 8700 5150
-Wire Wire Line
-	9000 5050 8700 5050
-Wire Wire Line
-	9550 5250 9000 5250
-Wire Wire Line
-	9000 5250 9000 5050
-Wire Wire Line
-	9550 4950 8700 4950
+	8700 5050 9550 5050
 Wire Wire Line
 	9550 4050 8800 4050
 Wire Wire Line
@@ -720,9 +700,9 @@ Wire Wire Line
 Wire Wire Line
 	9000 4850 8700 4850
 Wire Wire Line
-	10600 5250 10450 5250
+	10600 5350 10450 5350
 Wire Wire Line
-	10600 4950 10450 4950
+	10600 5050 10450 5050
 Wire Wire Line
 	10600 4650 10450 4650
 Wire Wire Line
@@ -763,4 +743,35 @@ Lo
 Wire Wire Line
 	4100 1950 4100 1900
 NoConn ~ 4000 1900
+Text GLabel 1850 4700 0    60   Input ~ 0
+Lo
+Text GLabel 1850 4800 0    60   Input ~ 0
+Lo
+Text GLabel 1850 4900 0    60   Input ~ 0
+Lo
+Text GLabel 1850 5000 0    60   Input ~ 0
+Lo
+Wire Wire Line
+	1850 4700 2200 4700
+Wire Wire Line
+	1850 4800 2200 4800
+Wire Wire Line
+	1850 4900 2200 4900
+Wire Wire Line
+	1850 5000 2200 5000
+Text GLabel 1750 5700 0    60   Input ~ 0
+~Reset
+NoConn ~ 2200 5150
+Text GLabel 7250 5250 0    60   Input ~ 0
+Clk
+Wire Wire Line
+	9000 5150 9000 5350
+Wire Wire Line
+	9000 5350 9550 5350
+Wire Wire Line
+	8700 4950 9150 4950
+Wire Wire Line
+	9150 4950 9150 4850
+Wire Wire Line
+	9150 4850 10600 4850
 $EndSCHEMATC
