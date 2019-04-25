@@ -35,4 +35,4 @@ for this purpose.
 
 Here is a diagram of the basic CSCvon8 architecture:
 
-![](Figs/CSCvon8_overview.png) 
+![](Docs/Figs/CSCvon8_overview.png) 

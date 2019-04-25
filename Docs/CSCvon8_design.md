@@ -4,7 +4,7 @@ This is a description of the architecture of the *CSCvon8* CPU, which
 is my attempt to design an 8-bit CPU with a crazy small number of 7400-style
 chips.
 
-![High-level Architecture](../Figs/CSCvon8_overview.png) 
+![High-level Architecture](Figs/CSCvon8_overview.png) 
 
 The *CSCvon8* CPU, as shown above, has a von Neumann architecture with
 both instructions and data being fetched across the 8-bit data bus into the
@@ -123,7 +123,7 @@ A 74HC138 3:8 demux and a 74H139 2:4 demux are needed for some decode logic.
 The ALU is built using a 2Mx16 M27C322 EPROM. The two 8-bit inputs are input to
 the ALU as shown in the following diagram. The 5-bit ALUop control lines select the ALU operation.
 
-![](../Figs/alu_design.png) 
+![](Figs/alu_design.png) 
 
 The contents of the ALU ROM essentially defines what calculations the CPU
 can perform. Below is the current list of ALU operations.
