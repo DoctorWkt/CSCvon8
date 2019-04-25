@@ -1807,3 +1807,40 @@ again. Interesting. I see the PC increment, I see it pause, I see the display of
 the AR value for one clock. The the counter goes back to it's old value
 and increments; it doesn't increment the loaded AR value. I'll have to
 go back to my blog and see if I can work out what's going on.
+
+I fiddled with RCKEN#, I think it can stay low. I can see RCK rise up.
+I also tried various CLOAD# values: hi, low, ARena#, PCload# and nothing I've
+tried works. Maybe it's a timing issue. The data sheet shows RCKEN# low
+before RCK. The RCK goes low before CLOAD# goes low.
+
+## Thu 25 Apr 21:52:40 AEST 2019
+
+I have a solution, which is to wire RCK to Clk_bar so that it rises after
+RCKEN# goes low. Here is what I have and learned. For PClo:
+
+ + CLOAD# wired up to PCload# from the Jump logic
+ + RCO# wired up to CCKEN# on PChi
+ + CCLR# wired up to CCLR# on PChi and Reset#
+ + CCK wired to Clk_bar
+ + CCKEN#: doesn't matter, either Gnd or Vcc
+ + CCKEN wired up to PCincr from the Decode ROM
+ + RCK wired up to Clk_bar
+ + RCKEN# wired up to Gnd
+ + G# wired up to Gnd
+ + G wired up to ARena# from the Decode ROM
+
+For PChi:
+
+ + CLOAD# wired up to PCload# from the Jump logic
+ + RCO# unused
+ + CCLR# wired up to CCLR# on PClo and Reset#
+ + CCK wired to Clk_bar
+ + CCKEN#: wired up to RCO# on PClo
+ + CCKEN wired up to Gnd
+ + RCK wired up to Clk_bar
+ + RCKEN# wired up to ARena#, check if it also can be Gnd. Yes it seems to be
+   OK but I need to get the PC to go from 0xFF to 0x100 to be sure.
+ + G# wired up to Gnd
+ + G wired up to ARena# from the Decode ROM
+
+Wow, that was a few hours of struggle!
