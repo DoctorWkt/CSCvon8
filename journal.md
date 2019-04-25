@@ -1804,7 +1804,7 @@ to take the black tape off the glass before trying to erase an EPROM!
 
 Next ROM code: increment the PC, do nothing, load the AR, start incrementing
 again. Interesting. I see the PC increment, I see it pause, I see the display of
-the AR value for one clock. The the counter goes back to it's old value
+the AR value for one clock. The the counter goes back to its old value
 and increments; it doesn't increment the loaded AR value. I'll have to
 go back to my blog and see if I can work out what's going on.
 
@@ -1816,7 +1816,7 @@ before RCK. The RCK goes low before CLOAD# goes low.
 ## Thu 25 Apr 21:52:40 AEST 2019
 
 I have a solution, which is to wire RCK to Clk_bar so that it rises after
-RCKEN# goes low. Here is what I have and learned. For PClo:
+CLOAD# goes low. Here is what I have and learned. For PClo:
 
  + CLOAD# wired up to PCload# from the Jump logic
  + RCO# wired up to CCKEN# on PChi
@@ -1844,3 +1844,14 @@ For PChi:
  + G wired up to ARena# from the Decode ROM
 
 Wow, that was a few hours of struggle!
+
+It is interesting that RCKEN# can be kept low. I think what this means
+is that the register in the 74LS593 is always loading from the address
+bus mid-cycle, but only when CLOAD# goes low does this get moved into
+the counter. And because CLOAD# is not edge triggered, it doesn't matter
+that it goes low before RCK rises because it is still low after RCK rises.
+That's how the new register value gets into the counter.
+
+I probably won't have time tomorrow to look at this, but I will need to
+make the wiring more permanent on the breadboard and also make the same
+adjustments to the TTL verilog version.
