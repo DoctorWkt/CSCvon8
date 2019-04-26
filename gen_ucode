@@ -42,8 +42,8 @@ my $linenum=0;
 # Given a string with space-separated control lines, parse each
 # word, and update the ROM with the microinstruction
 sub parse_lines {
-  my $input= shift;
-  print("Parsing $input\n") if ($debug);
+  my ($input, $inscode, $insname)= @_;
+  print("Parsing $input\n") if ($debug==2);
 
   # Start with all lines off
   my $result= $lowoffmask;
@@ -54,22 +54,24 @@ sub parse_lines {
 	if (!defined($Cline{$name}));
 
     # Set the named line in the result
-    printf("  %s: %04x => ", $name, $result) if ($debug);
+    printf("  %s: %04x => ", $name, $result) if ($debug==2);
     if ($Cislow{$name}) {
       $result ^= $Cline{$name};
     } else {
       $result |= $Cline{$name};
     }
-    printf("%04x\n", $result) if ($debug);
+    printf("%04x\n", $result) if ($debug==2);
 
     # Increment the instruction length if we have a PCincr
     $instrlen++ if ($name eq "PCincr");
-    print("len $instrlen as PCincr\n") if ($debug && $name eq "PCincr");
+    print("len $instrlen as PCincr\n") if (($debug==2) && $name eq "PCincr");
   }
 
   # Set the ROM for opcode/sequence with this value and
   # move to the next sequence position
   $ROM[ ($opcode << 4) | $seq ] = $result; $seq++;
+  printf("%04x: %s\t\t%s %s\n", $result, $input, $inscode, $insname)
+							if ($debug==1);
 }
 
 #### MAIN PROGRAM ####
@@ -95,7 +97,7 @@ while (<$IN>) {
     # Starting microinstruction in a microsequence
     if (m{:=\s*(.+)}) {
       $startline= $1;
-      print("Got start line $startline\n") if ($debug);
+      print("Got start line $startline\n") if ($debug==2);
       next;
     }
 
@@ -122,7 +124,7 @@ while (<$IN>) {
 
       # Get the new opcode number, name and list of control lines
       my $newopcode= $1; my $newopname= $2; my $linelist=$3;
-      print("$newopcode $newopname:\n") if ($debug);
+      print("$newopcode $newopname:\n") if ($debug==2);
       die("Opcode $opcode redefined on line $linenum\n")
 				if (defined($Opcode{$opcode}));
 
@@ -133,15 +135,15 @@ while (<$IN>) {
       $opcode= hex($newopcode); $opname= $newopname; $seq=0; $instrlen=0;
 
       # If there is a start line, parse it first
-      parse_lines($startline) if (defined($startline));
+      parse_lines($startline, $newopcode, $newopname) if (defined($startline));
 
       # Parse the control lines
-      parse_lines($linelist); next;
+      parse_lines($linelist, "", ""); next;
     }
 
     # If we get here, the line must just be a list of control lines.
     # Parse them
-    parse_lines($_);
+    parse_lines($_, "", "");
 }
 close($IN);
 

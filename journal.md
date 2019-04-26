@@ -1892,3 +1892,10 @@ I should now be able to burn the Decode ROM with the proper microcode.
 Then, test each instruction one a a time to see a) that the control
 lines are correctly generated and b) if the PC correctly increments
 on the right microinstructions and loads when JumpZero is requested.
+
+I've burned the ROM and started testing. NOP works. LCA doesn't increment
+the PC twice, I think I need to move the uSreset down to be on a line
+by itself. LDA $XXXX does increment the PC three times. But the PC isn't
+being increment three times on a JMP, only once for some reason. What I
+need are some more LEDs so I can see all the 16 decode ROM bits. Hopefully
+my LEDs will arrive early this coming week.
