@@ -1884,6 +1884,10 @@ The breadboard now has:
  + high/low PC chips which can increment, do nothing or load the AR
    based on the control lines from the Decode ROM and the jump logic
 
+And now that I'm using Markdown I can include a picture of it:
+
+![](Docs/Figs/breadboard_20190426.jpg)
+
 I should now be able to burn the Decode ROM with the proper microcode.
 Then, test each instruction one a a time to see a) that the control
 lines are correctly generated and b) if the PC correctly increments
