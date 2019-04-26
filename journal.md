@@ -1862,3 +1862,29 @@ I've rewired the TTL verilog version. I had to alter the 74593.v module
 because it was seeing CLOAD_bar going from x to 1 as a rising edge. I
 had to track the dropping edge and use that memory to ensure that we were
 at a rising edge. It passes all the examples again.
+
+I've replaced the temporary wiring on the breadboard with fixed wiring
+to the 74LS593. I've put in a second inverter for Clk_bar just for now.
+Later on, I'll use the spare half of the 74HCT139. I've used white wire
+for Clk, white wire with blue stripes for Reset# and white wire with black
+stripes for Clk_bar#. It still works!
+
+I've also fixed up the KiCad schematic to reflect the 74LS593 wiring and
+created a new PDF version.
+
+The breadboard now has:
+
+ + a one-shot 555 clock circuit and Clk_bar generation
+ + a reset line for the PC and the microsequencer
+ + a microsequencer which can be reset by uSreset
+ + an IR 74HCT574 with a constant input value which I can change
+ + a Decode ROM wired to the IR and microsequencer
+ + Jump logic wired to have only the Zero flag high
+ + high/low address registers hard-wired to constant inputs
+ + high/low PC chips which can increment, do nothing or load the AR
+   based on the control lines from the Decode ROM and the jump logic
+
+I should now be able to burn the Decode ROM with the proper microcode.
+Then, test each instruction one a a time to see a) that the control
+lines are correctly generated and b) if the PC correctly increments
+on the right microinstructions and loads when JumpZero is requested.

@@ -653,7 +653,7 @@ Wire Wire Line
 	8550 1550 8550 1300
 Wire Wire Line
 	6950 1650 8550 1650
-Text GLabel 7100 1450 2    60   Input ~ 0
+Text GLabel 7250 1450 2    60   Input ~ 0
 Lo
 Wire Wire Line
 	8550 1650 8550 1700
@@ -665,10 +665,8 @@ Wire Wire Line
 	6950 3600 8550 3600
 Wire Wire Line
 	8550 3600 8550 3650
-Text GLabel 7100 3400 2    60   Input ~ 0
+Text GLabel 7300 3400 2    60   Input ~ 0
 Lo
-Text GLabel 7100 4100 2    60   Input ~ 0
-Hi
 Text GLabel 5250 6050 0    60   Input ~ 0
 Lo
 Wire Wire Line
@@ -682,29 +680,11 @@ Text GLabel 8000 1950 2    60   Input ~ 0
 Wire Wire Line
 	7050 3900 7950 3900
 Wire Wire Line
-	7000 3700 7850 3700
-Wire Wire Line
-	7850 3700 7850 3900
-Connection ~ 7850 3900
-Wire Wire Line
 	7050 1950 8000 1950
-Wire Wire Line
-	7000 1750 7900 1750
-Wire Wire Line
-	7900 1750 7900 1950
-Connection ~ 7900 1950
-Text GLabel 7000 4800 2    60   Input ~ 0
-PCload
 Text GLabel 7000 5000 2    60   Input ~ 0
 ~PCload
 Wire Wire Line
 	6850 5000 7000 5000
-Wire Wire Line
-	7000 4800 6900 4800
-Wire Wire Line
-	6900 4800 6900 4900
-Wire Wire Line
-	6900 4900 6850 4900
 Text GLabel 7300 4000 2    60   Input ~ 0
 ~PCload
 Wire Wire Line
@@ -712,19 +692,13 @@ Wire Wire Line
 Text GLabel 7350 2050 2    60   Input ~ 0
 ~PCload
 Wire Wire Line
-	5200 2050 5650 2050
-Wire Wire Line
 	7000 2050 7350 2050
 Wire Wire Line
 	7000 4000 7300 4000
-Text GLabel 5350 4000 0    60   Input ~ 0
-PCload
-Text GLabel 5200 2050 0    60   Input ~ 0
-PCload
 Wire Wire Line
-	7000 3400 7100 3400
+	7000 3400 7300 3400
 Wire Wire Line
-	7000 1450 7100 1450
+	7000 1450 7250 1450
 Wire Wire Line
 	7000 1350 7800 1350
 Text GLabel 7950 3300 2    60   Input ~ 0
@@ -736,13 +710,33 @@ Wire Wire Line
 Wire Wire Line
 	7000 4100 7100 4100
 Wire Wire Line
-	7050 1850 7100 1850
+	7050 1850 7150 1850
 Text GLabel 4950 4100 0    60   Input ~ 0
 ~Clkbar
 Text GLabel 7300 3800 2    60   Input ~ 0
 PCincr
 Text GLabel 4800 2150 0    60   Input ~ 0
 ~Clkbar
-Text GLabel 7100 1850 2    60   Input ~ 0
-PCincr
+NoConn ~ 6850 4900
+Wire Wire Line
+	5200 2050 5650 2050
+Text GLabel 7100 4100 2    60   Input ~ 0
+Hi
+Wire Wire Line
+	5200 2050 5200 2150
+Connection ~ 5200 2150
+Wire Wire Line
+	5350 4000 5350 4100
+Connection ~ 5350 4100
+Wire Wire Line
+	7000 3700 7100 3700
+Wire Wire Line
+	7100 3700 7100 3400
+Connection ~ 7100 3400
+Wire Wire Line
+	7150 1850 7150 1450
+Connection ~ 7150 1450
+Wire Wire Line
+	7000 1750 7150 1750
+Connection ~ 7150 1750
 $EndSCHEMATC

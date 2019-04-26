@@ -225,11 +225,11 @@ Text GLabel 10600 4350 2    60   Output ~ 0
 Aload
 Text GLabel 10600 4650 2    60   Output ~ 0
 Bload
-Text GLabel 10500 5600 2    60   Output ~ 0
+Text GLabel 10600 4850 2    60   Output ~ 0
 ~MEMload
-Text GLabel 10600 4950 2    60   Output ~ 0
+Text GLabel 10600 5050 2    60   Output ~ 0
 AHload
-Text GLabel 10600 5250 2    60   Output ~ 0
+Text GLabel 10600 5350 2    60   Output ~ 0
 ALload
 Text GLabel 10600 5800 2    60   Output ~ 0
 ~IOload
@@ -368,7 +368,7 @@ Text GLabel 6150 2350 2    60   Input ~ 0
 Lo
 Text GLabel 7900 3350 0    60   Input ~ 0
 Lo
-Text GLabel 7250 5250 0    60   Input ~ 0
+Text GLabel 7250 5150 0    60   Input ~ 0
 Lo
 Text GLabel 7250 5050 0    60   Input ~ 0
 Hi
@@ -418,23 +418,23 @@ $EndComp
 $Comp
 L 74LS04 IC17
 U 4 1 5CA2E1D7
-P 10000 4950
-F 0 "IC17" H 10195 5065 50  0000 C CNN
-F 1 "74LS04" H 10190 4825 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 4950 50  0001 C CNN
-F 3 "" H 10000 4950 50  0001 C CNN
-	4    10000 4950
+P 10000 5050
+F 0 "IC17" H 10195 5165 50  0000 C CNN
+F 1 "74LS04" H 10190 4925 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 5050 50  0001 C CNN
+F 3 "" H 10000 5050 50  0001 C CNN
+	4    10000 5050
 	1    0    0    -1  
 $EndComp
 $Comp
 L 74LS04 IC17
 U 5 1 5CA2E289
-P 10000 5250
-F 0 "IC17" H 10195 5365 50  0000 C CNN
-F 1 "74LS04" H 10190 5125 50  0000 C CNN
-F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 5250 50  0001 C CNN
-F 3 "" H 10000 5250 50  0001 C CNN
-	5    10000 5250
+P 10000 5350
+F 0 "IC17" H 10195 5465 50  0000 C CNN
+F 1 "74LS04" H 10190 5225 50  0000 C CNN
+F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 10000 5350 50  0001 C CNN
+F 3 "" H 10000 5350 50  0001 C CNN
+	5    10000 5350
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -584,10 +584,7 @@ Wire Wire Line
 Wire Wire Line
 	7250 5250 7500 5250
 Wire Wire Line
-	7500 5150 7400 5150
-Wire Wire Line
-	7400 5150 7400 5250
-Connection ~ 7400 5250
+	7250 5150 7500 5150
 Wire Wire Line
 	7500 5050 7250 5050
 Wire Wire Line
@@ -681,19 +678,9 @@ Wire Wire Line
 Wire Wire Line
 	8800 5250 8700 5250
 Wire Wire Line
-	10500 5600 8900 5600
+	8700 5150 9000 5150
 Wire Wire Line
-	8900 5600 8900 5150
-Wire Wire Line
-	8900 5150 8700 5150
-Wire Wire Line
-	9000 5050 8700 5050
-Wire Wire Line
-	9550 5250 9000 5250
-Wire Wire Line
-	9000 5250 9000 5050
-Wire Wire Line
-	9550 4950 8700 4950
+	8700 5050 9550 5050
 Wire Wire Line
 	9550 4050 8800 4050
 Wire Wire Line
@@ -713,9 +700,9 @@ Wire Wire Line
 Wire Wire Line
 	9000 4850 8700 4850
 Wire Wire Line
-	10600 5250 10450 5250
+	10600 5350 10450 5350
 Wire Wire Line
-	10600 4950 10450 4950
+	10600 5050 10450 5050
 Wire Wire Line
 	10600 4650 10450 4650
 Wire Wire Line
@@ -775,4 +762,16 @@ Wire Wire Line
 Text GLabel 1750 5700 0    60   Input ~ 0
 ~Reset
 NoConn ~ 2200 5150
+Text GLabel 7250 5250 0    60   Input ~ 0
+Clk
+Wire Wire Line
+	9000 5150 9000 5350
+Wire Wire Line
+	9000 5350 9550 5350
+Wire Wire Line
+	8700 4950 9150 4950
+Wire Wire Line
+	9150 4950 9150 4850
+Wire Wire Line
+	9150 4850 10600 4850
 $EndSCHEMATC
