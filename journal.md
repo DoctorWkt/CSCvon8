@@ -1855,3 +1855,10 @@ That's how the new register value gets into the counter.
 I probably won't have time tomorrow to look at this, but I will need to
 make the wiring more permanent on the breadboard and also make the same
 adjustments to the TTL verilog version.
+
+## Fri 26 Apr 17:10:45 AEST 2019
+
+I've rewired the TTL verilog version. I had to alter the 74593.v module
+because it was seeing CLOAD_bar going from x to 1 as a rising edge. I
+had to track the dropping edge and use that memory to ensure that we were
+at a rising edge. It passes all the examples again.

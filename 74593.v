@@ -21,6 +21,7 @@ module ttl_74593 #(parameter WIDTH = 8, DELAY_RISE = 30, DELAY_FALL = 30)
 //------------------------------------------------//
 reg [WIDTH-1:0] R;		// Register
 reg [WIDTH-1:0] Cntr;		// Counter
+reg prev_CLOAD_bar=1'b1;	// Previous CLOAD_bar value
 
 wire RCO_current;
 assign RCO_current= ~(&Q);	// Goes high when all of Q is zero
@@ -28,12 +29,30 @@ assign RCO_current= ~(&Q);	// Goes high when all of Q is zero
 wire [WIDTH-1:0] Cntr_next;
 assign Cntr_next = Cntr + 1;
 
-always @(posedge CCK or negedge CLOAD_bar or negedge CCLR_bar or posedge RCK)
+				// As I'm driving some of the inputs from
+				// a ROM, there are times when there is no
+				// input for CLOAD_bar. I remember if there
+				// was a real drop in CLOAD_bar to later
+				// confirm a real rise in CLOAD_bar.
+always @(negedge CLOAD_bar)
+begin
+  if (CLOAD_bar === 1'b0)
+    prev_CLOAD_bar <= 1'b0;	// Save this value for next time
+end
+
+always @(posedge CLOAD_bar)
 begin
   if (!CCLR_bar)
     Cntr <= {WIDTH{1'b0}};	// Reset the counter when CCLR_bar is low
-  else if (!CLOAD_bar)
-    Cntr <= R;			// Copy R -> counter when CLOAD_bar is low
+  else if (prev_CLOAD_bar === 1'b0)
+    Cntr <= R;			// Copy R -> counter when CLOAD_bar was low
+  prev_CLOAD_bar <= 1'b1;	// Save this value for next time
+end
+
+always @(posedge CCK or posedge RCK)
+begin
+  if (!CCLR_bar)
+    Cntr <= {WIDTH{1'b0}};	// Reset the counter when CCLR_bar is low
   else if (CCK && (CCKEN || ~CCKEN_bar))
     Cntr <= Cntr_next;		// Increment counter on rising CCK with
 				// either enable lines in their correct state
