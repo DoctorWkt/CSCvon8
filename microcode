@@ -335,10 +335,12 @@ START := MEMresult IRload PCincr
 
 # 60-6F: Misc 1
 # Load A with constant $XX
-60 LCA: MEMresult Aload PCincr uSreset
+60 LCA: MEMresult Aload PCincr
+	uSreset
 
 # Load B with constant $XX
-61 LCB: MEMresult Bload PCincr uSreset
+61 LCB: MEMresult Bload PCincr
+	uSreset
 
 # Load A from absolute location $HHLL
 62 LDA: MEMresult AHload PCincr
