@@ -1899,3 +1899,46 @@ by itself. LDA $XXXX does increment the PC three times. But the PC isn't
 being increment three times on a JMP, only once for some reason. What I
 need are some more LEDs so I can see all the 16 decode ROM bits. Hopefully
 my LEDs will arrive early this coming week.
+
+## Sat 27 Apr 21:06:23 AEST 2019
+
+I had enough LEDs already to make another 8-LED array. I looked at it
+again tonight. I realised what was going on last night. Out of reset,
+the first microinstruction is set to do MEMresult IRload PCincr. But
+on the first clock tick, the microsequencer is incremented (and so
+the control lines change to microinstruction 1) before clk_bar rises,
+and so the first microinstruction after reset isn't going to get done.
+Therefore, I'd better put a NOP in as the instruction at $0000 to ensure 
+that we get to $0001 and the first instruction that will work properly.
+
+I incremented PClo up to $FF then $00. I saw PChi go from $00 to $02,
+so I'll need to debug that.
+
+Trying to wire the 8-bit data bus across the breadboard wasn't going to
+work, so I've put in four power bus edges to be the data bus. Had to
+put more cardboard on the bottom and gaff tape it all together again.
+
+What I really should do now is wire the address bus to the instruction ROM,
+ditto the data bus and then the data bus to the IR.
+
+## Sat 27 Apr 22:41:19 AEST 2019
+
+That took a while, but I have all of the Instruction ROM wired up except
+MEMena, which I've wired low for now. Because the data bus is a set of
+power rails, the spacing means that I can't put eight LEDs on it (yet).
+However, I can see bit 0. I've programmed example01.s into the Instruction
+ROM, and the bit LED lights up on cue. I haven't got the databus reader
+mux nor the inverter wired up yet. For now I'm loading the IR on every
+clock cycle. I've got a 4-LED array on the IR and yes I can see the
+low nibble of each byte coming in from the Instruction ROM each time the
+PC increments! Yay, it looks like the Instruction ROM, the data bus and
+the IR are all working.
+
+I think tomorrow is housework day, but the next step is to wire up the
+databus reader mux and the inverter. Then send IRload over to the IR
+so it only loads the instruction bytes and not all the bytes that are
+coming from the ROM.
+
+Then, once I get some LEDs, to wire up a display for the data bus.
+Summary: looks like I've got the control side of the CPU working and
+the beginnings of the data side. Thank goodness.
