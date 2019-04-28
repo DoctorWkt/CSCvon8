@@ -1995,3 +1995,13 @@ I've written this test program, and burned the Instruction and Decode ROMs:
 And it runs and prints out "Warren" on the UART! Yes, this is technically
 my first program that runs on the CPU. I also did see the PC load the
 hardwired AR value, so perhaps the JMP is also working. I'm happy now.
+
+## Sun 28 Apr 14:56:03 AEST 2019
+
+I've wired ARlo up to the data bus and the ALload inverted signal and I
+saw it load $FF, excellent. Ditto the ARho chip. I'll stop now. What's
+left to wire up: the B reg data load side, the A & B to the ALU, the ALUop
+to the ALU, the ALU to the data bus, and the data bus write demux. So
+overall about 3/4 done. A few misc. things: finish off the Jump logic
+with the ALU flags to the chip, the UART read and two status lines.
+Then the debugging!
