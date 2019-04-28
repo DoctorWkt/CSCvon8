@@ -105,18 +105,18 @@ construct it.
 | ROM | 28C256 32Kx8 EEPROM | 
 | UART |  UM245R |
 | ALU | M27C322 2Mx16 EPROM |
-| ARhi | 74HC574 |
-|ARlo | 74HC574 |
-| IR | 74HC574 |
-| A reg | 74HC574 | 
-| Breg | 74HC574 | 
-| PC | Two 74HC593 | 
-| Jump Logic | 74HC153 | 
+| ARhi | 74HCT574 |
+|ARlo | 74HCT574 |
+| IR | 74HCT574 |
+| A reg | 74HCT574 | 
+| Breg | 74HCT574 | 
+| PC | Two 74LS593 | 
+| Jump Logic | 74HCT251 | 
 | Decode Logic | M27C1024 64Kx16 EEPROM | 
-| Microsequencer | 74HC161 |
-| Other chips | 74HC138, 74HC139 |
+| Microsequencer | 74HCT161 |
+| Other chips | 74HCT138, 74HTC139 |
 
-A 74HC138 3:8 demux and a 74H139 2:4 demux are needed for some decode logic.
+A 74HCT138 3:8 demux and a 74HCT139 2:4 demux are needed for some decode logic.
 
 ## The ALU and Its Operations
 
@@ -154,7 +154,7 @@ and/or a zero result (Z).
 
 The D, N, Z, V and C bits are sent to the Jump logic along with two
 UART status lines: UART is ready to send a character, UART has a character
-ready to be received. The Jump logic is a 74HC138 3:8 demultiplexer.
+ready to be received. The Jump logic is a 74HCT251 8:1 multiplexer.
 This is controlled by  three *Jumpsel* bits using this table:
 
 | Jumpsel | PCjump (active low) is set to |
@@ -241,7 +241,8 @@ Some microsequences are quite short. For example, here is the sequence to load A
 
 ```
 	# Load A with constant $XX
-	60 LCA: MEMresult Aload PCincr uSreset
+	60 LCA: MEMresult Aload PCincr
+	        uSreset
 ```
 
 The 60 is instruction byte 0x60 with menmonic *LCA*.
