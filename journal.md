@@ -1942,3 +1942,56 @@ coming from the ROM.
 Then, once I get some LEDs, to wire up a display for the data bus.
 Summary: looks like I've got the control side of the CPU working and
 the beginnings of the data side. Thank goodness.
+
+## Sun 28 Apr 11:41:57 AEST 2019
+
+I've wired in the data bus reader demux and the inverter. Made a mistake
+in the inputs to the demux which slowed me down and its outputs were not
+what I expected. Fixed that. Here's my current instruction ROM:
+
+```
+0000: 00 NOP 
+0001: 60 LCA $34
+0003: 61 LCB $23
+0005: 09 LDA A+B 
+0006: 64 OUT A 
+0007: 77 JOU $0007
+000a: 60 LCA $0a
+000c: 64 OUT A 
+000d: 77 JOU $000d
+0010: 70 JMP $ffff
+0013: 00 NOP 
+0014: 00 NOP
+       ^
+```
+
+I've wired a 4-LED array to the low nibble of the IR output, and it is
+definitely only loading instructions, as I see 0, 1, 9, 4, 7, 0, 4, 7, 0.
+Looks like the JMP isn't happening as I go on with the NOPs after that.
+However, this is good progress.
+
+I had an idea that there could be an OUT $XX instruction where the UART
+loads directly from MEM and not from a register. It works in csim, so I'll
+lock it in.
+
+I've wired up the A register on the input side, also the UART data and the
+send IOload control line to the UART. The UART is definitely sending
+whatever is on the data bus, which seems to be 'w' at the moment. 
+
+I've written this test program, and burned the Instruction and Decode ROMs:
+
+```
+	NOP
+	OUT 'W'
+	OUT 'a'
+	OUT 'r'
+	OUT 'r'
+	OUT 'e'
+	OUT 'n'
+	OUT '\n'
+	JMP $FFFF
+```
+
+And it runs and prints out "Warren" on the UART! Yes, this is technically
+my first program that runs on the CPU. I also did see the PC load the
+hardwired AR value, so perhaps the JMP is also working. I'm happy now.

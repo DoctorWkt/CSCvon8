@@ -372,6 +372,11 @@ START := MEMresult IRload PCincr
 67 INB: UARTresult Bload
 	uSreset
 
+# Write a byte following the
+# instruction to the UART
+68 OUT: MEMresult IOload PCincr
+	uSreset
+
 # 70-7F: Jump instructions
 # Always jump to $XXXX
 70 JMP: MEMresult AHload PCincr
