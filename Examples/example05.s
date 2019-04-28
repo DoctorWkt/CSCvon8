@@ -2,7 +2,7 @@
 # in an array in memory, read them back,
 # and print them.
 #
-
+	NOP
 	LCA $7F		# We end when we reach 0x7F
 	LCB $20		# Start with a space
 loop1:	STO B $8000,B	# Store B in $8000+B

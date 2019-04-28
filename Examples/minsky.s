@@ -7,6 +7,7 @@
 X: EQU $8000
 Y: EQU $8001
 
+	NOP
 	LCA $3A			# Start at X=58 decimal, Y=0
 	STO A X
 	LCA $00

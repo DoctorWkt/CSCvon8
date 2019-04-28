@@ -2,6 +2,7 @@
 # Read from the UART and echo the characters. Also print
 # an initial 'A' so you know it's doing something.
 
+	NOP
 	LCA $41		# Print an A
 	OUT A
 	JOU .		# Wait until it is printed

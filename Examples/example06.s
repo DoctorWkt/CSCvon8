@@ -1,3 +1,9 @@
+# Sixth example program. This tests that the JSR/RTS
+# instructions work. JSR to the printA subroutine to
+# print out an 'A' and return. Then print out an 'F'
+# and stop.
+
+	NOP
 	JSR printA
 	LCA 'F'
 	OUT A

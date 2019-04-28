@@ -1,6 +1,7 @@
 # Second working program.
 #
-hello:	LCA 'H'
+hello:	NOP
+	LCA 'H'
 	OUT A
 L1:	JOU L1
 	LCA 'e'

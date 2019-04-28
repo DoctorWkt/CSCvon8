@@ -1,6 +1,7 @@
 # First working program!
 #
-hello:	LCA $34
+hello:	NOP
+	LCA $34
 	LCB $23
 fred:	LDA A+B
 	OUT A

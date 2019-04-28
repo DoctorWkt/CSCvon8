@@ -2,6 +2,7 @@
 # then access all the characters of the string through the pointer,
 # i.e. address indirection.
 
+	NOP
 	LHA	string		# Fill in the pointer
 	STO	A hiptr
 	LCA	string

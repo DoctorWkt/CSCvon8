@@ -10,7 +10,8 @@ reslo:	EQU $8004
 reshi:	EQU $8005
 hexarg: EQU $8006
 
-main:	LCA $23		# Set X to $2345
+main:	NOP
+	LCA $23		# Set X to $2345
 	STO A xhi
 	LCA $45
 	STO A xlo

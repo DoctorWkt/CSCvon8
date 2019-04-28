@@ -2,6 +2,7 @@
 # it into a RAM location. Then print it out as
 # two ASCII digits followed by a newline.
 
+	NOP
 	LCA $35			# Treat this as 35 BCD
 	LCB $47			# Treat this as 47 BCD
 	LDA A+BCD		# Add them to get 82 BCD

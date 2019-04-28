@@ -2,6 +2,7 @@
 # into a RAM location. Then print it out as
 # two ASCII digits followed by a newline.
 
+	NOP
 	LCA $35			# Treat this as 35 BCD
 	STO A $8002
 
