@@ -2005,3 +2005,128 @@ to the ALU, the ALU to the data bus, and the data bus write demux. So
 overall about 3/4 done. A few misc. things: finish off the Jump logic
 with the ALU flags to the chip, the UART read and two status lines.
 Then the debugging!
+
+## Wed  1 May 10:03:56 AEST 2019
+
+The LEDs should be arriving today. I've played around with KiCad 5.1.2
+and it looks good. I've been able to find 3D models of nearly all the
+components including the ZIF socket and the UM245R, so now I know that I'll
+have to move a few things adjacent to the ZIF socket.
+
+I was thinking on what instructions I could put in to make the design a
+bit more compiler friendly. Example: INC $XXXX to increment a memory location's
+value. We could even have 16-bit instructions, e.g. to increment a 16-bit
+little-endian value in two adjacent locations. What I might do is see what
+sort of instruction sequences the existing compiler spits out, and see if
+I could make some "merged" instructions that do the same functionality as
+an existing sequence of instructions.
+
+It would be very useful for the assembler to support label+X so we could
+INC fred+1, INC fred+2 etc. This doesn't do arrays, but when we have 16-bit
+values in adjacent locations it will help deal with them.
+
+I'm still trying to come up with an SIA instruction to store through a pointer
+into a memory location. Yes, there is a solution but it will require assembly
+support. Consider:
+
+```
+   SIA $ABCD	where $ABCD/$ABCE points to $8020
+```
+
+We actually store this as four bytes not three: SIA, $AB, $CD, $CE, i.e. we
+store the two low bytes of the pointer address. Then we do these
+microinstructions:
+
+```
+  ARhi <- AB
+  ARlo <- CD
+  B <- MEM[AR] <- 80	Get the top pointer byte into B
+  ARlo <- CE
+  ARlo <- MEM[AR] <- 20	Get the bottom pointer byte into ARlo
+  ARhi <- B <- 80	Get the top pointer byte into ARhi
+  MEM[AR] <- A		Write A out to the indirect address
+```
+
+We would have to ensure that pointers don't cross page boundaries, i.e. a
+pointer could not be stored in $ABFF/$AC00 because the $AB won't get
+incremented. I like this as a compromise with the hardware design.
+I've just implemented and tested SIA and SIB. I had to change cas and
+disasm to deal with the extra byte of address,but it does work. Yay!
+
+## Wed  1 May 11:37:32 AEST 2019
+
+I did ask on the TTlers chat forum yesterday about possible GALs, PALs,
+CPLDs in case I wanted to add full $XXXX,B indexed addressing, which
+would require a 16-bit adder to do AR+B. Here are some links which are
+useful:
+
+ + https://hackaday.io/project/164212-yatac78-the-www-ttl-computer
+ + https://hackaday.io/project/28167-digital-design-doohickey/log/70446-i-have-your-io
+ + https://github.com/jonthomasson/SimpleCPLD
+ + https://www.microchip.com/design-centers/programmable-logic/spld-cpld/tools/software/wincupl
+
+So there's an Atmel ATF16V8B PLD and a Lattice PALCE22V10 which is bigger.
+Then there are the SOIC CPLDs that can be put on breadboard-compatible PCBs.
+There is also programmer software at 
+https://github.com/kees1948/perlblast for Linux but needs a parallel port.
+
+## Thu  2 May 08:01:20 AEST 2019
+
+My LEDs arrived yesterday so last night I spent some time building the display
+for the data bus and several 8-LED arrays for the A & B registers, IR and AR.
+I destroyed a few LEDs in the process, but all good. They work. I'd already
+wired up the A-reg to the data bus but with no load line. So right now the
+A-reg is loading everything off the data bus :-) Hopefully tonight I can
+run the Aload control line and perhaps also wire the B-reg to the data bus
+and its control line. Then I can try some LCA and LCB instructions to see
+the registers working.
+
+Then the big jobs: wiring the ALU and adding the RAM.
+
+If (if!) I decide to do a proper compiler for the box, I am torn between
+using an existing compiler like pcc as the basis, or use my h2-compiler
+as the basis. I think I prefer the latter. This time, though, I will
+definitely endeavour to keep the machine-independent and machine-dependent
+code completely separate. The PDP-7 version has both completely interwoven
+and it is horrible. Also, perhaps, only put call-out functions in the
+grammar? I don't have the h2 code here with me, but I guess I could look
+at the h-compiler grammar. Also, this time, I'll need types: char, int,
+char *, int *. The CSCvon8 does have limited indexing: $XXXX,B. Do I want to
+use it or should I just use LIA & SIA? Maybe I use $XXXX,B for some specific
+uses and the LIA/SIA for the rest? Not sure yet.
+
+## Thu  2 May 17:08:29 AEST 2019
+
+I've just wired up the B-reg plus the control lines for both A & B. I've
+tried out this short program:
+
+```
+	NOP
+	LCA $01
+	OUT 'W'
+	LCB $02
+	OUT 'a'
+	LCA $03
+	OUT 'r'
+	LCB $04
+	OUT 'r'
+	LCA $66
+	OUT 'e'
+	LCB $33
+	OUT 'n'
+	OUT '\r'
+	OUT '\n'
+end:	JMP end
+```
+
+and I can see both registers load the values above and the UART printing
+out my name. So now I can start on wiring up the ALU. But I think I should
+set the RAM chip, as I had to undo the ARLo wiring to the data bus because
+I'd wired it straight over where the RAM is going to live! OK, the RAM is
+in and wired to the data bus. The ARlo is also wired up to the data bus, and
+I can see the PC incrementing on the data bus all fine. I'd going to be a
+PITA to wire up both the ALU and the RAM.
+
+Here's the current state of the breadboard:
+
+![](Docs/Figs/breadboard_20190502.jpg)
