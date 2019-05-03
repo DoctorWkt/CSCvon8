@@ -2130,3 +2130,59 @@ PITA to wire up both the ALU and the RAM.
 Here's the current state of the breadboard:
 
 ![](Docs/Figs/breadboard_20190502.jpg)
+
+## Fri  3 May 08:17:36 AEST 2019
+
+I've quickly wired up the databus writer demux inputs, and I can see MEMena#
+is low for most of the above code except for the JMP when ALUena# goes low
+to put the zero result on the databus: remember JMP uses the zero flag output
+to force a jump if zero. MEMena# is wired to ROM and RAM and it still works.
+
+It's getting too hard to pull out the Decode ROM and I'll be putting in the
+ALUop lines soon, so I'm going to do a final burn of the current microcode
+and then live with it for now. I'll also write the ALU, finally!
+
+Hmm, writing the ALU and I can write banks 0-2 OK, but not banks 3-4. Not sure
+what is going on now. I've got two ROM chips so I'm erasing both of them and
+I'll try again. I can also try the Windows burning software too.
+
+Ahah, only banks 3 & 4 fail, so I'm guessing that I'm mis-interpreting the
+bank switch on the TL866 adapter :-) I'll keep writing to confirm I can
+write the other eight banks, and then fix up my brain. I've also put ink on the
+switch to help me next time.
+
+I got verification fails on the last three banks:
+
+```
+Put in position 5: 
+Erasing... 0.10Sec OK
+Writing Code...  76.96Sec  OK
+Reading Code...  4.99Sec  OK
+Verification failed at address 0x50FF0: File=0xFF, Device=0xFE
+
+Put in position 6: 
+Erasing... 0.10Sec OK
+Writing Code...  76.92Sec  OK
+Reading Code...  4.98Sec  OK
+Verification failed at address 0x0FF0: File=0x07, Device=0x06
+
+Put in position 7: 
+Erasing... 0.10Sec OK
+Writing Code...  76.96Sec  OK
+Reading Code...  4.99Sec  OK
+Verification failed at address 0x4CFF0: File=0x75, Device=0x74
+```
+
+I might leave the chip erasing under the UV for longer next time, more than
+10 minutes. Yes, I got a good write after erasing for 30 minutes. So I should
+now have an ALU. Now it's the dreaded wiring up time.
+
+I've wired the ALUop lines, the lines to the A and B regs. I set MEMena low
+and saw that ALUop was 00 (ALU outputs zero), the bottom four data bits are
+zero and only the Zero status line was high. I've set MEMena high for now
+while I wire up the data bus. I've just wired the bottom 4 ALU output bits
+to the data bus. When I run the above program, I'm not getting consistent
+runs now. Sometimes the PC jumps to a weird value, sometimes the UART output
+is garbled after the first "Warr" letters. I should put on my bypass caps.
+If that doesn't help, it will be either the RAM chip or the ALU chip. I'll
+look at this tomorrow.

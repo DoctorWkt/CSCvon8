@@ -122,3 +122,5 @@ f0 7 JSR
 f1 3 RTS
 f2 3 LIA
 f3 3 LIB
+f4 4 SIA
+f5 4 SIB

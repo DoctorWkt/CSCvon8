@@ -544,3 +544,23 @@ F3 LIB:	MEMresult AHload PCincr		# Load top of indirect addr into AH
 	ALUresult AHload A ARena	# Copy A into AH.
 	ARena MEMresult Bload		# Finally load B with byte
 	uSreset
+
+# SIA: Store A through an an indirect address. Will destroy B also.
+F4 SIA: MEMresult AHload PCincr		# Load top of indirect addr into AH
+	MEMresult ALload PCincr 	# Load bot of indirect addr into AL
+	ARena MEMresult Bload		# Get high real addr byte into B
+	MEMresult ALload PCincr		# Move up to addr of low real addr
+	ARena MEMresult ALload		# and load it into AL
+	ALUresult AHload B ARena	# Copy the high real addr byte into AH
+	ALUresult A ARena MEMload	# Now store A into the real location
+	uSreset
+
+# SIB: Store B through an an indirect address. Will destroy A also.
+F5 SIB: MEMresult AHload PCincr		# Load top of indirect addr into AH
+	MEMresult ALload PCincr 	# Load bot of indirect addr into AL
+	ARena MEMresult Aload		# Get high real addr byte into A
+	MEMresult ALload PCincr		# Move up to addr of low real addr
+	ARena MEMresult ALload		# and load it into AL
+	ALUresult AHload A ARena	# Copy the high real addr byte into AH
+	ALUresult B ARena MEMload	# Now store B into the real location
+	uSreset

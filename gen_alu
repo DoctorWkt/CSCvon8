@@ -224,4 +224,19 @@ open( my $OUT, ">", "alu.rom" ) || die("Can't write to alu.rom: $!\n");
 }
 close($OUT);
 
+# If there is a ROMs directory, also write out eight minipro binary ROM file,
+# each of which has little-endian 16-bit values.
+if (-d "ROMs") {
+  my $offset= 0;
+  my $lastposn= 2**18 - 1;
+  foreach my $bank (0 .. 7) {
+    open($OUT, '>:raw', "ROMs/alu$bank.rom") or die "Unable to open: $!";
+    for my $i ( $offset .. $lastposn ) {
+      print($OUT pack("v", $ROM[$i] ? $ROM[$i] : 0 ));
+    }
+    close($OUT);
+    $offset += 2**18; $lastposn += 2**18;
+  }
+}
+
 exit(0);
