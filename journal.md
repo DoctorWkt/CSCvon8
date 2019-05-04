@@ -2238,3 +2238,14 @@ opqrstuvwxyz{|}~��
 ```
 
 So now I can wire up the flag outputs to the Jump logic and repeat the code.
+I've wired up NZVC but not D yet. And it does exit the loop fine:
+
+```
+wktW
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmn
+opqrstuvwxyz{|}~
+```
+
+Time for another breadboard photo:
+
+![](Docs/Figs/breadboard_20190504.jpg)
