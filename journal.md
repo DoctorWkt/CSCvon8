@@ -2186,3 +2186,55 @@ runs now. Sometimes the PC jumps to a weird value, sometimes the UART output
 is garbled after the first "Warr" letters. I should put on my bypass caps.
 If that doesn't help, it will be either the RAM chip or the ALU chip. I'll
 look at this tomorrow.
+
+## Sat  4 May 09:41:48 AEST 2019
+
+I pulled out the RAM chip and that got rid of the glitches. I suspected that,
+as there are no address lines to the RAM chip yet. No worries. I can
+concentrate on the ALU. I've wired up the ALUena line from the databus writer
+demux and the code still works. So now it's time to change the code to do
+some ALU exercising.
+
+New code:
+
+```
+	NOP
+	OUT 'w'		# Print 'w'
+	LCA $01
+	LCB $02
+	LDA A+B		# Add 1+2
+	OUT 'k'		# Print 'k'
+	LCA $03
+	LCB $04
+	LDB A*B		# Multiply 3*4
+	OUT 't'		# Print 't'
+	LCA $50
+	LCB $07
+	LDA A+B		# Print 'W'
+	OUT A
+	OUT '\r'	# Move to new line
+	OUT '\n'
+
+# Print the printable
+# ASCII characters and then stop.
+
+        LCB $7F         # We end when we reach 0x7F
+        LCA $20         # Start with a space
+loop:   OUT A           # Print A out
+        LDA A+1         # Increment A
+        JNE loop        # Loop back until we get to 0x7F
+        LCA $0A
+        OUT A           # Print a newline
+end2:	JMP end2
+```
+
+I still have Zero only hardwired, so the JNE will always occur. Here is the
+output from the hardware:
+
+```
+wktW
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmn
+opqrstuvwxyz{|}~��
+```
+
+So now I can wire up the flag outputs to the Jump logic and repeat the code.
