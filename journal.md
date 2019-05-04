@@ -2249,3 +2249,157 @@ opqrstuvwxyz{|}~
 Time for another breadboard photo:
 
 ![](Docs/Figs/breadboard_20190504.jpg)
+
+The pink & white wires are the flags lines from the ALU to the Jump logic.
+What's next: add the three remaining flags/UART status lines to the Jump
+logic. Test:
+
+ + the ALU is working
+ + all the jumps are working
+ + what happens when the PC increments at $00FF, does it go to $0100?
+
+## Sat  4 May 13:56:28 AEST 2019
+
+Here's the test code which I've burned to the Instruction ROM:
+
+```
+# Test various jump conditions
+#
+        NOP
+        LCA $ff
+        LCB $fe
+        LDA A+B JC L1   # Test jump on carry
+        OUT 'X'
+L1:     OUT 'C'
+        LCB $00
+        LDB B-1 JN L2   # Test jump on negative
+        OUT 'X'
+L2:     OUT 'N'
+        LCA $00
+        LDA A JZ L3     # Test jump on zero
+        OUT 'X'
+L3:     OUT 'Z'
+
+        JOU .           # Wait until it is printed
+        JIU .           # Loop while no input characters
+        INA             # Read a character in from the UART
+        OUT A           # and echo it back out
+        JOU .           # Wait until it is printed
+
+        JMP L4          # Test jump always
+
+        ORG $00FD
+L4:     NOP             # Ensure PC crosses page on increments OK
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        OUT '!'
+        OUT '\r'
+        OUT '\n'
+```
+
+I also wired up the RXE# control line to the UART. It should print out CNZ
+then the character input, then !\r\n. I certainly see CNZw where 'w' is the
+character I entered. It also looped on the JIU instruction fine. However,
+on the PC increment from $00FF I see PChi increment from 0 to 1 then 1 to 2.
+
+Here is what I see:
+ 1. PClo is $FF, PChi is $00, IR is $00, uSeq is $00, decode is $E2
+ 2. PClo is $FF, PChi is $01, IR is $00, uSeq is $01, decode is $20
+ 3. PClo is $00, PChi is $02, IR is $00, uSeq is $00, decode is $E2
+ 4. PClo is $00, PChi is $02, IR is $00, uSeq is $01, decode is $20
+ 5. PClo is $01, PChi is $02, IR is $00, uSeq is $00, decode is $E2
+
+When I press the clock button at step 1, I see PChi change to $01 on the
+dropping clock tick. And when I press the clock button at step 2, I see
+PChi change to $02 on the dropping clock tick.
+
+RCO# from PClo drops as soon as we get to step 1. It stays down during
+step 2. It goes high for step 3. So RCO# stays low for two clock ticks.
+
+Just to reiterate the wiring (from a photo I just took):
+
+ + PChi G is ARena#
+ + PChi G# is Lo
+ + PChi RCKEN# is Lo
+ + PChi RCK is clk_bar
+ + PChi CCKEN is Lo
+ + PChi CCKEN# is RCO# from PClo
+ + PChi CCK is clk_bar
+ + PChi CCLR# is reset
+ + PChi RCO# is n/c
+ + PChi CLOAD# is PCload#
+
+ + PClo G is ARena#
+ + PClo G# is Lo
+ + PClo RCKEN#  Lo
+ + PClo RCK is clk_bar
+ + PClo CCKEN is PCincr
+ + PClo CCKEN# is Hi
+ + PClo CCK is clk_bar
+ + PClo CCLR# is reset
+ + PClo RCO# goes to PChi CCKEN#
+ + PClo CLOAD# is PCload#
+
+Damn, damn, damn. The RCO# line goes low as soon as PClo becomes $FF, not
+when it transitions from $FF to $00! Argh! And either CCKEN can be high *or*
+CCKEN# low to allow CCK to work.
+
+The problem is that there is only supposed to be one usable CCK pulse
+for both chips. PCincr drops after the first microinstruction,
+disabling a PClo increment, but PClo is stuck on $FF and this causes the
+extra PChi increment as we do the uSreset in the second microinstruction.
+
+Just tossing ideas here. What if, on PChi, CCKEN and CCKEN# are both low
+so that any CCK would increment the counter? Then wire PClo RCO# to
+PChi CCK. On PClo $FF, PClo RCO# (PChi CCK) will go low. Then as PClo
+increments to $00, PClo RCO# (PChi CCK) will go high and increment PChi.
+
+Heh, the 74593.v also has this behaviour! Excellent. I can use the
+Verilog code to try things out before I do my rewiring. Yes but: PCcarry
+is undefined sometimes, so I'll have to add the same sort of code I
+already have for CLOAD_bar and prev_CLOAD_bar so I can tell when there
+is a true rising CCK value. Will do this later.
+
+I got this done quickly. Yes it works. I'm going out so I'll do the
+breadboard wiring later. The wiring will be:
+
+ + PChi G is ARena#
+ + PChi G# is Lo
+ + PChi RCKEN# is Lo
+ + PChi RCK is clk_bar
+ + PChi CCKEN is Lo
+ + PChi CCKEN# is Lo
+ + PChi CCK is RCO# from PClo
+ + PChi CCLR# is reset
+ + PChi RCO# is n/c
+ + PChi CLOAD# is PCload#
+
+ + PClo G is ARena#
+ + PClo G# is Lo
+ + PClo RCKEN#  Lo
+ + PClo RCK is clk_bar
+ + PClo CCKEN is PCincr
+ + PClo CCKEN# is Hi
+ + PClo CCK is clk_bar
+ + PClo CCLR# is reset
+ + PClo RCO# goes to PChi CCKEN#
+ + PClo CLOAD# is PCload#
+
+## Sat  4 May 21:23:13 AEST 2019
+
+Yes that worked. I see:
+
+```
+CNZb!
+CNZk!
+```
+and the '!' show that we increment to $100 correctly. I had accidentally
+left the JMP $FFFF in, and so we jumped there, back to $0000 and ran the
+code a second time.
+
+What I do need to do is ensure that this will work for instructions that
+increment PC several times, e.g. LDA $XXXX. Might try it in the Verilog
+version first.

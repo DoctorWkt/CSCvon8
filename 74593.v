@@ -22,6 +22,7 @@ module ttl_74593 #(parameter WIDTH = 8, DELAY_RISE = 30, DELAY_FALL = 30)
 reg [WIDTH-1:0] R;		// Register
 reg [WIDTH-1:0] Cntr;		// Counter
 reg prev_CLOAD_bar=1'b1;	// Previous CLOAD_bar value
+reg prev_CCK=1'b1;		// Previous CCK value
 
 wire RCO_current;
 assign RCO_current= ~(&Q);	// Goes high when all of Q is zero
@@ -49,14 +50,24 @@ begin
   prev_CLOAD_bar <= 1'b1;	// Save this value for next time
 end
 
-always @(posedge CCK or posedge RCK)
+always @(negedge CCK)
+begin
+  if (CCK === 1'b0)
+    prev_CCK <= 1'b0;		// Save this value for next time
+end
+
+always @(posedge CCK)
 begin
   if (!CCLR_bar)
     Cntr <= {WIDTH{1'b0}};	// Reset the counter when CCLR_bar is low
-  else if (CCK && (CCKEN || ~CCKEN_bar))
+  else if (~prev_CCK && CCK && (CCKEN || ~CCKEN_bar))
     Cntr <= Cntr_next;		// Increment counter on rising CCK with
 				// either enable lines in their correct state
+  prev_CCK <= 1'b1;		// Save this value for next time
+end
 
+always @(posedge RCK)
+begin
 				// Load R with the input on a rising RCK
 				// when RCKEN_bar is low
   if (RCK && !RCKEN_bar)
