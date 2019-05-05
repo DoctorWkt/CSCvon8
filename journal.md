@@ -2478,7 +2478,7 @@ removing the eight wires. Doing a wiring check. db writer demux has the
 correct ALUena line low, the MEMena and IOena lines are high. The OE# lines
 on both RAM and ROM are high, so no output from them. I pulled out the UART
 and it's not affecting the data bus value. I've checked the ALUop wires
-are definitely value $06, B+1. The eiight B wires have value $21. A-reg's
+are definitely value $06, B+1. The eight B wires have value $21. A-reg's
 value is $44, just in case.
 
 All 44 pins are:
