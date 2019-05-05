@@ -1745,9 +1745,9 @@ I thought that before, didn't I?!
 
 ## Tue 23 Apr 13:46:21 AEST 2019
 
-minsky.s now runs on the TTL verilog version but print_str.s nor
+minsky.s now runs on the TTL Verilog version but print_str.s nor
 print_indir_str.s run properly yet. All the clc source code files run on the 
-TTL verilog version. So I really do hope that it's the microcode now.
+TTL Verilog version. So I really do hope that it's the microcode now.
 
 And now print_str.s runs, and print_indir_str.s nearly runs properly! The
 latter would indicate that it's the LIA instruction that needs some work.
@@ -1760,7 +1760,7 @@ is 3.125 MHz. That's a lot faster than I thought it would get to.
 I've fixed the LIA instructions so they now work. That means that every
 program works! I was looking for a faster 32Kx8 EPROM. I just found the
 57C71C EPROM with 70nS access time. Hmm, I just tried changing the TTL
-verilog version's Decode ROM to 70nS from 150nS and it didn't improve
+Verilog version's Decode ROM to 70nS from 150nS and it didn't improve
 the clock speed at all. There must be another path which is the limiting
 factor. I'll have to work that out.
 
@@ -1777,8 +1777,8 @@ still need to fix up the cas documentation.
 ## Thu 25 Apr 11:44:08 AEST 2019
 
 cas documentation fixed up. I brought the schematic wiring up to date
-with the TTL verilog version. But now there's a bug. I forgot to wire
-ROMselect and MEMena to the Instruction ROM chip in the TTL verilog version.
+with the TTL Verilog version. But now there's a bug. I forgot to wire
+ROMselect and MEMena to the Instruction ROM chip in the TTL Verilog version.
 I've done this and now examples 8, 9 and the print_* examples fail. Damn.
 
 Not a microcode bug. It means I have to increase the minimum clock
@@ -1854,11 +1854,11 @@ That's how the new register value gets into the counter.
 
 I probably won't have time tomorrow to look at this, but I will need to
 make the wiring more permanent on the breadboard and also make the same
-adjustments to the TTL verilog version.
+adjustments to the TTL Verilog version.
 
 ## Fri 26 Apr 17:10:45 AEST 2019
 
-I've rewired the TTL verilog version. I had to alter the 74593.v module
+I've rewired the TTL Verilog version. I had to alter the 74593.v module
 because it was seeing CLOAD_bar going from x to 1 as a rising edge. I
 had to track the dropping edge and use that memory to ensure that we were
 at a rising edge. It passes all the examples again.
@@ -2396,10 +2396,108 @@ Yes that worked. I see:
 CNZb!
 CNZk!
 ```
+
 and the '!' show that we increment to $100 correctly. I had accidentally
 left the JMP $FFFF in, and so we jumped there, back to $0000 and ran the
 code a second time.
 
 What I do need to do is ensure that this will work for instructions that
 increment PC several times, e.g. LDA $XXXX. Might try it in the Verilog
-version first.
+version first. Yes, this works in Verilog, so I think I'm happy with this now.
+
+I noticed I had a wiring mistake with addr[15] going to the hex inverter
+from the ROM CS#. I had the same pin going out as the RAM CS#! No wonder
+I was seeing spurious data bus values. It's now the negation of ROM CS#
+and now the above program runs fine. That means I only have the joy of
+wiring up sixteen address lines to the RAM as the next task.
+
+I've wired up the sixteen address lines to the RAM but now it's time for bed.
+
+## Sun  5 May 09:40:59 AEST 2019
+
+New program:
+
+```
+	NOP
+	LCB 'w'
+	STO B $8000	# Test a store/laod at $8000
+	LDA $8000
+	OUT A
+	LCA 't'
+	STO A $8001	# Test a store/laod at $8001
+	LDB $8001
+	OUT B
+
+        LCB '!'         # Start with an exclamation mark
+loop1:  STO B $8000,B   # Store B in $8000+B
+	LDA $8000,B	# Reload it
+	OUT A		# and print it
+        LDB B+1         # Increment B
+	LCA '?'		# Set A to '?' for comparison to B
+        JNE loop1       # Loop back until we get to '?'
+
+	OUT '\r'
+	OUT '\n'
+end:	JMP end
+	JMP $FFFF
+```
+
+The simulator runs it thus:
+
+```
+wt!"#$%&'()*+,-./0123456789:;<=>
+```
+
+The real hardware runs it thus:
+
+```
+wt"#$&'(*+,./0234678:;<>
+```
+
+That's interesting, so the RAM is working but for some reason we
+are skipping values. Is the B+1 somehow doubling? Yes, I just saw B change
+from $21 to $23. Also, it's a regular thing, as the code's output is the same
+a second time. So it's not a glitch.
+
+## Sun  5 May 18:10:22 AEST 2019
+
+I just took a 200fps video. At uSeq 0 the IR is loaded with the the opcode $26,
+LDB B+1. At uSeq 1, the ALUop is $06 which is B+1. At frames 150,151,152 I
+see the sequencer go to uSeq 1, B is value $21, and the data bus has value $23!
+Then at frames 164, 165, 166 I see B load the value of $23. That's a delay of
+70ms between clk rising and clk_bar rising, well after the ALU ROM should have
+reached a value.
+
+This means that the ALU is calculating the wrong value even before B loads it.
+I guess I'm going to have to pull out the B to ALU wiring and hand-toggle in
+some values to see what I get. Damn. Perhaps my ALU wiring is wrong. I've
+checked the B wiring and it's fine.
+
+I pulled the B reg ship so I can still see the LEDs and it's easier than
+removing the eight wires. Doing a wiring check. db writer demux has the
+correct ALUena line low, the MEMena and IOena lines are high. The OE# lines
+on both RAM and ROM are high, so no output from them. I pulled out the UART
+and it's not affecting the data bus value. I've checked the ALUop wires
+are definitely value $06, B+1. The eiight B wires have value $21. A-reg's
+value is $44, just in case.
+
+All 44 pins are:
+
+1100 1000 1000 0101 00000 (pins 1 to 21)
+
+1001 0000 0000 0010 00100 (pins 22 to 42)
+
+ + ALUop: 00110 or $6
+ + B: 0100010
+
+Ahah, I had the low two wired from B to the ALU crossed. Now fixed.
+Now running the above code, I get exactly what I was expecting/hoping to see:
+
+```
+wt!"#$%&'()*+,-./0123456789:;<=>
+```
+
+That means, as far as I've tested, the CPU is complete and working! A
+milestone. And here is the breadboard photo of the working CPU:
+
+![](Docs/Figs/breadboard_20190505.jpg)
