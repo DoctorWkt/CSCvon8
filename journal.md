@@ -2473,7 +2473,7 @@ I guess I'm going to have to pull out the B to ALU wiring and hand-toggle in
 some values to see what I get. Damn. Perhaps my ALU wiring is wrong. I've
 checked the B wiring and it's fine.
 
-I pulled the B reg ship so I can still see the LEDs and it's easier than
+I pulled the B reg chip so I can still see the LEDs and it's easier than
 removing the eight wires. Doing a wiring check. db writer demux has the
 correct ALUena line low, the MEMena and IOena lines are high. The OE# lines
 on both RAM and ROM are high, so no output from them. I pulled out the UART
@@ -2490,7 +2490,7 @@ All 44 pins are:
  + ALUop: 00110 or $6
  + B: 0100010
 
-Ahah, I had the low two wired from B to the ALU crossed. Now fixed.
+Ahah, I had the low two wires from B to the ALU crossed. Now fixed.
 Now running the above code, I get exactly what I was expecting/hoping to see:
 
 ```
