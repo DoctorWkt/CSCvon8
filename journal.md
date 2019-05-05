@@ -2420,11 +2420,11 @@ New program:
 ```
 	NOP
 	LCB 'w'
-	STO B $8000	# Test a store/laod at $8000
+	STO B $8000	# Test a store/load at $8000
 	LDA $8000
 	OUT A
 	LCA 't'
-	STO A $8001	# Test a store/laod at $8001
+	STO A $8001	# Test a store/load at $8001
 	LDB $8001
 	OUT B
 
