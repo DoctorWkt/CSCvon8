@@ -1,48 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:Schematic-rescue
-LIBS:power
-LIBS:device
-LIBS:switches
-LIBS:relays
-LIBS:motors
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:M27C322-100F1
-LIBS:74LS574
-LIBS:AT27C1024-70PU
-LIBS:QX14T50B1.843200B50TT
-LIBS:SN74LS273NE4
-LIBS:UM245R
-LIBS:7400-ic
-LIBS:74LS593
-LIBS:74LS139
+EESchema Schematic File Version 4
 LIBS:Schematic-cache
-EELAYER 25 0
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -57,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L M27C322-100F1-RESCUE-Schematic IC6
+L 74LS593:M27C322-100F1-RESCUE-Schematic IC6
 U 1 1 5C985237
 P 6900 3200
 F 0 "IC6" H 7450 3500 50  0000 L CNN
@@ -78,7 +36,7 @@ $EndComp
 Text Notes 7400 4200 0    60   ~ 0
 ALU
 $Comp
-L 74LS574-RESCUE-Schematic IC5
+L 74LS593:74LS574-RESCUE-Schematic IC5
 U 1 1 5C986B56
 P 3800 5000
 F 0 "IC5" H 3800 5700 50  0000 C CNN
@@ -89,7 +47,7 @@ F 3 "" H 3800 5000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74LS574-RESCUE-Schematic IC4
+L 74LS593:74LS574-RESCUE-Schematic IC4
 U 1 1 5C987475
 P 3800 3400
 F 0 "IC4" H 3800 4100 50  0000 C CNN
@@ -217,7 +175,7 @@ NoConn ~ 8100 3700
 NoConn ~ 8100 3800
 NoConn ~ 8100 3900
 $Comp
-L VCC #PWR08
+L power:VCC #PWR08
 U 1 1 5C99BBA6
 P 8300 3200
 F 0 "#PWR08" H 8300 3050 50  0001 C CNN
@@ -228,7 +186,7 @@ F 3 "" H 8300 3200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR09
+L power:VCC #PWR09
 U 1 1 5C99BBC1
 P 4900 3800
 F 0 "#PWR09" H 4900 3650 50  0001 C CNN
@@ -239,7 +197,7 @@ F 3 "" H 4900 3800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR010
+L power:VCC #PWR010
 U 1 1 5C99BC3B
 P 4450 5400
 F 0 "#PWR010" H 4450 5250 50  0001 C CNN
@@ -250,7 +208,7 @@ F 3 "" H 4450 5400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDREF #PWR011
+L power:GNDREF #PWR011
 U 1 1 5C99BDAD
 P 4900 3900
 F 0 "#PWR011" H 4900 3650 50  0001 C CNN
@@ -261,7 +219,7 @@ F 3 "" H 4900 3900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDREF #PWR012
+L power:GNDREF #PWR012
 U 1 1 5C99BDC8
 P 4450 5500
 F 0 "#PWR012" H 4450 5250 50  0001 C CNN
@@ -278,7 +236,7 @@ Bload
 Text GLabel 9500 3150 2    60   Input ~ 0
 ~ALUresult
 $Comp
-L GNDREF #PWR013
+L power:GNDREF #PWR013
 U 1 1 5C99887D
 P 8650 3300
 F 0 "#PWR013" H 8650 3050 50  0001 C CNN
@@ -353,8 +311,6 @@ Wire Wire Line
 Wire Wire Line
 	6150 2900 6150 3700
 Wire Bus Line
-	2750 3000 2750 5300
-Wire Bus Line
 	2750 5300 1950 5300
 Wire Wire Line
 	2850 2900 3100 2900
@@ -389,8 +345,6 @@ Wire Wire Line
 Wire Wire Line
 	2850 5200 3100 5200
 Wire Bus Line
-	9300 4100 9300 5100
-Wire Bus Line
 	9300 4100 9550 4100
 Wire Wire Line
 	8100 4500 9200 4500
@@ -418,8 +372,6 @@ Wire Wire Line
 	6900 3500 6750 3500
 Wire Wire Line
 	6900 3600 6750 3600
-Wire Bus Line
-	6650 2350 6650 3500
 Wire Bus Line
 	6650 2350 6100 2350
 Wire Wire Line
@@ -497,7 +449,7 @@ Wire Wire Line
 Wire Wire Line
 	9500 3150 8900 3150
 Wire Wire Line
-	8100 3300 8650 3300
+	8100 3300 8300 3300
 Wire Wire Line
 	8100 3500 8900 3500
 Connection ~ 8300 3300
@@ -521,4 +473,12 @@ Wire Wire Line
 	8900 3500 8900 3150
 Wire Wire Line
 	8100 3600 8300 3600
+Wire Wire Line
+	8300 3300 8650 3300
+Wire Bus Line
+	6650 2350 6650 3500
+Wire Bus Line
+	9300 4100 9300 5100
+Wire Bus Line
+	2750 3000 2750 5300
 $EndSCHEMATC

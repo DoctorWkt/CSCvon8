@@ -1,48 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:Schematic-rescue
-LIBS:power
-LIBS:device
-LIBS:switches
-LIBS:relays
-LIBS:motors
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:M27C322-100F1
-LIBS:74LS574
-LIBS:AT27C1024-70PU
-LIBS:QX14T50B1.843200B50TT
-LIBS:SN74LS273NE4
-LIBS:UM245R
-LIBS:7400-ic
-LIBS:74LS593
-LIBS:74LS139
+EESchema Schematic File Version 4
 LIBS:Schematic-cache
-EELAYER 25 0
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -57,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L HM62256BLP-7 IC1
+L memory:HM62256BLP-7 IC1
 U 1 1 5C997E5D
 P 4600 1800
 F 0 "IC1" H 4600 2800 50  0000 C CNN
@@ -247,10 +205,6 @@ Text Label 3550 4250 0    60   ~ 0
 adr13
 Text Label 3550 4350 0    60   ~ 0
 adr14
-Wire Bus Line
-	3400 4550 3400 1150
-Wire Bus Line
-	2100 4550 3400 4550
 Entry Wire Line
 	6650 1050 6750 950 
 Entry Wire Line
@@ -283,8 +237,6 @@ Entry Wire Line
 	6650 3550 6750 3450
 Entry Wire Line
 	6650 3650 6750 3550
-Wire Bus Line
-	6750 850  6750 3550
 Wire Bus Line
 	6750 850  9800 850 
 Wire Wire Line
@@ -352,7 +304,7 @@ d6
 Text Label 5300 1750 0    60   ~ 0
 d7
 $Comp
-L UM245R IC3
+L UM245R:UM245R IC3
 U 1 1 5C998F7D
 P 7950 1600
 F 0 "IC3" H 8550 1900 50  0000 L CNN
@@ -420,10 +372,8 @@ Text Label 7700 2200 0    60   ~ 0
 d6
 Text Label 7700 2300 0    60   ~ 0
 d7
-Wire Bus Line
-	7550 850  7550 2200
 $Comp
-L GNDREF #PWR01
+L power:GNDREF #PWR01
 U 1 1 5C99C363
 P 7750 2700
 F 0 "#PWR01" H 7750 2450 50  0001 C CNN
@@ -434,7 +384,7 @@ F 3 "" H 7750 2700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDREF #PWR02
+L power:GNDREF #PWR02
 U 1 1 5C99C37E
 P 9350 2700
 F 0 "#PWR02" H 9350 2450 50  0001 C CNN
@@ -449,7 +399,7 @@ Wire Wire Line
 Wire Wire Line
 	9150 2700 9350 2700
 $Comp
-L VCC #PWR03
+L power:VCC #PWR03
 U 1 1 5C99C414
 P 9350 1500
 F 0 "#PWR03" H 9350 1350 50  0001 C CNN
@@ -462,7 +412,7 @@ $EndComp
 Wire Wire Line
 	9350 1700 9150 1700
 Wire Wire Line
-	9350 1500 9350 1700
+	9350 1500 9350 1600
 Wire Wire Line
 	9150 1600 9350 1600
 Connection ~ 9350 1600
@@ -489,7 +439,7 @@ Wire Wire Line
 Text GLabel 6100 1900 2    60   Input ~ 0
 ~MEMresult
 Wire Wire Line
-	5100 1900 6100 1900
+	5100 1900 5950 1900
 Entry Wire Line
 	2250 4550 2350 4650
 Text Label 3300 4750 0    60   ~ 0
@@ -501,7 +451,7 @@ ROM
 Text Notes 8450 2100 0    60   ~ 0
 UART
 $Comp
-L GNDREF #PWR04
+L power:GNDREF #PWR04
 U 1 1 5C999C9E
 P 5250 2450
 F 0 "#PWR04" H 5250 2200 50  0001 C CNN
@@ -512,7 +462,7 @@ F 3 "" H 5250 2450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR05
+L power:VCC #PWR05
 U 1 1 5C999CBE
 P 5250 2350
 F 0 "#PWR05" H 5250 2200 50  0001 C CNN
@@ -527,7 +477,7 @@ Wire Wire Line
 Wire Wire Line
 	5200 2450 5250 2450
 $Comp
-L 28C256 IC2
+L memory:28C256 IC2
 U 1 1 5C99A013
 P 4600 3850
 F 0 "IC2" H 4600 4950 50  0000 C CNN
@@ -538,7 +488,7 @@ F 3 "" H 4600 3850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDREF #PWR06
+L power:GNDREF #PWR06
 U 1 1 5C99A4F7
 P 5300 4750
 F 0 "#PWR06" H 5300 4500 50  0001 C CNN
@@ -549,7 +499,7 @@ F 3 "" H 5300 4750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR07
+L power:VCC #PWR07
 U 1 1 5C99A542
 P 5300 4650
 F 0 "#PWR07" H 5300 4500 50  0001 C CNN
@@ -564,7 +514,7 @@ Wire Wire Line
 Wire Wire Line
 	5200 4750 5300 4750
 Wire Wire Line
-	2450 4750 3900 4750
+	2450 4750 2700 4750
 Wire Wire Line
 	2450 4750 2350 4650
 Connection ~ 2700 4750
@@ -602,7 +552,7 @@ The RAM and ROM components are 32Kbytes\neach. The adr15 line is inverted so tha
 Text Notes 600  1800 0    60   ~ 0
 The UART is also connected to the\ndata bus, and it has separate output\nand input control lines.  There are two\nready lines which are sent to the Jump\nlogic.
 $Comp
-L 74LS04 IC17
+L 74xx:74LS04 IC17
 U 6 1 5CA2F410
 P 4600 5300
 F 0 "IC17" H 4795 5415 50  0000 C CNN
@@ -613,11 +563,25 @@ F 3 "" H 4600 5300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4150 5300 2700 5300
-Wire Wire Line
 	2700 5300 2700 4750
 Wire Wire Line
 	5700 2150 5700 5300
 Wire Wire Line
-	5700 5300 5050 5300
+	9350 1600 9350 1700
+Wire Wire Line
+	2700 4750 3900 4750
+Wire Wire Line
+	5950 1900 6100 1900
+Wire Wire Line
+	2700 5300 4300 5300
+Wire Wire Line
+	4900 5300 5700 5300
+Wire Bus Line
+	2100 4550 3400 4550
+Wire Bus Line
+	7550 850  7550 2200
+Wire Bus Line
+	6750 850  6750 3550
+Wire Bus Line
+	3400 1150 3400 4550
 $EndSCHEMATC

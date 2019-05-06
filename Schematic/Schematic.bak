@@ -1,54 +1,12 @@
-EESchema Schematic File Version 2
-LIBS:Schematic-rescue
-LIBS:power
-LIBS:device
-LIBS:switches
-LIBS:relays
-LIBS:motors
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:M27C322-100F1
-LIBS:74LS574
-LIBS:AT27C1024-70PU
-LIBS:QX14T50B1.843200B50TT
-LIBS:SN74LS273NE4
-LIBS:UM245R
-LIBS:7400-ic
-LIBS:74LS593
-LIBS:74LS139
+EESchema Schematic File Version 4
 LIBS:Schematic-cache
-EELAYER 25 0
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 6
 Title "CSCvon8 CPU"
-Date "2019-04-02"
+Date ""
 Rev "1.2"
 Comp "Warren Toomey"
 Comment1 ""

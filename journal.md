@@ -2385,7 +2385,7 @@ breadboard wiring later. The wiring will be:
  + PClo CCKEN# is Hi
  + PClo CCK is clk_bar
  + PClo CCLR# is reset
- + PClo RCO# goes to PChi CCKEN#
+ + PClo RCO# goes to PChi CCK
  + PClo CLOAD# is PCload#
 
 ## Sat  4 May 21:23:13 AEST 2019
@@ -2501,3 +2501,12 @@ That means, as far as I've tested, the CPU is complete and working! A
 milestone. And here is the breadboard photo of the working CPU:
 
 ![](Docs/Figs/breadboard_20190505.jpg)
+
+## Mon  6 May 07:56:21 AEST 2019
+
+I've loaded minksy.s into the Instruction ROM but it's taking too many
+instruction/phases to get to printing an '*' and my fingers are tired out.
+I'll have to build a 555 clock circuit and use that. I want to also build
+a small stripboard 555 clock circuit with the same footprint as the 1MHz
+oscillator, so I can have a low frequency clock as well as the 1MHz clock.
+However, I'm seeing a lot of spaces being printed out so far.
