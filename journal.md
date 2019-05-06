@@ -2510,3 +2510,66 @@ I'll have to build a 555 clock circuit and use that. I want to also build
 a small stripboard 555 clock circuit with the same footprint as the 1MHz
 oscillator, so I can have a low frequency clock as well as the 1MHz clock.
 However, I'm seeing a lot of spaces being printed out so far.
+
+## Mon  6 May 19:22:09 AEST 2019
+
+![](Docs/Figs/breadboard_20190506.jpg)
+
+I've just added a 555 astable circuit, shown above. R1 is 1k, R2 is 20k
+variable and C1 is 10uF. I've run the minsky code several times; I'm seeing
+spaces, stars and newlines but it's completely unpredictable. That means
+either some dodgy wiring, I need to put in the bypass capacitors, or some
+really flaky timing. Even with R2 close to (but not) zero ohms I should
+see predictable results: as long as the the short half of the cycle is
+larger than about 230nS.
+
+What I might do is merge all of the Examples/example*s files into a
+single program, burn that to ROM and see if that gives me any clues.
+Done. The simulator does this:
+
+```
+W
+Hello
+35
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+AF
+82
+2345+11FF=3544
+WT
+Type: 
+```
+
+and then I can type stuff and get it echoed. The hardware does the first
+print of the ASCII characters, and I see it writing characters into RAM
+as part of the second ASCII print run, but now the PC is off out of page zero
+into RAM and doing NOPs :-)
+
+The crazy PC value seems to occur almost immediately after we read back the
+highest value, so we must have hit the "JNE loop1" and not taken the jump
+backwards.
+
+I wound down the clock speed to as low as I could get it as we broke the
+loop, and this time it went on fine and printed out the second ASCII set.
+So maybe I can't have the variable resistor R2 set to zero! There were a
+few more glitches:
+
+```
+AF
+82                                                                              
+345+11FF=35�4                                                                  
+WT                                                                              
+Type: goodness me, this is working!
+```
+
+but overall I feel a bit happier now.
+
+I've just tried a 0.47uF C1 with R2 set to the mid-point. As long as I keep
+R2 near the mid-point it seems OK. So perhaps the duty cycle? A few glitches
+still. The "2345+11FF=3544" hasn't printed correctly yet, but obviously the
+calculation is OK. I've seen:
+
+```
+35+1FF=3544
+2345+d1FF=35�4
+```
