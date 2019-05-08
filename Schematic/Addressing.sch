@@ -522,19 +522,6 @@ Text Notes 3450 600  0    60   ~ 0
 AddressBus
 Text GLabel 7800 1350 2    60   Input ~ 0
 ~Reset
-$Comp
-L Schematic-rescue:74LS251-RESCUE-Schematic U?
-U 1 1 5CA1932F
-P 6150 5400
-AR Path="/5CA1932F" Ref="U?"  Part="1" 
-AR Path="/5C985077/5CA1932F" Ref="IC11"  Part="1" 
-F 0 "IC11" H 6150 6250 50  0000 C CNN
-F 1 "74HCT251" H 6150 6150 50  0000 C CNN
-F 2 "Housings_DIP:DIP-16_W7.62mm_Socket" H 6150 5400 50  0001 C CNN
-F 3 "" H 6150 5400 50  0001 C CNN
-	1    6150 5400
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	6950 5900 6950 5850
 Wire Wire Line
@@ -703,6 +690,17 @@ Wire Wire Line
 	5650 2550 7050 2550
 Wire Wire Line
 	7050 2550 7050 3200
+$Comp
+L Schematic-rescue:74LS251-RESCUE-Schematic IC11
+U 1 1 5CDB88DB
+P 6150 5400
+F 0 "IC11" H 6150 6275 50  0000 C CNN
+F 1 "74LS251-RESCUE-Schematic" H 6150 6184 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 6150 5400 50  0001 C CNN
+F 3 "" H 6150 5400 50  0001 C CNN
+	1    6150 5400
+	1    0    0    -1  
+$EndComp
 Wire Bus Line
 	4500 5500 4500 5750
 Wire Bus Line

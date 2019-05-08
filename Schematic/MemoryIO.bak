@@ -541,10 +541,6 @@ Text GLabel 9350 2100 2    60   Output ~ 0
 ~TXready
 Text GLabel 9350 2000 2    60   Output ~ 0
 ~RXready
-Wire Wire Line
-	9150 2000 9350 2000
-Wire Wire Line
-	9150 2100 9350 2100
 Text GLabel 3850 4650 0    60   Input ~ 0
 Hi
 Text Notes 600  1200 0    60   ~ 0
@@ -556,7 +552,7 @@ L 74xx:74LS04 IC17
 U 6 1 5CA2F410
 P 4600 5300
 F 0 "IC17" H 4795 5415 50  0000 C CNN
-F 1 "74LS04" H 4790 5175 50  0000 C CNN
+F 1 "74HCT04" H 4790 5175 50  0000 C CNN
 F 2 "Housings_DIP:DIP-14_W7.62mm_Socket" H 4600 5300 50  0001 C CNN
 F 3 "" H 4600 5300 50  0001 C CNN
 	6    4600 5300
@@ -576,6 +572,10 @@ Wire Wire Line
 	2700 5300 4300 5300
 Wire Wire Line
 	4900 5300 5700 5300
+Wire Wire Line
+	9150 2000 9350 2000
+Wire Wire Line
+	9150 2100 9350 2100
 Wire Bus Line
 	2100 4550 3400 4550
 Wire Bus Line

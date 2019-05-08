@@ -247,51 +247,27 @@ F 3 "" H 8650 3300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4500 4500 6900 4500
+	4500 4500 5850 4500
 Wire Wire Line
-	4500 4600 6900 4600
+	4500 4600 5750 4600
 Wire Wire Line
-	4500 4700 6900 4700
+	4500 4700 5650 4700
 Wire Wire Line
-	4500 4800 6900 4800
-Wire Wire Line
-	4500 4900 6900 4900
-Wire Wire Line
-	4500 5000 6900 5000
-Wire Wire Line
-	4500 5100 6900 5100
-Wire Wire Line
-	4500 5200 6900 5200
+	4500 4800 5550 4800
 Wire Wire Line
 	6150 3700 6900 3700
 Wire Wire Line
-	4500 2900 6150 2900
-Wire Wire Line
 	6100 3800 6900 3800
-Wire Wire Line
-	4500 3000 6100 3000
-Wire Wire Line
-	4500 3100 6050 3100
 Wire Wire Line
 	6050 3900 6900 3900
 Wire Wire Line
-	4500 3200 6000 3200
-Wire Wire Line
 	6000 4000 6900 4000
-Wire Wire Line
-	4500 3300 5950 3300
 Wire Wire Line
 	5950 4100 6900 4100
 Wire Wire Line
-	4500 3400 5900 3400
-Wire Wire Line
 	5900 4200 6900 4200
 Wire Wire Line
-	4500 3500 5850 3500
-Wire Wire Line
 	5850 4300 6900 4300
-Wire Wire Line
-	4500 3600 5800 3600
 Wire Wire Line
 	5800 4400 6900 4400
 Wire Wire Line
@@ -475,10 +451,156 @@ Wire Wire Line
 	8100 3600 8300 3600
 Wire Wire Line
 	8300 3300 8650 3300
+$Comp
+L Connector:Conn_01x10_Female J7
+U 1 1 5CD2E273
+P 5450 5950
+F 0 "J7" V 5523 5880 50  0000 C CNN
+F 1 "Breg Pin Header" V 5614 5880 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical" H 5450 5950 50  0001 C CNN
+F 3 "~" H 5450 5950 50  0001 C CNN
+	1    5450 5950
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5850 5750 5850 4500
+Connection ~ 5850 4500
+Wire Wire Line
+	5850 4500 6900 4500
+Wire Wire Line
+	5750 5750 5750 4600
+Connection ~ 5750 4600
+Wire Wire Line
+	5750 4600 6900 4600
+Wire Wire Line
+	5650 5750 5650 4700
+Connection ~ 5650 4700
+Wire Wire Line
+	5650 4700 6900 4700
+Wire Wire Line
+	4500 5200 5150 5200
+Wire Wire Line
+	4500 5100 5250 5100
+Wire Wire Line
+	4500 5000 5350 5000
+Wire Wire Line
+	4500 4900 5450 4900
+Wire Wire Line
+	5550 5750 5550 4800
+Connection ~ 5550 4800
+Wire Wire Line
+	5550 4800 6900 4800
+Wire Wire Line
+	5450 5750 5450 4900
+Connection ~ 5450 4900
+Wire Wire Line
+	5450 4900 6900 4900
+Wire Wire Line
+	5350 5750 5350 5000
+Connection ~ 5350 5000
+Wire Wire Line
+	5350 5000 6900 5000
+Wire Wire Line
+	5250 5750 5250 5100
+Connection ~ 5250 5100
+Wire Wire Line
+	5250 5100 6900 5100
+Wire Wire Line
+	5150 5750 5150 5200
+Connection ~ 5150 5200
+Wire Wire Line
+	5150 5200 6900 5200
+NoConn ~ 5050 5750
+Wire Wire Line
+	4450 5500 4950 5500
+Wire Wire Line
+	4950 5500 4950 5750
+Connection ~ 4450 5500
+$Comp
+L Connector:Conn_01x10_Female J6
+U 1 1 5CD78577
+P 4950 2300
+F 0 "J6" V 5115 2230 50  0000 C CNN
+F 1 "Areg Pin Header" V 5024 2230 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical" H 4950 2300 50  0001 C CNN
+F 3 "~" H 4950 2300 50  0001 C CNN
+	1    4950 2300
+	0    -1   -1   0   
+$EndComp
+NoConn ~ 5350 2500
+$Comp
+L power:GNDREF #PWR0103
+U 1 1 5CDA8761
+P 5450 2600
+F 0 "#PWR0103" H 5450 2350 50  0001 C CNN
+F 1 "GNDREF" H 5450 2450 50  0000 C CNN
+F 2 "" H 5450 2600 50  0001 C CNN
+F 3 "" H 5450 2600 50  0001 C CNN
+	1    5450 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 2500 5450 2600
+Wire Wire Line
+	4500 3600 5250 3600
+Wire Wire Line
+	4500 3500 5150 3500
+Wire Wire Line
+	4500 3400 5050 3400
+Wire Wire Line
+	4500 3300 4950 3300
+Wire Wire Line
+	4500 3200 4850 3200
+Wire Wire Line
+	4500 3100 4750 3100
+Wire Wire Line
+	4500 3000 4650 3000
+Wire Wire Line
+	4500 2900 4550 2900
+Wire Wire Line
+	4550 2500 4550 2900
+Connection ~ 4550 2900
+Wire Wire Line
+	4550 2900 6150 2900
+Wire Wire Line
+	4650 2500 4650 3000
+Connection ~ 4650 3000
+Wire Wire Line
+	4650 3000 6100 3000
+Wire Wire Line
+	4750 2500 4750 3100
+Connection ~ 4750 3100
+Wire Wire Line
+	4750 3100 6050 3100
+Wire Wire Line
+	4850 2500 4850 3200
+Connection ~ 4850 3200
+Wire Wire Line
+	4850 3200 6000 3200
+Wire Wire Line
+	4950 2500 4950 3300
+Connection ~ 4950 3300
+Wire Wire Line
+	4950 3300 5950 3300
+Wire Wire Line
+	5050 2500 5050 3400
+Connection ~ 5050 3400
+Wire Wire Line
+	5050 3400 5900 3400
+Wire Wire Line
+	5150 2500 5150 3500
+Connection ~ 5150 3500
+Wire Wire Line
+	5150 3500 5850 3500
+Wire Wire Line
+	5250 2500 5250 3600
 Wire Bus Line
 	6650 2350 6650 3500
 Wire Bus Line
 	9300 4100 9300 5100
 Wire Bus Line
 	2750 3000 2750 5300
+Connection ~ 5250 3600
+Wire Wire Line
+	5250 3600 5800 3600
 $EndSCHEMATC

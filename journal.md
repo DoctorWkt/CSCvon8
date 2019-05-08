@@ -2573,3 +2573,94 @@ calculation is OK. I've seen:
 35+1FF=3544
 2345+d1FF=35�4
 ```
+
+## Mon  6 May 21:39:04 AEST 2019
+
+It's the duty cycle. I've put in a 1.5nF C1 and set R2 to the max value of
+20k, and it's working perfectly:
+
+```
+Hello                                                                           
+35                                                                              
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmno
+pqrstuvwxyz{|}~                                                                 
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmno
+pqrstuvwxyz{|}~                                                                 
+AF                                                                              
+82                                                                              
+2345+11FF=3544                                                                  
+WT                                                                              
+Type: I can type stuff and get it echoed.
+```
+
+Now to try minsky.s. Woohoo! minsky.s runs at all settings of R2 with
+absolutely no problems whatsoever. That's really good news. I might try
+a compiled program now.
+
+I tried signedprint.cl. It's weird. The leading minus sign is OK. The final
+digit is OK. The stuff in the middle is mostly the letter 'b'. To me it feels
+like the conditionals are not working fine. I've got to go to bed but tomorrow
+I'll put the bypass caps on the board, and hand-toggle to watch the decisions.
+
+## Tue  7 May 11:17:29 AEST 2019
+
+On the TTLers chat page Alastair Hewitt mentioned the DS1233 "EconoReset"
+device. Looks like a 3-leg transistor but monitors the Vcc value and also
+debounces the reset button. If Vcc is out, or if the button is pressed,
+will lower the reset line and keep it down for 350mS. Nice.
+
+## Wed  8 May 10:56:02 AEST 2019
+
+I put the bypass caps in last night and it made no change. I'm suspecting
+that the RAM wiring is dodgy. Some of the wires are long. I'm going to write
+a RAM checker, but not as a loop as I'd be relying on the RAM to hold stuff
+while I am trying to check it. So I'll write a script to generate a lot
+of manual single-location testing. I won't be able to test all 32K locations
+with a 32K ROM program, but I should be able to test a few thousand and get
+a general idea. I can test 1,555 locations. It works in csim and the TTL
+simulator. I'll try at home later.
+
+At home. Now the RAM test passes fine even at quite high clock frequencies.
+Here's the basics of the test:
+
+```
+        LCA $3e
+        STO A $aa1b
+        LCA $10
+        STO A $aa48
+        LCA $c2
+        STO A $c070
+        ...
+        LCA $3e
+        LDB $aa1b
+        JEQ L2
+        OUT 'a'
+        OUT 'a'
+        OUT '1'
+        OUT 'b'
+L2:
+        LCA $10
+        LDB $aa48
+        JEQ L3
+        OUT 'a'
+        OUT 'a'
+        OUT '4'
+        OUT '8'
+L3:     ...
+```
+
+The tester stores 1,555 random byte values in 1,555 RAM locations first. Then
+it goes back and checks to see the values were stored OK. If not, the address
+is printed as four characters. At the end of the test, the word "END\r\n" is
+printed. All I'm seeing is the "END", then it repeats and I see more "END"s
+only.
+
+So, it must be the specific instructions that calculate the hundreds and tens
+digits. I'll have to do some narrowing of the code. This tends to point
+towards the microcode not being correct.
+
+## Wed  8 May 18:53:18 AEST 2019
+
+I've moved a few things around on the PCB design. I'm much happier with it
+now and it only has about 34 vias so that's still excellent. I think I'll
+publish it as it is to Github.

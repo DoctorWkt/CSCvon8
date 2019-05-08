@@ -541,10 +541,6 @@ Text GLabel 9350 2100 2    60   Output ~ 0
 ~TXready
 Text GLabel 9350 2000 2    60   Output ~ 0
 ~RXready
-Wire Wire Line
-	9150 2000 9350 2000
-Wire Wire Line
-	9150 2100 9350 2100
 Text GLabel 3850 4650 0    60   Input ~ 0
 Hi
 Text Notes 600  1200 0    60   ~ 0
@@ -576,6 +572,10 @@ Wire Wire Line
 	2700 5300 4300 5300
 Wire Wire Line
 	4900 5300 5700 5300
+Wire Wire Line
+	9150 2000 9350 2000
+Wire Wire Line
+	9150 2100 9350 2100
 Wire Bus Line
 	2100 4550 3400 4550
 Wire Bus Line
