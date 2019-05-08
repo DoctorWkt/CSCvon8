@@ -92,8 +92,9 @@ my @ALUop = (
     "A-BCD"
 );
 
-# Enable debugging and pty I/O
+# Enable debugging, pty I/O and randomised memory
 while (@ARGV > 0) {
+  # Set debug mode
   if ($ARGV[0] eq "-d") { $debug++; shift(@ARGV); next; }
 
   # Open up a pty
@@ -102,7 +103,15 @@ while (@ARGV > 0) {
     print("pty is ", $OUT->ttyname(), "\n");
     shift(@ARGV); next;
   }
-  die("Usage: $0 [-d] [-p]\n");
+
+  # Randomise the RAM
+  if ($ARGV[0] eq "-r") {
+    foreach my $i (0 .. 32767) {
+      $RAM[$i]= int(rand(256));
+    }
+    shift(@ARGV); next;
+  }
+  die("Usage: $0 [-d] [-p] [-r]\n-d: debug, -r: randomise RAM, -p: open pty\n");
 }
 
 # Set the UART up to read one char at a time

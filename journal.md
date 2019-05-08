@@ -2664,3 +2664,143 @@ towards the microcode not being correct.
 I've moved a few things around on the PCB design. I'm much happier with it
 now and it only has about 34 vias so that's still excellent. I think I'll
 publish it as it is to Github.
+
+I just added minsky and the high-level triangles.cl to the "all ten examples"
+test program that I created yesterday or the day before. All of these work
+fine on the hardware. I had an idea: maybe I'm relying on all RAM being zero,
+and this isn't the case. I might add a "randomise RAM" option to csim and
+see if it reveals anything. No, signedprint.s works fine with randomised
+memory contents.
+
+There are three instructions in signedprint.s which do not occur in any
+of the other programs that work:
+
+ + JLE
+ + JLT
+ + LDA A-B
+
+so I guess I can check their microcode and test them on the hardware.
+
+I've eyeballed the microcode for the instructions and there is no
+substantial difference between them and the neigbour instructions except
+for the ALU operation.
+
+## Wed  8 May 20:06:25 AEST 2019
+
+Now it's getting interesting. Here's my code. I'm leaving out the
+prhex function from example09.s.
+
+```
+hexarg: EQU $8006
+
+main:   NOP
+        LCA $45                 # Print out 45 then 23, then subtract
+        STO A hexarg            # them and print out the result, 22
+        JSR prhex
+        OUT '\n'
+        JOU .
+        LCA $23
+        STO A hexarg
+        JSR prhex
+        OUT '\n'
+        JOU .
+        LCA $45
+        LCB $23
+        LDA A-B
+        STO A hexarg
+        JSR prhex
+        OUT '\n'
+        JOU .
+
+        LCA $20         # Test JLE
+        LCB $23
+        JLE L1
+        OUT '1'
+        JOU '.'
+L1:
+        LCA $20         # Test JLE
+        LCB $20
+        JLE L2
+        OUT '2'
+        JOU '.'
+L2:
+        LCA $40         # Test JLE
+        LCB $20
+        JLE L3
+        OUT '3'
+        JOU '.'
+L3:
+        LCA $20         # Test JLT
+        LCB $23
+        JLT L4
+        OUT '4'
+        JOU '.'
+L4:
+        LCA $20         # Test JLT
+        LCB $20
+        JLT L5
+        OUT '5'
+        JOU '.'
+L5:
+        LCA $40         # Test JLT
+        LCB $20
+        JLT L6
+        OUT '6'
+        JOU '.'
+L6:
+        OUT '\n'
+        JOU .
+        JMP main
+```
+
+Under csim this prints:
+
+```
+45
+23
+22
+356
+45
+23
+22
+356
+```
+
+On the hardware, it prints:
+
+```
+45
+23
+22
+6
+22
+23
+22
+6
+22
+23
+22
+6
+```
+
+Firstly, the jumps are not working right as we see "6" instead of "356".
+Also, how the heck is 22 being printed out on the subsequent runs instead
+of 45? The TTL verilog version agrees with the csim version, too.
+
+I rearranged the code and put the jump test first then the LDA A-B test second.
+When I run it now the 45 always comes up. Now I'm seeing sporadic "356"
+results but also lots of "35" results as well. I've prodded the ALU status
+wires with no improvement. The status lines on the breadboard are quite long.
+I'm starting  to suspect noise getting in on the lines. The missing "6"
+occurs when A=$40, B=$20, we do a JLT and we should not take the jump, but
+the missing "6" indicates that we did take the jump. The microcode is:
+
+```
+74 JLT: MEMresult AHload PCincr
+        MEMresult ALload PCincr
+        ALUresult A-B ARena JumpNeg
+        uSreset
+```
+
+so I guess I could look at the Negative line and see if it has any noise
+on it. Not tonight though.
