@@ -67,7 +67,7 @@
     (pad_drill 0.762)
     (pad_to_mask_clearance 0.2)
     (aux_axis_origin 0 0)
-    (visible_elements FFFFF77F)
+    (visible_elements FFFFFF7F)
     (pcbplotparams
       (layerselection 0x010fc_ffffffff)
       (usegerberextensions true)
@@ -6193,7 +6193,7 @@
   (segment (start 66.548 107.823) (end 44.958 107.823) (width 0.254) (layer B.Cu) (net 130))
   (segment (start 44.958 107.823) (end 44.704 107.569) (width 0.254) (layer B.Cu) (net 130))
 
-  (zone (net 96) (net_name Lo) (layer F.Cu) (tstamp 5CD2FBC4) (hatch edge 0.508)
+  (zone (net 96) (net_name Lo) (layer F.Cu) (tstamp 5CD35D32) (hatch edge 0.508)
     (connect_pads (clearance 0.508))
     (min_thickness 0.254)
     (fill yes (arc_segments 32) (thermal_gap 0.508) (thermal_bridge_width 0.508))
@@ -7820,7 +7820,7 @@
       )
     )
   )
-  (zone (net 96) (net_name Lo) (layer B.Cu) (tstamp 5CD2FBC1) (hatch edge 0.508)
+  (zone (net 96) (net_name Lo) (layer B.Cu) (tstamp 5CD35D2F) (hatch edge 0.508)
     (connect_pads (clearance 0.508))
     (min_thickness 0.254)
     (fill yes (arc_segments 32) (thermal_gap 0.508) (thermal_bridge_width 0.508))

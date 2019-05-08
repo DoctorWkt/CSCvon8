@@ -2803,4 +2803,14 @@ the missing "6" indicates that we did take the jump. The microcode is:
 ```
 
 so I guess I could look at the Negative line and see if it has any noise
-on it. Not tonight though.
+on it. Not tonight though. I can also single step and look at the values
+on the status lines.
+
+## Thu  9 May 08:46:23 AEST 2019
+
+I've printed out the new schematic on A3 and spent about 20 minutes
+cross-checking the wiring, going back to the datasheets to confirm
+pins etc. It all looks fine. All I can see to change is the oscillator
+speed down to 1MHz. I'm happy with the PCB design from last night and it
+passes DRC with the BreadBoardKillers minimum track/via sizes. So, should
+I order some PCBs? OK, so I bit the bullet and ordered the PCBs.
