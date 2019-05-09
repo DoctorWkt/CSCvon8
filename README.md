@@ -6,15 +6,19 @@ This is a von Neumann style CPU designed with 7400-style logic chips and
 some RAM and ROM. The CPU requires only seventeen chips, not including the
 clock circuitry.
 
-Right now CSCvon8 is still under development. Have a look at
-[Docs/CSCvon8_design.md](Docs/CSCvon8_design.md) for the overall
-design of the CPU so far. Also read the
+![](Docs/Figs/CSCvon8_overview.png) 
+
+The overall design of the CPU is covered in
+[Docs/CSCvon8_design.md](Docs/CSCvon8_design.md). Also read the
 [getting started guide](Docs/getgoing_instructions.md).
+
+So far I've breadboarded the CPU, and (10th May 2019) I've ordered some
+PCBs to populate. Read [my journal](journal.md) for details of progress.
 
 The files and folders in this repository are:
 - *Docs*, documents on the design and how to use the tools below
 - *Examples*, example programs for the CPU
-- *Schematic*, a KiCad schematic of the CPU. Not ready for production, though
+- *Schematic*, a KiCad schematic of the CPU
 - *cas*, the assembler for the CPU
 - *clc*, a very crude compiler that outputs assembly that can be given to cas
 - *csim*, a simulator of the CPU written in Perl
@@ -28,11 +32,3 @@ There is also a Verilog version with the top-level file being
 build and run the Verilog testbench. Some notes on this implementation
 are in the
 [*Docs/implementation_notes.md*](Docs/implementation_notes.md) file.
-
-If you want to leave any comments, feel free to use the
-[GitHub issues page](https://github.com/DoctorWkt/CSCvon8/issues)
-for this purpose.
-
-Here is a diagram of the basic CSCvon8 architecture:
-
-![](Docs/Figs/CSCvon8_overview.png) 
