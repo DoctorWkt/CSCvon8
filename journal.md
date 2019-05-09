@@ -2821,9 +2821,11 @@ Now, what will I do when the PCBs arrive. Steps:
  2. Wire up the 555 and reset circuit, plus the UM245R socket. I'll get
     power and I'll be able to confirm that the clock pulse works.
  3. Put in another socket somewhere so I can get pins for Vcc and Gnd.
+    I will probably put in the Decode ROM socket so I can wire several
+    control lines to Hi or Lo.
  4. Wire in the microsequencer and confirm that it is counting.
  5. Wire in the PC sockets and the PC chips. Try to get the PC to count.
- 6. Wire in the IR, the Instruction ROM ZIF socket, the Decode socket,
+ 6. Wire in the IR, the Instruction ROM ZIF socket, the Decode ROM,
     and the databus reader demux. Probably also the writer demux. This
     should be enough to try some OUT 'H' instructions and see if we get
     some UART output.
@@ -2838,3 +2840,12 @@ Now, what will I do when the PCBs arrive. Steps:
  11. At some point I want to build a tiny stripboard that has the same pin
     locations as the oscillator, but with a 555 and variable resistor plus
     a removable capacitor. I'll be able to use this for kHz clock speeds.
+
+I found this design for a 50% duty cycle 555 circuit in
+[this web page](https://www.electronics-tutorials.ws/waveforms/555_oscillator.html). I've drawn a stripboard version where the 555 sits within the oscillator
+footprint but with some of the stripboard outside the oscillator footprint.
+I might try wiring it up at home on the breadboard too to ensure that it works.
+Here's the drawing:
+
+!()[Docs/Figs/555_astable.jpg]
+
