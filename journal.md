@@ -2847,5 +2847,5 @@ footprint but with some of the stripboard outside the oscillator footprint.
 I might try wiring it up at home on the breadboard too to ensure that it works.
 Here's the drawing:
 
-!()[Docs/Figs/555_astable.jpg]
+![](Docs/Figs/555_astable.jpg)
 
