@@ -16,3 +16,6 @@ Schematic/fp-info-cache
 Schematic/rescue-backup
 Schematic/sym-lib-table
 Schematic/Gerber
+Schematic/Schematic.xml
+Schematic/newbom.csv
+Schematic/oldbom.csv

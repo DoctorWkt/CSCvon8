@@ -2849,3 +2849,13 @@ Here's the drawing:
 
 ![](Docs/Figs/555_astable.jpg)
 
+## Thu  9 May 17:38:29 AEST 2019
+
+The 555 circuit works! However, I'm not seeing any change in the JLT behaviour.
+That said, when I single-step it, it never occurs. I can only think that it's
+noise, then. We'll have to see if it goes away with the PCB version. I've 
+moved the Vcc supply over to the UART, so I know that's going to work as well.
+
+I've ordered some stripboard, some more DIP sockets and some solder on-line.
+I can't find a DIP-42 socket for the ALU, but I'll just use two rows of the
+pin sockets that I already have for the ALU socket.
