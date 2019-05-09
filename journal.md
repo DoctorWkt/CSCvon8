@@ -2814,3 +2814,27 @@ pins etc. It all looks fine. All I can see to change is the oscillator
 speed down to 1MHz. I'm happy with the PCB design from last night and it
 passes DRC with the BreadBoardKillers minimum track/via sizes. So, should
 I order some PCBs? OK, so I bit the bullet and ordered the PCBs.
+
+Now, what will I do when the PCBs arrive. Steps:
+
+ 1. Check that Vcc and Gnd are not connected!
+ 2. Wire up the 555 and reset circuit, plus the UM245R socket. I'll get
+    power and I'll be able to confirm that the clock pulse works.
+ 3. Put in another socket somewhere so I can get pins for Vcc and Gnd.
+ 4. Wire in the microsequencer and confirm that it is counting.
+ 5. Wire in the PC sockets and the PC chips. Try to get the PC to count.
+ 6. Wire in the IR, the Instruction ROM ZIF socket, the Decode socket,
+    and the databus reader demux. Probably also the writer demux. This
+    should be enough to try some OUT 'H' instructions and see if we get
+    some UART output.
+ 7. Wire in the A & B registers and the Inverter chip. Now I should be able
+    to do some LCA and LCB instructions.
+ 8. Wire in the Jump logic chip and hard-wire the Zero line so that we can
+    try some JMP instructions.
+ 9. Wire in the ALU socket and the ALU. Now we should be able to do ALU
+    operations between the A & B registers.
+ 10. Wire in the AR chips and the RAM socket and chip. This should be the
+    final board work. Now we have RAM to play with.
+ 11. At some point I want to build a tiny stripboard that has the same pin
+    locations as the oscillator, but with a 555 and variable resistor plus
+    a removable capacitor. I'll be able to use this for kHz clock speeds.
