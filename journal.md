@@ -2859,3 +2859,45 @@ moved the Vcc supply over to the UART, so I know that's going to work as well.
 I've ordered some stripboard, some more DIP sockets and some solder on-line.
 I can't find a DIP-42 socket for the ALU, but I'll just use two rows of the
 pin sockets that I already have for the ALU socket.
+
+## Sat 11 May 16:24:30 AEST 2019
+
+Notes on the wiring when I get the PCB.
+
+Pulse clock 555 circuit and the reset circuit is easy. Solder in the UART
+socket so I get power.
+
+Solder in the Decode ROM circuit so I can patch the control lines hi/lo as
+required.
+
+Solder in the uSeq counter. Wire uSreset# high and it should count 0 to F.
+Try the reset button. Add bypass caps as you go. Solder the pin sockets for
+the LEDs of course.
+
+Solder in the dbWriter demux so that I get Clkbar# and check it is working.
+Add bypass caps as you go.
+
+Solder in the PC sockets and put in the two 74LS593 chips. Wire ARena# high.
+Wire PCload# high. Wire PCincr low & the PC should keep its value.
+Wire PCincr high and see if the PC increments OK.
+
+Solder in the ROM ZIF socket. Solder in the Decode ROM socket.
+*Remove all hard-wired lines like PCincr, ARena#, uSreset#!!!*
+Solder in the db Reader demux and the Inverter. Insert the two ROMs.
+Rewire PCload# high. This should be enough to run some NOP, OUT 'H' etc.
+instructions but no jumps yet.
+
+Remove the PCload# high wire. Solder in the Jump logic chip. Wire the Zero
+input high. You may have to solder in the ALU socket, or perhaps use a clip
+on pin 1. Solder in the two AR chips. You should now be able to JMP once
+the AR has values loaded.
+
+Solder in the A and B registers and the LED sockets. Now try some LCA and
+LCB instructions.
+
+Solder in the ALU socket and insert the ALU. Now a lot of instructions
+should run, just none that refer to RAM. At this point you might want to
+use the 50% duty cycle astable 555 circuit.
+
+Finally solder in the RAM socket and the RAM, and try out some RAM
+instructions.
