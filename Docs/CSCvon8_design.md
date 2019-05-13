@@ -93,7 +93,7 @@ address $2000,B.
 
 The diagram above shows fourteen logical components in the CPU design. In
 reality, each logical component is constructed from one or more physical chips.
-Seventeen chips and one clock crystal are needed to build this CPU. All chips
+Seventeen chips and one oscillator are needed to build this CPU. All chips
 use the 0V/5V TTL levels for logic zero and one, respectively.
 
 The following table identifies each component and the physical chips that
@@ -149,7 +149,7 @@ register. However, the CPU still needs the ability to change the flow of
 instruction execution based on data comparisons.
 
 This is done by the ALU outputting both an 8-bit result and five flag values:
-a (D)ivide by zero, a negative result (N), an overflow(V), a carry (C)
+a (D)ivide by zero, a negative result (N), an overflow (V), a carry (C)
 and/or a zero result (Z).
 
 The D, N, Z, V and C bits are sent to the Jump logic along with two
@@ -186,9 +186,9 @@ The special "A - B" ALU operation still produces the result of A - B, but the Ze
 
 ## Microcoded Instructions
 
-The Decode Logic ROM outputs 16 bits of control lines for each microinstruction, of which 15 are used in the current design.
-
-The lowest 5 bits are the ALU operation (0x00 to 0x1F). Above that, the lines are mnemonically known as:
+The Decode Logic ROM outputs 16 bits of control lines for each
+microinstruction. The lowest 5 bits are the ALU operation (0x00 to 0x1F)
+described previously. Above that, the lines are mnemonically known as:
 
 ```
 	# Loads from the data bus

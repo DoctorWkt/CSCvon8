@@ -2867,12 +2867,12 @@ Notes on the wiring when I get the PCB.
 Pulse clock 555 circuit and the reset circuit is easy. Solder in the UART
 socket so I get power.
 
-Solder in the Decode ROM circuit so I can patch the control lines hi/lo as
+Solder in the Decode ROM socket so I can patch the control lines hi/lo as
 required.
 
 Solder in the uSeq counter. Wire uSreset# high and it should count 0 to F.
 Try the reset button. Add bypass caps as you go. Solder the pin sockets for
-the LEDs of course.
+the LEDs as you go.
 
 Solder in the dbWriter demux so that I get Clkbar# and check it is working.
 Add bypass caps as you go.
@@ -2881,7 +2881,7 @@ Solder in the PC sockets and put in the two 74LS593 chips. Wire ARena# high.
 Wire PCload# high. Wire PCincr low & the PC should keep its value.
 Wire PCincr high and see if the PC increments OK.
 
-Solder in the ROM ZIF socket. Solder in the Decode ROM socket.
+Solder in the ROM ZIF socket.
 *Remove all hard-wired lines like PCincr, ARena#, uSreset#!!!*
 Solder in the db Reader demux and the Inverter. Insert the two ROMs.
 Rewire PCload# high. This should be enough to run some NOP, OUT 'H' etc.
