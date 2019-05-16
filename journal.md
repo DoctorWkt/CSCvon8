@@ -2901,3 +2901,17 @@ use the 50% duty cycle astable 555 circuit.
 
 Finally solder in the RAM socket and the RAM, and try out some RAM
 instructions.
+
+## Thu 16 May 20:29:42 AEST 2019
+
+The PCBs are here and they look fantastic! I've checked Vcc isn't connected
+to Gnd, and I've soldered in the UART socket, the big cap, the pushbuttons
+and the Reset and Pulse circuits.
+
+Now something I didn't realise: the USB end of the UART points downwards
+and not upwards. So the USB socket sits right above the uSeq chip. Luckily
+there is clearance, but I had to rebuild the 4-LED display for the phase
+so that it can sit under the UART. I've added the Decode ROM socket too.
+
+I've powered it on and the microsequencer counts up and can be reset. So
+all good so far.
