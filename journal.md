@@ -2924,3 +2924,45 @@ IR and the Instruction and Decode ROMs. I wired PCincr# high to prevent any
 accidental jumps. Here is the PCB so far:
 
 ![](Docs/Figs/pcb_20190517a.jpg)
+
+## Fri 17 May 22:16:04 AEST 2019
+
+Hah. I've soldered in the two registers and I thought I'd try this out:
+
+```
+        NOP
+        LCA 'W'
+        OUT A
+        LCA 'a'
+        OUT A
+        LCA 'r'
+        OUT A
+        LCA 'r'
+        OUT A
+        LCB 'e'
+        OUT B
+        LCB 'n'
+        OUT B
+        LCB '\r'
+        OUT B
+        LCB '\n'
+        OUT B
+        JMP .
+```
+
+which didn't output the correct characters. However, the correct values were
+being loaded into the registers. Then, d'oh, I realised that I don't have the
+ALU actually inserted, so there is no ALU output to put A or B on the data bus!
+Silly me. I have put the ALU socket in, so I could go and insert the ALU ROM
+and see what happens.
+
+The ALU ROM chip went into the socket surprisingly easy, much easier than the
+Decode ROM. And ... it works! The program prints out my name, yay!
+
+So what is left to solder in: the two AR chips, the Jump logic chip. I'll
+test those first, probably with some conditional jumps. Then, last will
+be the RAM chip.
+
+Oh, I did build the 50% duty cycle 555 circuit today but it's not working.
+So I'll need to get that fixed up so I can run some long-ish programs and
+not destroy my finger or the pushbutton.
