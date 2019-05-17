@@ -2966,3 +2966,14 @@ be the RAM chip.
 Oh, I did build the 50% duty cycle 555 circuit today but it's not working.
 So I'll need to get that fixed up so I can run some long-ish programs and
 not destroy my finger or the pushbutton.
+
+## Sat 18 May 07:55:41 AEST 2019
+
+I've soldered in the RAM socket and the remaining chips. I've just
+single-stepped the first section of jlt_test.s (that doesn't use RAM)
+and the JLT and JLE instructions work. Mind you, they did that on the
+breadboard when single-stepping. The test will be to get the 555 astable
+circuit to work, then try out something substantial.
+
+However, I have a fully soldered PCB; I didn't think I'd get it done so
+quickly.
