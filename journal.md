@@ -2915,3 +2915,12 @@ so that it can sit under the UART. I've added the Decode ROM socket too.
 
 I've powered it on and the microsequencer counts up and can be reset. So
 all good so far.
+
+## Fri 17 May 12:10:04 AEST 2019
+
+Yay, I've just run my first instructions on the PCB, some OUT 'x' instructions.
+I've wired in the PC chips, the dbWrite and dbRead chips, the inverter, the
+IR and the Instruction and Decode ROMs. I wired PCincr# high to prevent any
+accidental jumps. Here is the PCB so far:
+
+![](Docs/Figs/pcb_20190517a.jpg)
