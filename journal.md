@@ -2977,3 +2977,17 @@ circuit to work, then try out something substantial.
 
 However, I have a fully soldered PCB; I didn't think I'd get it done so
 quickly.
+
+Damn. The 555 problem was a dodgy removable capacitor. I've changed to a
+different cap and it's working. So the clock board is now mounted on the
+PCB and I'm running the bigfred.s test, which has all the example programs
+plus triangle.cl and minsky.s. I've gone for the biggest cap so it's slowly
+getting through the triangle at present after passing all the other examples.
+I'll go have a cup of coffee and come back to see the sine wave.
+
+I couldn't wait. I've tried some smaller caps and now I'm on a "152" which
+is a 1.5nF cap. I'm guessing 20kHz roughly but I might measure it
+later. Everything in the bigfred.s test works fine; the sine wave is
+progressing as it should. Time for a new PCB photo:
+
+![](Docs/Figs/pcb_20190518.jpg)
