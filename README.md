@@ -12,8 +12,10 @@ The overall design of the CPU is covered in
 [Docs/CSCvon8_design.md](Docs/CSCvon8_design.md). Also read the
 [getting started guide](Docs/getgoing_instructions.md).
 
-So far I've breadboarded the CPU, and (10th May 2019) I've ordered some
-PCBs to populate. Read [my journal](journal.md) for details of progress.
+As at the 18th May 2019 I have the CPU running solidly at 3.57MHz on
+the PCBs that I ordered from the PCB design in the Schematics folder.
+I've kept a [journal](journal.md) with details of my progress from the
+initial design phase through to the successful build.
 
 The files and folders in this repository are:
 - *Docs*, documents on the design and how to use the tools below

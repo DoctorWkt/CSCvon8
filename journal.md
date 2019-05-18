@@ -3119,3 +3119,19 @@ That was a good guess. signedprint.s is still working at 3.57MHz. I think
 I'll leave the microcode as it is for now. Will I ever come back and
 try and figure out why? Who knows? Right now I'm satisfied that the CPU is
 working solidly at 3.57MHz.
+
+## Sat 18 May 20:09:09 AEST 2019
+
+Things I want to do now:
+
+  1. Add cpp support to the assembler, so I can have multi-file programs.
+  2. Add numbered labels and 1f, 1b etc. relative branches to save having
+     to use L1, L2 only once.
+  3. Modify the assembler to have a RAM option. This will assemble to the
+     obj file format as is used by the monitor ROM, and also default to
+     start at $8000.
+
+## Sat 18 May 21:33:17 AEST 2019
+
+I've done 1 and 2 above. I'll have to think carefully about the RAM option
+to make sure that I get it right and keep the code simple.

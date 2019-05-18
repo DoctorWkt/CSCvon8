@@ -12,6 +12,8 @@ my @Line;           # Array of whole lines from input file
 my @Linenum;        # Line number for each line in @Line
 my @ROM = (0) x 32768;    # Contents of the instruction ROM
 my %Label;                # Hash of labels
+my @Numlabel;	    # Sparse 2D array of numeric labels and at what location
+		    # they were defined.
 
 # Hash of instruction names, their opcode values and length in bytes.
 # Also, hash of known keywords that occur in instructions.
@@ -75,12 +77,40 @@ sub load_opcodes {
     close($IN);
 }
 
+# Given a numeric label value and either 'b' or 'f', return the value of
+# the matching numeric label, or die if none is found
+sub get_numeric_label_value {
+  my ($n, $direction)= @_;
+
+  # Get the reference to the array of addresses for the given label
+  my $lref= $Numlabel[$n];
+  die("Numeric label $n never used, cannot be referenced on line $linenum\n")
+	if (!defined($lref));
+
+  # Walk the list getting the next value. Keep the previous value.
+  my $bval= undef;
+  foreach my $fval (@{ $lref }) {
+    # Return the first value after the PC if direction is forward
+    return($fval) if (($direction eq "f") && ($fval > $PC));
+    $bval= $fval;
+  }
+
+  # Return the last back value if the direction is backward
+  return($bval) if (($direction eq "b") && defined($bval));
+
+  # We didn't find a reference for the direction
+  die("No value for $n$direction on line $linenum\n");
+}
+
 # Get the value of a label or a $hex constant. Also support . for PC,
 # .+num, .-num and label/HI to get the top byte of a label.
 sub get_label_value {
     my ( $word, $firstpass ) = @_;
-
     my $address = 0;
+
+    # If it's a reference to a numeric label, use another function
+    if ($word=~ m{^(\d+)([bf])$}) { return(get_numeric_label_value($1, $2)); }
+
     if ( defined( $Label{$word} ) ) {
         $address = $Label{$word};
     }
@@ -152,6 +182,13 @@ sub parse2 {
         if ( $line =~ m{^\s*\$([0-9A-Fa-f][0-9A-Fa-f])(.*)} ) {
             $constant = hex($1); $line     = $2; next;
         }
+
+	# Numbered label: push the PC to define the current position
+	# of this temporary label
+        if ( $line =~ m{^\s*(\d+):(.*)} ) {
+          my $nlabel = $1; $line  = $2;
+	  push( @{ $Numlabel[$nlabel] }, $PC); next;
+	}
 
         # Label
         if ( $line =~ m{^\s*(\S+):(.*)} ) {
@@ -344,8 +381,10 @@ die("Usage: $0 [-d] infile\n") if ( @ARGV != 1 );
 # Load the instruction names, opcodes and lengths
 load_opcodes();
 
-# Read in the instructions and store in the @Line array
-open( my $IN, "<", $ARGV[0] ) || die("Cannot read $ARGV[0]: $!\n");
+# Read in the instructions and store in the @Line array. Use the
+# C preprocessor as well.
+open( my $IN, "-|", "cpp -nostdinc $ARGV[0]")
+                                || die("Cannot open $ARGV[0]: $!");
 while (<$IN>) {
     chomp;
     $linenum++;
@@ -370,6 +409,12 @@ if ($debug) {
     print("Labels:\n");
     foreach my $k (sort(keys(%Label))) {
       printf("%s:\t%04x\n", $k, $Label{$k});
+    }
+
+    print("Numeric labels:\n");
+    foreach my $k (0 .. scalar(@Numlabel)-1) {
+      next if (!defined($Numlabel[$k]));
+      print("$k: ", join(", ", @{ $Numlabel[$k] }), "\n");
     }
 }
 
