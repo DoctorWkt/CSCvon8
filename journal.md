@@ -3109,3 +3109,13 @@ both 1MHz and 3.57MHz. The next things to test are:
 
  + how many NOPs do I need to guarantee the CPU will start?
  + what extra "wait" microinstructions can I remove and keep it working?
+
+Three NOPs is not enough. Six seems to be fine even at 3.57MHz. Now the
+tricky question: what's wrong with the microcode? I've added a
+microinstruction before the one that does the Jump, and also one afterwards.
+I'll take one out. Which one? Let's try the one after the Jump.
+
+That was a good guess. signedprint.s is still working at 3.57MHz. I think
+I'll leave the microcode as it is for now. Will I ever come back and
+try and figure out why? Who knows? Right now I'm satisfied that the CPU is
+working solidly at 3.57MHz.
