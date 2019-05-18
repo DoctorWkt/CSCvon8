@@ -2991,3 +2991,54 @@ later. Everything in the bigfred.s test works fine; the sine wave is
 progressing as it should. Time for a new PCB photo:
 
 ![](Docs/Figs/pcb_20190518.jpg)
+
+## Sat 18 May 09:50:09 AEST 2019
+
+I bit the bullet and put in the 1MHz oscillator and ... it works! I have
+designed and built an 8-bit TTL CPU which can run at 1MHz :-) I'm pretty
+chuffed at this point in time.
+
+It is interesting that the *csim* simulator is showing this at boot:
+
+```
+W
+Hello
+35
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+AF
+82
+2345+11FF=3544
+WT
+Type:
+```
+
+but the 1MHz PCB is doing this:
+
+```
+W
+Hello
+W
+Hello
+W
+Hello
+W
+Hello
+W
+Hello
+35
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+AF
+82
+2345+11FF=3544
+WT
+Type:
+```
+which is intruiging.
+
+And now the impossible. I put the 3.57MHz oscillator in just because it's sitting here and
+I know it won't work, except that it does. There are more lines at the beginning, and
+occasionally the letter 's' after the Type: prompt, but the sine wave is doing its thing.
+I have to believe that this isn't 100% stable, so I'll go back to the 1MHz oscillator.
+But now I have an 8-bit TTL CPU which runs faster than my Apple ][+, which is amazing.
