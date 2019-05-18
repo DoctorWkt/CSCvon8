@@ -3042,3 +3042,70 @@ I know it won't work, except that it does. There are more lines at the beginning
 occasionally the letter 's' after the Type: prompt, but the sine wave is doing its thing.
 I have to believe that this isn't 100% stable, so I'll go back to the 1MHz oscillator.
 But now I have an 8-bit TTL CPU which runs faster than my Apple ][+, which is amazing.
+
+## Sat 18 May 10:16:02 AEST 2019
+
+I've put my nemesis test, signedprint.cl, into the ROM. It's exhibiting
+the same behaviour with the -bW1 -bT9 -bS8 etc. output. That, to me,
+indicates I have bugs in my microinstructions.  I've gone down to around
+1kHz and it's still there. It doesn't do anything up at 20kHz. This will
+be very interesting to find and fix.
+
+I've put the jlt_test back in. It should be printing and repeating:
+356 45 23 22.  At 1Mhz it prints out a few "356" and then gets into an
+infinite loop.
+
+I've downloaded bitscope-meter. First up, the 555 circuit isn't a 50% one.
+I have a 2.1kHz 70% clock and jlt_test is working fine. At 25hHz 50% all OK.
+At 127kHz 65% all OK. At 137kHz 66% OK. But around 150kHz 66% it runs for a
+bit and then dies. Clock period is 6.67uS. So 34% of this is around 2.2uS.
+
+Back to signedprint.s. Now running at 300Hz 50%, a verry slow clock! The output
+is:
+
+```
+-106                                                                     
+-105                                                                     
+-104                                                                     
+-103                                                                     
+-102                                                                     
+-101                                                                     
+-100                                                                     
+-bu9                                                                     
+-bt8                                                                     
+-bs7                                                                     
+-br6                                                                     
+-bq5
+```
+The same at 5kHz. I'm not sure if there are two separate issues or just one
+issue with two different behaviours. The jlt_test is definitely clock
+sensitive, whereas signedprint.s isn't. But both are having jump issues.
+
+I'm going to try and add some ""wait" microinstructions into the microcode.
+Example:
+
+```
+80 LDA_A+B_JC:  MEMresult AHload PCincr
+                MEMresult ALload PCincr
+                ALUresult A+B Aload		# Load A first
+                ALUresult A+B ARena JumpCarry	# Now jump if carry
+                ALUresult A+B 			# Keep same data bus
+                uSreset				# Now reset uSequencer
+```
+
+I'm erasing a second Decode ROM and I'll try it out soon.
+OK. I've burned and installed the new Decode ROM. At 2kHz the CPU
+is running signedprint.s fine. That definitely points to the microcode
+being the problem.
+
+Interesting. I can get signedprint.s up to about 15kHz and then it dies.
+I think this is because I'm getting close to the edge of the variable
+resistor range. But the program won't start above about 5kHz. I'll
+put in a pile of NOPs at the start to see if that helps is stabilise.
+
+Yes that helped. The CPU now starts and runs signedprint.s at 125kHz.
+Time to try 1MHz. Excellent. The CPU starts and runs signedprint.s at
+both 1MHz and 3.57MHz. The next things to test are:
+
+ + how many NOPs do I need to guarantee the CPU will start?
+ + what extra "wait" microinstructions can I remove and keep it working?
