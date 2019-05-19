@@ -3135,3 +3135,31 @@ Things I want to do now:
 
 I've done 1 and 2 above. I'll have to think carefully about the RAM option
 to make sure that I get it right and keep the code simple.
+
+## Sun 19 May 09:23:27 AEST 2019
+
+Back to the monitor. It doesn't run any more. I removed this ARena to
+the LIA microcode to fix it in csim:
+
+```
+F2 LIA: MEMresult AHload PCincr         # Load top of indirect addr into AH
+        MEMresult Bload                 # Load bot of indirect addr into B & AL
+        MEMresult ALload PCincr	ARena <====
+        ARena MEMresult Aload           # Load A with top byte thru pointer
+	...
+```
+
+I'll have to try this on the real hardware, but that means swapping the
+Decode ROM, which is a PITA.
+
+## Sun 19 May 18:55:19 AEST 2019
+
+I've put written labels on the two Decode ROMs, and I'll left-justify what
+is in each one here in my journal so I can grep the file. I'm currently
+erasing Decode ROM B.
+
+Decode ROM A has the LIA/LIB instructions with the ARena on line 3.
+Decode ROM B has the LIA/LIB instructions with the ARena removed on line 3.
+
+I've burned and swapped the Decode ROMs. Yes, the removal of ARena now makes
+LIA work, and I'm now seeing the greeting message on the monitor ROM. Yay!

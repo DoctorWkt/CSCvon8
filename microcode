@@ -539,7 +539,7 @@ F1 RTS: MEMresult AHload PCincr
 # LIA: Load into A through an indirect address. Will destroy B also.
 F2 LIA:	MEMresult AHload PCincr		# Load top of indirect addr into AH
 	MEMresult Bload			# Load bot of indirect addr into B & AL
-	MEMresult ALload PCincr ARena
+	MEMresult ALload PCincr
 	ARena MEMresult Aload		# Load A with top byte thru pointer
 	ALUresult ALload B+1 ARena	# Move pointer up
 	ARena MEMresult ALload		# Load AL with bot byte thru pointer
@@ -550,7 +550,7 @@ F2 LIA:	MEMresult AHload PCincr		# Load top of indirect addr into AH
 # LIB: Load into B through an indirect address. Will destroy A also.
 F3 LIB:	MEMresult AHload PCincr		# Load top of indirect addr into AH
 	MEMresult Bload			# Load bot of indirect addr into B & AL
-	MEMresult ALload PCincr ARena
+	MEMresult ALload PCincr
 	ARena MEMresult Aload		# Load A with top byte thru pointer
 	ALUresult ALload B+1 ARena 	# Move pointer up
 	ARena MEMresult ALload		# Load AL with bot byte thru pointer
