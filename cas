@@ -107,9 +107,14 @@ sub get_numeric_label_value {
 sub get_label_value {
     my ( $word, $firstpass ) = @_;
     my $address = 0;
+    my $offset = 0;
 
     # If it's a reference to a numeric label, use another function
     if ($word=~ m{^(\d+)([bf])$}) { return(get_numeric_label_value($1, $2)); }
+
+    # Find any decimal offset and separate the word from the offset
+    if ($word=~ m{^(.*)\+(\d+)$}) { $word= $1; $offset=$2; }
+    if ($word=~ m{^(.*)\-(\d+)$}) { $word= $1; $offset= -$2; }
 
     if ( defined( $Label{$word} ) ) {
         $address = $Label{$word};
@@ -130,7 +135,7 @@ sub get_label_value {
         die("Expression $word on line $linenum unrecognised\n");
     }
 
-    return ($address);
+    return ($address + $offset);
 }
 
 # Parse a single line from the assembly input. Also get a boolean

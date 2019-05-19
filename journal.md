@@ -3163,3 +3163,12 @@ Decode ROM B has the LIA/LIB instructions with the ARena removed on line 3.
 
 I've burned and swapped the Decode ROMs. Yes, the removal of ARena now makes
 LIA work, and I'm now seeing the greeting message on the monitor ROM. Yay!
+However, it only works at 1MHz, LIA doesn't appear to work at 3.57MHz. Oh well.
+
+## Sun 19 May 21:37:09 AEST 2019
+
+I added support for label+1 etc. to the assembler. This will help to deal
+with hi/lo pointers: I don't need to give each byte a separate label. I've
+gone back to the monitor.s code and started to use label+1 as well as 1f, 2f,
+1b to conserve the label namespace. I checked the MD5 sum of the output binary
+and it's identical to before the change to the monitor.s code.
