@@ -435,38 +435,32 @@ START := MEMresult IRload PCincr
 # Add A+B, store in A, jump to $XXXX if there is a carry
 80 LDA_A+B_JC:	MEMresult AHload PCincr
 	    	MEMresult ALload PCincr
-	    	ALUresult A+B Aload
-	    	ALUresult A+B ARena JumpCarry
+	    	ALUresult A+B Aload ARena JumpCarry
 		uSreset
 
 81 LDB_B-1_JN:	MEMresult AHload PCincr
 	    	MEMresult ALload PCincr
-	    	ALUresult B-1 Bload 
-	    	ALUresult B-1 ARena JumpNeg
+	    	ALUresult B-1 Bload ARena JumpNeg
 		uSreset
 
 82 LDA_A_JZ:	MEMresult AHload PCincr
 	    	MEMresult ALload PCincr
-	    	ALUresult A Aload 
-	    	ALUresult A ARena JumpZero
+	    	ALUresult A Aload ARena JumpZero
 		uSreset
 
 83 LDA_A+B_JN:	MEMresult AHload PCincr
 	    	MEMresult ALload PCincr
-	    	ALUresult A+B Aload
-	    	ALUresult A+B ARena JumpNeg
+	    	ALUresult A+B Aload ARena JumpNeg
 		uSreset
 
 84 LDA_A-1_JC: 	MEMresult AHload PCincr
 		MEMresult ALload PCincr
-	    	ALUresult A-1 Aload
-	    	ALUresult A-1 ARena JumpCarry
+	    	ALUresult A-1 Aload ARena JumpCarry
 		uSreset
 
 85 LDA_A+1_JC: 	MEMresult AHload PCincr
 		MEMresult ALload PCincr
-	    	ALUresult A+1 Aload
-	    	ALUresult A+1 ARena JumpCarry
+	    	ALUresult A+1 Aload ARena JumpCarry
 		uSreset
 
 # 90-9F: Indexed instructions

@@ -3172,3 +3172,174 @@ with hi/lo pointers: I don't need to give each byte a separate label. I've
 gone back to the monitor.s code and started to use label+1 as well as 1f, 2f,
 1b to conserve the label namespace. I checked the MD5 sum of the output binary
 and it's identical to before the change to the monitor.s code.
+
+## Mon 20 May 20:13:09 AEST 2019
+
+I think I have another microbug. This code in the monitor should do a 16-bit
+decrement and detect when we get to $FFFF:
+
+```
+        LDA count+1		# Decrement count+1
+        STO A-1 count+1
+        LDA A-1 JC 1f
+        JMP 2f			# No carry
+
+1:      LDA count
+        STO A-1 count
+        LDA A-1 JC gotfile
+
+2:	# No carry
+
+gotfile: # Carry
+```
+
+except that I'm seeing A become $FE in csim -d. I think the culprit is:
+
+```
+84 LDA_A-1_JC:  MEMresult AHload PCincr
+                MEMresult ALload PCincr
+                ALUresult A-1 Aload
+                ALUresult A-1 ARena JumpCarry	<===
+                uSreset
+```
+On the libe above the arrow A <- A-1, and so the second A-1 is going
+to calculate the original A-2. The code was originally:
+
+```
+	ALUresult A-1 Aload ARena JumpCarry
+```
+
+I tested the code in a simple test in csim, Verilog and real hardware and
+definitely I'm not seeing a JC because of the $FF result. I will have to
+try the new microcode and see what happens.
+
+The new microcode definitely works with csim and I can again load an executable
+across the serial link and then run it. NOTE: The length field is one less than
+the actual length, so that we go to $FFFF and detect this. I don't have time to
+burn this to the Decode ROM right now.
+
+Decode ROM A now has the altered JC etc. code to prevent double A-1 side effects.
+
+## Tue 21 May 06:23:42 AEST 2019
+
+I burned the ROM this morning and the hardware shows the correct jump behaviour
+for the above code. I did have to put lots of initial NOPs in though. I might
+try to monitor as it currently stands.
+
+It boots and I see the greeting and prompt, but it doesn't seem to be reacting
+to the Enter yet properly, I keep going back to the prompt. Maybe minicom is
+sending CRLF?
+
+I've written a program to read the UART and print it all out in hex so I can
+see what I get when I hit Enter. Not with the PCB at present so I can't test
+it yet.
+
+## Tue 21 May 15:32:06 AEST 2019
+
+At home, running the entertest.s and I see $0D as the only character when I hit Enter,
+so at least it's not a CRLF.
+
+Do I need to write some semi-exhaustive test of all the instructions, so I
+can run it and spot regression errors? Probably. csim -p (pseudo tty) also sees $0D
+from minicom, but ./csim on the terminal sees $0A. Hmm, I can run the monitor with
+./csim -p, load a binary file, then run it. I can't seem to do this with the PCB version.
+
+## Wed 22 May 10:13:46 AEST 2019
+
+I've converted bigfred.s to be a program that tests as many of the instructions
+as I can think of. It has the "read UART six times" loop in it:
+
+```
+1:      JINA            # Read a character in from the UART
+        JOUT(A)         # and echo it back out
+        LDB B-1 JN 2f   # and do it all again six times
+        JMP 1b
+```
+
+I'm using some cpp macros to make it less LOC. On csim, I always see six
+characters being echoed back. At 1MHz on the PCB, I see:
+
+```
+Type: aaaaaaa
+Type: aaaaaaaaaaaaa
+Type: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Type: aaaaa
+Type: aaaaaaaaaa
+Type: aaaaa
+Type: aaaaa
+Type: aaaaaa
+Type: aaaaaaa
+Type: aaaaa
+Type: aaaaaaaaaaa
+Type: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+```
+
+and I can see the B reg LEDs decrement but occasionally get a spurious
+value like $2B.
+
+The microcode for the instruction is, at present, this:
+
+```
+81 LDB_B-1_JN:  MEMresult AHload PCincr
+                MEMresult ALload PCincr
+                ALUresult B-1 Bload ARena JumpNeg
+                uSreset
+```
+
+with the Bload ARena JumpNeg on one line to avoid the double B-1 effect.
+
+I changed the bigfred.s code to separate the B-- and the jump:
+
+```
+1:      JINA            # Read a character in from the UART
+        JOUT(A)         # and echo it back out
+        LDB B-1
+        LCA $FF
+        JNE 1b
+```
+
+Guess what. I'm seeing bad B values on the B-1 operation! The LDB B-1
+microcode is:
+
+```
+28 LDB_B-1:     ALUresult B-1 Bload
+                uSreset
+```
+
+To me, this means one of two things:
+
+ 1. The ALU result isn't arriving in time for the Bload, or
+ 2. B is loaded with the new value, but B's new value is propagated
+    immediately. This affects the ALU result and somehow this is being
+    re-loaded into B, thus causing the incorrect B result.
+
+Hmm. To discount the second option, I changed the code to store B-1 into
+A and then swap A into B. The bad B values are still happening. I'm starting
+to suspect the ALU results.
+
+```
+1:      JINA            # Read a character in from the UART
+        JOUT(A)         # and echo it back out
+        LDA B-1
+        LDB A
+        LCA $FF
+        JNE 1b
+```
+
+I might try setting A to $FF and doing A+B. Wow, it's still happening.
+Now I'm suspecting the B register. Let's try using the A register.
+It's all 100% perfect with the A register. Hmm. Interesting.
+
+I pulled out the LEDs on the Breg and the data bus and still no change.
+So, I'm wondering if my B register chip is a bit dodgy. I might have to
+order a few more, remove the existing one, put in a socket and try some
+other ones. But why is it occurring here and not elsewhere with B?
+
+Other things it could be:
+
+  * noise on the B input or control wires.
+  * Vcc jitter because we are using the UART beforehand and it is
+    supplying the power to the PCB.
+
+I could try some exhaustive tests with A and then with B to see if there
+is any difference.

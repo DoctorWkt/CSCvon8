@@ -141,7 +141,10 @@ sub get_label_value {
 # Parse a single line from the assembly input. Also get a boolean
 # to indicate this is the first pass, so we can ignore unknown labels.
 sub parse2 {
-    my ( $line, $firstpass ) = @_;
+  my ( $wholeline, $firstpass ) = @_;
+
+  # Split the whole line up into lines that are semicolon separated
+  foreach my $line (split(m{\s*;\s*}, $wholeline)) {
 
     my $label     = "";
     my $constant  = 0;
@@ -369,6 +372,7 @@ sub parse2 {
     # Increment the PC
     die("Out of instruction space!\n") if ( $PC > 0xFFFF );
     $PC += $oplen;
+  }
 }
 
 
