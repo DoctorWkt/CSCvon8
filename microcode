@@ -209,127 +209,127 @@ START := MEMresult IRload PCincr
 
 # ALU Operations stored into memory
 40 STO_0: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult 0 ARena MEMload
 	uSreset
 41 STO_A: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A ARena MEMload
 	uSreset
 42 STO_B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult B ARena MEMload
 	uSreset
 43 STO_-A: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult -A ARena MEMload
 	uSreset
 44 STO_-B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult -B ARena MEMload
 	uSreset
 45 STO_A+1: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A+1 ARena MEMload
 	uSreset
 46 STO_B+1: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult B+1 ARena MEMload
 	uSreset
 47 STO_A-1: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A-1 ARena MEMload
 	uSreset
 48 STO_B-1: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult B-1 ARena MEMload
 	uSreset
 49 STO_A+B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A+B ARena MEMload
 	uSreset
 4A STO_A+B+1: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A+B+1 ARena MEMload
 	uSreset
 4B STO_A-B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A-B ARena MEMload
 	uSreset
 4D STO_B-A: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult B-A ARena MEMload
 	uSreset
 4E STO_A-B-1: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A-B-1 ARena MEMload
 	uSreset
 4F STO_B-A-1: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult B-A-1 ARena MEMload
 	uSreset
 50 STO_A*BHI: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A*BHI ARena MEMload
 	uSreset
 51 STO_A*B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A*BLO ARena MEMload
 	uSreset
 52 STO_A/B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A/B ARena MEMload
 	uSreset
 53 STO_A%B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A%B ARena MEMload
 	uSreset
 54 STO_A<<B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A<<B ARena MEMload
 	uSreset
 55 STO_A>>B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A>>BL ARena MEMload
 	uSreset
 56 STO_A>>BA: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A>>BA ARena MEMload
 	uSreset
 57 STO_AROLB: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult AROLB ARena MEMload
 	uSreset
 58 STO_ARORB: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult ARORB ARena MEMload
 	uSreset
 59 STO_A&B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A&B ARena MEMload
 	uSreset
 5A STO_A|B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A|B ARena MEMload
 	uSreset
 5B STO_A^B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A^B ARena MEMload
 	uSreset
 5C STO_!A: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult !A ARena MEMload
 	uSreset
 5D STO_!B: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult !B ARena MEMload
 	uSreset
 5E STO_A+BCD: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A+BCD ARena MEMload
 	uSreset
 5F STO_A-BCD: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
 	ALUresult A-BCD ARena MEMload
 	uSreset
 
@@ -344,14 +344,14 @@ START := MEMresult IRload PCincr
 
 # Load A from absolute location $HHLL
 62 LDA: MEMresult AHload PCincr
-        MEMresult ALload PCincr
-        ARena MEMresult Aload
+	MEMresult ALload PCincr
+	ARena MEMresult Aload
 	uSreset
 
 # Load B from absolute location $HHLL
 63 LDB: MEMresult AHload PCincr
-        MEMresult ALload PCincr
-        ARena MEMresult Bload
+	MEMresult ALload PCincr
+	ARena MEMresult Bload
 	uSreset
 
 # Write A to the UART
@@ -365,11 +365,15 @@ START := MEMresult IRload PCincr
 	  uSreset
 
 # Load A from the UART
-66 INA: UARTresult Aload
+66 INA: UARTresult
+	UARTresult
+	UARTresult Aload
 	uSreset
 
 # Load B from the UART
-67 INB: UARTresult Bload
+67 INB: UARTresult
+	UARTresult
+	UARTresult Bload
 	uSreset
 
 # Write a byte following the
@@ -380,13 +384,18 @@ START := MEMresult IRload PCincr
 # 70-7F: Jump instructions
 # Always jump to $XXXX
 70 JMP: MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
+	ALUresult 0 ARena
+	ALUresult 0 ARena
 	ALUresult 0 ARena
 	ALUresult 0 ARena JumpZero
 	uSreset
 
+# Comparisons between A and B
 71 JEQ: MEMresult AHload PCincr
 	MEMresult ALload PCincr
+	ALUresult A-B ARena
+	ALUresult A-B ARena
 	ALUresult A-B ARena
 	ALUresult A-B ARena JumpZero
 	uSreset
@@ -394,11 +403,15 @@ START := MEMresult IRload PCincr
 72 JNE: MEMresult AHload PCincr
 	MEMresult ALload PCincr
 	ALUresult A-Bspecial ARena
+	ALUresult A-Bspecial ARena
+	ALUresult A-Bspecial ARena
 	ALUresult A-Bspecial ARena JumpZero
 	uSreset
 
 73 JGT: MEMresult AHload PCincr
 	MEMresult ALload PCincr
+	ALUresult B-A ARena
+	ALUresult B-A ARena
 	ALUresult B-A ARena
 	ALUresult B-A ARena JumpNeg
 	uSreset
@@ -406,19 +419,25 @@ START := MEMresult IRload PCincr
 74 JLT: MEMresult AHload PCincr
 	MEMresult ALload PCincr
 	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
 	ALUresult A-B ARena JumpNeg
 	uSreset
 
 75 JGE: MEMresult AHload PCincr
-        MEMresult ALload PCincr
-        ALUresult B-A-1 ARena
-        ALUresult B-A-1 ARena JumpNeg
+	MEMresult ALload PCincr
+	ALUresult B-A-1 ARena
+	ALUresult B-A-1 ARena
+	ALUresult B-A-1 ARena
+	ALUresult B-A-1 ARena JumpNeg
 	uSreset
 
 76 JLE: MEMresult AHload PCincr
-        MEMresult ALload PCincr
-        ALUresult A-B-1 ARena
-        ALUresult A-B-1 ARena JumpNeg
+	MEMresult ALload PCincr
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena JumpNeg
 	uSreset
 
 77 JOU: MEMresult AHload PCincr
@@ -429,38 +448,83 @@ START := MEMresult IRload PCincr
 78 JIU: MEMresult AHload PCincr
 	MEMresult ALload PCincr
 	JumpNoRx ARena
+	JumpNoRx ARena
+	JumpNoRx ARena
+	uSreset
+
+# Sign value of A and B registers
+79 JAZ: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult A ARena
+	ALUresult A ARena
+	ALUresult A ARena
+	ALUresult A ARena JumpZero
+	uSreset
+	
+7A JBZ: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult B ARena
+	ALUresult B ARena
+	ALUresult B ARena
+	ALUresult B ARena JumpZero
+	uSreset
+	
+7B JAN: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult A ARena
+	ALUresult A ARena
+	ALUresult A ARena
+	ALUresult A ARena JumpNeg
+	uSreset
+	
+7C JBN: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult B ARena
+	ALUresult B ARena
+	ALUresult B ARena
+	ALUresult B ARena JumpNeg
 	uSreset
 	
 # 80-8F: Calculations which may cause a jump
-# Add A+B, store in A, jump to $XXXX if there is a carry
-80 LDA_A+B_JC:	MEMresult AHload PCincr
-	    	MEMresult ALload PCincr
-	    	ALUresult A+B Aload ARena JumpCarry
-		uSreset
-
-81 LDB_B-1_JN:	MEMresult AHload PCincr
-	    	MEMresult ALload PCincr
-	    	ALUresult B-1 Bload ARena JumpNeg
-		uSreset
-
-82 LDA_A_JZ:	MEMresult AHload PCincr
-	    	MEMresult ALload PCincr
-	    	ALUresult A Aload ARena JumpZero
-		uSreset
-
-83 LDA_A+B_JN:	MEMresult AHload PCincr
-	    	MEMresult ALload PCincr
-	    	ALUresult A+B Aload ARena JumpNeg
-		uSreset
-
-84 LDA_A-1_JC: 	MEMresult AHload PCincr
+# Add A+B, jump to $XXXX if there is a carry
+80 TST_A+B_JC:	MEMresult AHload PCincr
 		MEMresult ALload PCincr
-	    	ALUresult A-1 Aload ARena JumpCarry
+		ALUresult A+B ARena
+		ALUresult A+B ARena
+		ALUresult A+B ARena
+		ALUresult A+B ARena JumpCarry
 		uSreset
 
-85 LDA_A+1_JC: 	MEMresult AHload PCincr
+81 TST_A-B_JC:	MEMresult AHload PCincr
 		MEMresult ALload PCincr
-	    	ALUresult A+1 Aload ARena JumpCarry
+		ALUresult A-B ARena
+		ALUresult A-B ARena
+		ALUresult A-B ARena
+		ALUresult A-B ARena JumpCarry
+		uSreset
+
+82 TST_B-A_JC:	MEMresult AHload PCincr
+		MEMresult ALload PCincr
+		ALUresult B-A ARena
+		ALUresult B-A ARena
+		ALUresult B-A ARena
+		ALUresult B-A ARena JumpCarry
+		uSreset
+
+83 TST_A+1_JC:	MEMresult AHload PCincr
+		MEMresult ALload PCincr
+		ALUresult A+1 ARena
+		ALUresult A+1 ARena
+		ALUresult A+1 ARena
+		ALUresult A+1 ARena JumpCarry
+		uSreset
+
+84 TST_B+1_JC:	MEMresult AHload PCincr
+		MEMresult ALload PCincr
+		ALUresult B+1 ARena
+		ALUresult B+1 ARena
+		ALUresult B+1 ARena
+		ALUresult B+1 ARena JumpCarry
 		uSreset
 
 # 90-9F: Indexed instructions
@@ -484,6 +548,130 @@ START := MEMresult IRload PCincr
 	ALUresult B ARena MEMload
 	uSreset
 
+# Clutching at straws instructions
+E0 JLT8: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena JumpNeg
+	uSreset
+
+E1 JLT15: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena JumpNeg
+	uSreset
+
+E2 JLT12: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	ALUresult A-B ARena JumpNeg
+	ALUresult A-B ARena
+	ALUresult A-B ARena
+	uSreset
+
+E3 JLE8: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena JumpNeg
+	uSreset
+
+E4 JLE15: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena JumpNeg
+	uSreset
+
+E5 JLE12: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena JumpNeg
+	ALUresult A-B-1 ARena
+	ALUresult A-B-1 ARena
+	uSreset
+
+E6 JGT8: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena JumpNeg
+	uSreset
+
+E7 JGT15: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena JumpNeg
+	uSreset
+
+E8 JGT12: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	ALUresult B-A ARena JumpNeg
+	ALUresult B-A ARena
+	ALUresult B-A ARena
+	uSreset
+
 # F0-FF: Nasty evil instructions
 
 # JSR (7 bytes long!): Store at $XXXX the return address $CCCC.
@@ -500,13 +688,14 @@ F0 JSR: MEMresult AHload PCincr
 	MEMresult Bload PCincr
 	MEMresult Aload PCincr
 	ALUresult B ALload
-        ALUresult A ARena MEMload
+	ALUresult A ARena MEMload
 	ALUresult B+1 Bload
 	MEMresult Aload PCincr
 	ALUresult B ALload
-        ALUresult A ARena MEMload
+	ALUresult A ARena MEMload
 	MEMresult AHload PCincr
-        MEMresult ALload PCincr
+	MEMresult ALload PCincr
+	ALUresult 0 ARena
 	ALUresult 0 ARena JumpZero
 	uSreset
 
@@ -527,6 +716,7 @@ F1 RTS: MEMresult AHload PCincr
 	ALUresult B ALload
 	ARena MEMresult ALload
 	ALUresult A AHload ARena
+	ALUresult 0 ARena
 	ALUresult 0 ARena JumpZero
 	uSreset
 

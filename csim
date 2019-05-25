@@ -202,7 +202,11 @@ while (1) {
     # Return 0 if they were silly enough to read when nothing is there.
     # Empty the buffer regardless.
     $databus = defined($inchar) ? ord($inchar) : 0;
-    $inchar= undef;
+
+    # Only reset $inchar if there is a reader on the data bus. This
+    # allows UARTRESULT to be asserted for several microinstructions
+    # before the actual read is done.
+    $inchar= undef if ($loadop);
   }
   printf("dop %x dbus %02x ", $dbusop, $databus) if ($debug);
 

@@ -3342,4 +3342,484 @@ Other things it could be:
     supplying the power to the PCB.
 
 I could try some exhaustive tests with A and then with B to see if there
-is any difference.
+is any difference. I checked the schematic and the footprints, I can't see
+any wiring differences. Anyway, I've ordered more 74HCT574s and some solder
+wick to get the existing chip up.
+
+If it turns out not to be the B register, then it's got to be the ALU output.
+Either the ALU isn't giving me the right result, or the delay is too long,
+or the ALU ROM is glitching and giving me the wrong result.
+
+So, things to try:
+ + definitely try some A/B tests to determine if A is 100% OK and only
+   B is dodgy.
+ + Set the ALUop on the microinstruction before the one where its value
+   gets used. This might help with any glitches and/or propagation delays.
+
+Example of the second point:
+
+```
+28 LDB_B-1:     ALUresult B-1
+		ALUresult B-1 Bload
+                uSreset
+
+81 LDB_B-1_JN:  MEMresult AHload PCincr
+                MEMresult ALload PCincr B-1
+                ALUresult B-1 Bload ARena JumpNeg
+                uSreset
+```
+
+I'll have to swap the Decode ROMs again, argh!!
+
+## Wed 22 May 21:34:41 AEST 2019
+
+I've written a program called countdown which prints most of the ASCII
+characters down to $00, using both A and B with the decrement and branch
+instructions:
+
+```
+        LCA 'z'
+1:      JOUT(A)
+        LDA A-1 JC 2f
+        JMP 1b
+
+        LCB 'y'
+1:      JOUT(B)
+        LDB B-1 JN 2f
+        JMP 1b
+```
+
+There is no problems with running this program. The only one was that I
+did an INA to stop it before jumping back to the top, and when I ran the
+code on the PCB it never waited for a keypress. Turns out that one of the
+control characters being transmitted by the PCB causes Minicom to identify
+itself, which sends a string like 'Minicom 2.7.1', which means that the
+program receives characters and never waits. Oh, and this is with the 555
+circuit. With the 1MHz oscillator, it does 197 of both loops and then locks
+up, but I'm not sure if it is the board or Minicom that's wedged. 3.57MHz
+and exactly the same: 197 loops and then locks up.
+
+So now it's a mystery. The B register is working fine here. Why isn't it
+working with the previous code?
+
+I went back to the original test code which I'm calling smallfred.s, it only
+has the prompt, then get and echo six characters. I added some NOPs after
+the OUT echo, and some NOPs right at the beginning. Now I'm seeing garbage
+characters being echoed as well as the correct ones. So this is becoming
+a deeper mystery as there is literally no pattern to the behaviour. Sigh.
+
+Maybe there is a pattern. I got rid of the UART input and I'm doing this now:
+
+```
+        LCB $05
+1:      JOUT('1')
+        LDB B-1 JN 2f   
+        JMP 1b
+2:      JOUT('\r')
+        JOUT('\n')
+
+        LCB $05
+1:      JOUT('2')
+        LDB B-1
+        LCA $FF
+        JNE 1b
+2:      JOUT('\r')
+        JOUT('\n')
+```
+
+with a loop back to the top. On csim, I'm seeing:
+
+```
+111111
+222222
+111111
+222222 etc.
+```
+
+With the 555 circuit, I'm seeing this consistently:
+
+```
+11111                                                                           
+222222                                                                          
+11111                                                                           
+222222 etc.
+```
+
+and that's true at both 1MHz and 3.57MHz. I'll now got and sprinkle some
+NOPs around just to see what happens. No, no change at all three speeds.
+So .... does this mean that it's the IN operation that's causing the problem,
+or the JIU instruction that comes before it?
+
+I tried this:
+
+```
+        LCB $05
+1:      JIU .
+        JOUT('1')
+        LDB B-1 JN 2f
+        JMP 1b
+2:      JOUT('\r')
+        JOUT('\n')
+
+        LCB $05
+1:      INA
+        JOUT('2')
+        LDB B-1
+        LCA $FF
+        JNE 1b
+```
+
+and same behaviour as before. Now to try both JIU and INA consecutively.
+Ahah! Yes, the two consecutively causes issues:
+
+```
+11111
+222222
+11111
+22222222222222222222222222222222222222222222222222222222222222
+11111
+222222
+11111
+222222
+11111
+222222
+11111
+222222
+11111
+222222
+11111
+222222
+11111
+222222222222222222222222
+11111
+```
+
+regardless of clock speed. Wow, that's very surprising!!!
+I changed the bottom loop to be:
+
+```
+        LCB $05
+1:      JIU .
+        JIU .
+        JIU .
+        JIU .
+        JOUT('2')
+        LDB B-1
+        LCA $FF
+        JNE 1b
+```
+and I see sporadic 2222222222222222....
+
+When I had issues with the jump instructions before, I found I had to
+add ARena on the line before the Jump control. Maybe I need to do it
+again, e.g.:
+
+```
+76 JLE: MEMresult AHload PCincr
+        MEMresult ALload PCincr
+        ALUresult A-B-1 ARena 	       <=== Existing
+        ALUresult A-B-1 ARena JumpNeg
+        uSreset
+
+78 JIU: MEMresult AHload PCincr
+        MEMresult ALload PCincr
+	ARena				<=== To try out
+        JumpNoRx ARena
+        uSreset
+```
+
+I'll try this later, to bed now.
+
+## Thu 23 May 06:23:33 AEST 2019
+
+Just did a test where I didn't use JIU but looped back when we INA and got
+$00, and that seems fine. Does point the finger at JIU. Time to burn the
+blasted Decode ROM again.
+
+Decode ROM A has the altered JC, RCS revision 1.16 of microcode.
+Decode ROM B has ARena on both the Jump line and prev line.
+
+## Thu 23 May 07:48:47 AEST 2019
+
+I've burned the new Decode ROM and swapped them over. Yes, it seems to have
+fixed the problem. Here's the two loops from smallfred.s:
+
+```
+        LCB $05         # 5, 4, 3, 2, 1, 0 is six
+1:      JINA            # Read a character in from the UART
+        JOUT(A)         # and echo it back out
+        LDB B-1 JN 2f   # and do it all again six times
+        JMP 1b
+2:     
+        LCB $05         # 5, 4, 3, 2, 1, 0 is six
+1:      JINA            # Read a character in from the UART
+        JOUT(A)         # and echo it back out
+        LDB B-1
+        LCA $FF
+        JNE 1b
+```
+
+Two different ways to loop, and I'm getting consistent looping at all
+clock speeds up to 3.57MHz:
+
+```
+1111: qqqqq                                                                     
+2222: qqqqqq                                                                    
+1111: qqqqq                                                                     
+2222: qqqqqq                                                                    
+1111: qqqqq                                                                     
+2222: qqqqqq
+```
+
+Now, the questions are a) why? and b) why is the hardware output different
+from csim; it's output looks like:
+
+```
+1111: qqqqqq
+2222: qqqqqq
+1111: qqqqqq
+2222: qqqqqq
+```
+
+and I can't test it with Icarus verilog as there is no UART input there.
+
+Back to the monitor on the PCB. It's still not responding to ? <Enter>
+as I am expecting. However, it does seem to allow a Load of a file and
+I get back to the prompt. But I see some spurious output before the prompt:
+
+```
+> �> > > `Wd`T>
+```
+and when I R9000 to run the code, it prints 'CCCCC.....' and not what I
+expect. So, still strange. I need to write some code to dump the values
+at a location. Done, but it gets weirder. csim does this:
+
+```
+> D0000
+0000: 00 00 00 00 00 00 60 03 41 80 04 60 00 41 80 05 
+> D0010
+0010: F0 FF FE 00 17 01 6F 60 3E 77 00 19 64 60 20 77
+```
+
+when I dump the first 32 bytes of ROM. The hardware does:
+
+```
+> D0000                                                                         
+9999: 52 7E 89 FC 81 68 71 C0 A2 3D A6 9D 82 02 41                              
+> D0010                                                                         
+99A9: B8 01 39 0B 19 18 88 8B E2 BA 32 AE 62 44 7F
+```
+
+So the hex decoding on the PCB is different to csim. And ... it's different
+to the Verilog version! I've abstracted the relevant code to a program
+called asc2hextest.s which sets "12CD" up in the string buffer, converts
+to binary and prints it out as hex. csim prints out _12CD_. The Verilog
+version prints out _ABCD_. This means that csim and Verilog are interpreting
+this instruction differently:
+
+```
+hexcvt: LDB hexchar             # Get the first character
+        LCA $3F                 # Add on $3F
+        LDA A+B JN 1f           # If -ve, was A-F	<====
+```
+
+The relevant microcode is:
+
+```
+83 LDA_A+B_JN:  MEMresult AHload PCincr
+                MEMresult ALload PCincr
+                ALUresult A+B ARena
+                ALUresult A+B Aload ARena JumpNeg
+                uSreset
+```
+
+Based on the waveform from Verilog, I think I can see what is going on here.
+We load AH/AL with the possible jump address. A is $3F, B is '1' which is $31.
+On line 3 we place $31+$3F==$70 on the data bus and assert the AH/AL address
+on the address bus.
+
+On line 4, we load $70 into A. 45nS later, the ALU puts the new A+B result,
+$A1, onto the data bus. And 20nS after this, PCload# goes low and causes
+the jump.
+
+So this might be the root of several of my problems. I can't do
+A+B ALoad JumpXXX in the same microinstruction because the databus value
+will not be correct and cause the ALU status. Therefore, this whole
+microinstruction doesn't make sense. I should rewrite it as:
+
+```
+83 TST_A+B_JN:  MEMresult AHload PCincr
+                MEMresult ALload PCincr
+                ALUresult A+B ARena JumpNeg
+                uSreset
+```
+
+which tests A+B's value but doesn't change any register value.
+
+Yes!!! This makes csim and Verilog consistent. Thanks goodness. Now
+I need to go back to the microcode and remove some instructions and add
+some new ones. First a cup of tea. The big gotcha is the passing on of
+the carry for a 16-bit or higher adds and subtracts. We can't do
+`LDA A+B JC $XXXX` any more. All I can think of is:
+
+```
+	LDA alo
+	LDB blo
+	STO A+B sumlo
+	TST A+B JC 1f
+	LDA ahi
+	LDB bhi
+	STO A+B sumhi
+	JMP 2f
+1:	LDA ahi
+	LDB bhi
+	STO A+B+1 sumhi
+2:
+```
+
+I can create some instructions that test basic properties of A and B:
+JAZ, JAN, JBZ, JBN for zero and negative. Burned & swapped the ROM.
+Decode ROM A has RCS revision 1.17 of microcode with JAZ, JBZ etc.
+
+## Thu 23 May 13:56:05 AEST 2019
+
+I'm starting to get very annoyed & frustrated, because it's JIU and/or
+INA again which is causing trouble. I've got smallfred.s down to just
+this:
+
+```
+	LCB $05		# Loop six times
+1:	JOUT('A')	# sending an 'A'
+	LDB B-1
+	JBN 2f
+	JMP 1b
+2:	
+	LCB $05		# Loop six times
+1:	JOUT('B')	# sending an A
+	LDB B-1
+	LCA $FF
+	JNE 1b
+```
+
+Both loops print out six characters. All good. If I put a `JUI .` before
+the `JOUT('A')` then the code stops once, waits for a keypress and goes
+forever. Fine. But when I actually read a character in the first loop:
+
+```
+	LCB $05		# Loop six times
+1:	JIU .
+	INA
+	JOUT('A')	# sending an 'A'
+	LDB B-1
+	JBN 2f
+	JMP 1b
+```
+
+then I start to see this sort of output:
+
+```
+AAAAAA                                                                         
+BBBBBB                                                                          
+AAAAAA                                                                          
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB                                             
+AAAAAA                                                                          
+BBBBBB
+  ...
+AAAAAA                                                                          
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+```
+
+Now B is being clobbered in the _second_loop, well after the INA which
+occurred in the first loop. This is crazy. The only thing I can think of here
+is that the UART is re-asserting a value on the data bus well after we
+strobe the RD# line on the UART. I'll add a whole pile of NOPs in after the
+INA to see if that does anything.
+
+And now it's working fine with absolutely no issues. Argh, I'm going out
+of my mind here!
+
+## Fri 24 May 14:35:48 AEST 2019
+
+Decode ROM A has RCS revision 1.18 of microcode.
+Decode ROM B has RCS revision 1.15 of microcode.
+
+Time to take a step back here. The problem really seems to occur when I do
+input. To confirm this, I'm going to run every program I can think of which
+tests instructions, output only. Clock speed will be 1MHz. We have:
+
+ + bigfred.s RCS revision 1.6, which uses the TST and JBN instructions. All OK
+   on RCS revision 1.18 of microcode.
+ + jlt_test.s RCS revision 1.4. Runs with the 555 clock with microcode 1.18 OK,
+   but not with the 1MHz clock. I'll try with the RCS revision 1.15 microcode.
+   It works fine at 1MHz with microcode 1.15. That's strange as I just read
+   both ROMs with the MiniPro reader. The only difference is the new 
+   instructions JAZ JBZ JAN JBN TST_A+B_JC TST_A-B_JC TST_B-A_JC TST_A+1_JC
+   TST_B+1_JC.
+
+I reassembled jlt_test.s and reburned it. Now: every second run with the 1MHz
+clock and microcode 1.18 is fine. Every other run with the 1MHz clock
+prints this:
+
+```
+356356                                                                          
+356                                                                             
+356                                                                             
+356                                                                             
+356                                                                             
+356                                                                             
+41
+```
+and then it locks up. Seems to be running NOPs near the top of ROM based on
+the dark IR LEDs and the flickering address bus LEDs.
+
+## Fri 24 May 22:37:44 AEST 2019
+
+I've gone into "clutching at straws" mode.
+Decode ROM B has RCS revision 1.19 of microcode. This has several very long
+jump instructions: JLT8 JLT15 JLT12 JLE8 JLE15 JLE12 JGT8 JGT15 JGT12. 8 means
+the jump op is specified on uinstruction 8 followed by uSreset on 9. 15
+means the jump op is on uint 14 then uRreset on 15. 12 means jump op on
+uint 12, uReset on 15. Before and after the jump op, the ALU result is
+asserted on the address bus.
+
+I'm running jlt_test.s RCS revision 1.4 but modified to have 20 NOPs at
+the top, and using the J*8 instructions. At 1MHz it's perfectly fine. I
+can even plug the power in and it starts without me holding the reset
+button in. I can reset it, and only once out of 40 times did it go
+off the rails. At 3.57MHz it also powers up with no reset OK, but it
+glitches after reset about 50% of the time.
+
+I've just modified the microcode to extend all the Jump instructions the
+same way as JLT8, plus I lengthened INA and INB. Now erasing ROM B.
+Decode ROM B has RCS revision 1.20 of microcode. All Jumps insts extended.
+This runs smallfred.s revision 1.5 modified to do JIN but JOUT('A) and
+JOUT('B'). This works fine at 1MHz.
+
+With the smallfred.s revision 1.5 that does INA and echoes it back out,
+this works with no glitches at 1MHz. Mind you, I'll need to fix csim. The
+microcode is now:
+
+```
+66 INA: UARTresult
+        UARTresult
+        UARTresult Aload
+        uSreset
+```
+
+so the RD# line is being held down. But csim reads for each uinst, so
+I'm readoing $00s in csim. But the hardware isn't glitching now.
+asc2hextest.s runs on the PCB with no problems at 1MHz.
+onlyechofred.s runs on the PCB with no problems at 1MHz.
+bigfred.s revision 1.6 runs on the PCB with no problems at 1MHz.
+countdown.s revision: 1.3 runs on the PCB with no problems at 1MHz.
+signedprint.s revision 1.3 runs on the PCB with no problems at 1MHz.
+himinsky.cl runs on the PCB with no problems at 1MHz.
+
+The monitor runs but still isn't interpreting the ? and not loading
+the binary that I send down the serial link. Also interesting is that
+the RAM has random contents as far as the D command says. I might
+write some code to allow me to toggle in byte values in hex. Then I
+can hand upload some code and test that it runs OK. Also, fix csim.
+And now to bed, given that it seems to be working now.
