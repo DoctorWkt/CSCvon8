@@ -1,10 +1,16 @@
+## Introduction
+
+This is my working journal for the CSCvon8 CPU. It goes from when I first
+conceived of a design on paper through to soldering the components on a
+PCB and running real instructions, and beyond. I didn't write it for public
+consumption; the journal helps me keep track of what I'm doing, what issues
+I still need to address etc. Anyway, read on for weeks of frustration and
+occasional success ...
+
 ## Thu 21 Mar 14:47:32 AEST 2019
 
-OK, I've built a new design which allows instructions in RAM and ROM.
-It's a microcoded design. It should take about 20 TTL chips. This time
-I will probably build it in Verilog because I have nearly all the parts
-from the existing CSC8 which I can use.
-
+I've created a new CPU design which allows instructions in RAM and ROM.
+It's a microcoded design. It should take about 20 TTL chips.
 I've started designing the microcode and writing the script to generate
 the microcode ROM from this input file.
 
@@ -12,7 +18,7 @@ the microcode ROM from this input file.
 
 I thought I'd backed up all my ucode.rom generating Perl code yesterday
 to my nextCloud, but it didn't happen. Damn. So this morning, I've built
-the Verilog version of the new CSC8 CPU. I'm sure that I've got the
+the Verilog version of the new CPU. I'm sure that I've got the
 control lines from the decoder different to what I had yesterday.
 
 However, I've been able to run my first hi-level instruction LDA $23,
@@ -53,7 +59,7 @@ How to do this without putting more chips into the design? Maybe I have to
 bring back the Flags register and somehow lose the Jump logic chip?
 
 OK, so I'm thinking this is going to be a real PITA to implement. How about
-$HH00,B indexed addressing like the existing CSC8? I still have a spare control
+$HH00,B indexed addressing? I still have a spare control
 bit. How about a 2-bit address bus selector:
 
 ```
@@ -115,7 +121,7 @@ start work on the assembler. Now I have these instructions and they
 seem to work.
 
  - EQU, NOP, LCA, LCB, OUTA, OUTB, STA, STB, LDA, LDB, A=0, B=0, A=B,
-   B=A, A=-A, B=-B, JMP 
+   B=A, A=-A, B=-B, JMP
 
 There were a few bugs along the way, mainly microcode ones! But overall
 it's going well. I'm wondering if 256 instructions is enough.
@@ -123,14 +129,14 @@ it's going well. I'm wondering if 256 instructions is enough.
 ## Sat 23 Mar 13:18:02 AEST 2019
 
 I've got the indexed instructions to work, and I've converted most of
-the CSC8 example assembly programs. Now I'm stuck on JSR/RTS. The PC's
+the example assembly programs. Now I'm stuck on JSR/RTS. The PC's
 value isn't connected to the data bus, so the assembler is going to have
 to help out.
 
 Question: do I want to have single-call functions or multi-call functions?
 If the latter, do we want recursion or just call from many callers?
 Recursion would require some form of stack. Multiple callers would just
-need a "caller-id" idea like the existing CSC8 has.
+need a "caller-id" idea like the existing CSCv2 has.
 
 I'm thinking of a JSR which converts into two real instructions, and a
 single RTS instruction.
@@ -207,7 +213,7 @@ The loop that prints out the spaces and the star is working. But it looks
 like X isn't being decremented. It stays at the same initial value.
 
 Yes, I hadn't properly changed clc. It now works for all six example .cl
-programs from the CSC8 Examples area. Yay!!
+programs from the Examples area. Yay!!
 
 ## Sun 24 Mar 10:26:05 AEST 2019
 
@@ -224,7 +230,7 @@ Working on diffing the results. I've fixed a few, live divide by zero.
 Now up to Op 20, A<<B. OK, I've fixed pretty much as much as I want to.
 There are different interpretations on how to error with BCD, and how to
 error with very big << shifts, but all the Examples/*.s and Examples/*.cl
-now run with new CSC8.
+now run.
 
 Still a lot of microinstructions to write! But at least, if I wanted to
 try to synthesize it, I've got a smaller ALU now.
@@ -388,7 +394,7 @@ release on GitHub. OK, released on Github.
 I should try to do a timing analysis of the design to see what sort of
 maximum clock frequency I can expect.
 
-Longest path is Clock -> PC -> RAM/ROM -> IR -> Decode 
+Longest path is Clock -> PC -> RAM/ROM -> IR -> Decode
 
 ```
 	PC  108nS
@@ -853,7 +859,7 @@ a hex dump given a range of RAM.
 ```
 Start: 8000
 End: 8020
-64 77 00 31 62 80 03 41 80 06 f0 ff fe 00 41 00 
+64 77 00 31 62 80 03 41 80 06 f0 ff fe 00 41 00
 9b 62 80 02 41 80 06 f0 ff fe 00 4e 00 9b 60 3d
 ```
 
@@ -1048,7 +1054,7 @@ Two ways to shave a bit off:
 
 I think I prefer option 1. Main question: can we do a 16-bit add with
 a carry, e.g.
-  
+
 ```
 	LDA Alo		
 	LDB Blo
@@ -1380,7 +1386,7 @@ as advertised. This will require a fair amount of breadboard wiring. I
 did some last night.
 
 I've drawn up a schematic with a oneshot 555 & 161 sending a 00 to 0F sequence
-to a 28C256 ROM which has 8 outputs. I'll only use four. They will be ARena#, 
+to a 28C256 ROM which has 8 outputs. I'll only use four. They will be ARena#,
 PCload#, PCincr# and Reset#. I've also confirmed that I can read and write the
 ROM with the minipro software. I've also written bin2hex and hex2bin scripts
 so I can hand-edit the bottom 16 bytes to be whatever control line sequence
@@ -1489,7 +1495,7 @@ Bitscope Micro DSO, I don't see any transients even when the 161 pin stays
 high across the rising clock edge. So it has to be a ROM issue. I've got a
 0.1uF bypass cap right on Vcc and a 200uF cap on the power rails as well.
 
-We'll see how using the ROM as the clock goes. 
+We'll see how using the ROM as the clock goes.
 
 ## Mon 15 Apr 11:36:38 AEST 2019
 
@@ -1545,7 +1551,7 @@ layout:
        IR	 27C1024
 		 decode
                    ROM
-       161	 
+       161	
      counter
 		   251
 		  jump
@@ -1746,7 +1752,7 @@ I thought that before, didn't I?!
 ## Tue 23 Apr 13:46:21 AEST 2019
 
 minsky.s now runs on the TTL Verilog version but print_str.s nor
-print_indir_str.s run properly yet. All the clc source code files run on the 
+print_indir_str.s run properly yet. All the clc source code files run on the
 TTL Verilog version. So I really do hope that it's the microcode now.
 
 And now print_str.s runs, and print_indir_str.s nearly runs properly! The
@@ -1908,7 +1914,7 @@ the first microinstruction is set to do MEMresult IRload PCincr. But
 on the first clock tick, the microsequencer is incremented (and so
 the control lines change to microinstruction 1) before clk_bar rises,
 and so the first microinstruction after reset isn't going to get done.
-Therefore, I'd better put a NOP in as the instruction at $0000 to ensure 
+Therefore, I'd better put a NOP in as the instruction at $0000 to ensure
 that we get to $0001 and the first instruction that will work properly.
 
 I incremented PClo up to $FF then $00. I saw PChi go from $00 to $02,
@@ -1950,17 +1956,17 @@ in the inputs to the demux which slowed me down and its outputs were not
 what I expected. Fixed that. Here's my current instruction ROM:
 
 ```
-0000: 00 NOP 
+0000: 00 NOP
 0001: 60 LCA $34
 0003: 61 LCB $23
-0005: 09 LDA A+B 
-0006: 64 OUT A 
+0005: 09 LDA A+B
+0006: 64 OUT A
 0007: 77 JOU $0007
 000a: 60 LCA $0a
-000c: 64 OUT A 
+000c: 64 OUT A
 000d: 77 JOU $000d
 0010: 70 JMP $ffff
-0013: 00 NOP 
+0013: 00 NOP
 0014: 00 NOP
        ^
 ```
@@ -1976,7 +1982,7 @@ lock it in.
 
 I've wired up the A register on the input side, also the UART data and the
 send IOload control line to the UART. The UART is definitely sending
-whatever is on the data bus, which seems to be 'w' at the moment. 
+whatever is on the data bus, which seems to be 'w' at the moment.
 
 I've written this test program, and burned the Instruction and Decode ROMs:
 
@@ -2067,7 +2073,7 @@ useful:
 
 So there's an Atmel ATF16V8B PLD and a Lattice PALCE22V10 which is bigger.
 Then there are the SOIC CPLDs that can be put on breadboard-compatible PCBs.
-There is also programmer software at 
+There is also programmer software at
 https://github.com/kees1948/perlblast for Linux but needs a parallel port.
 
 ## Thu  2 May 08:01:20 AEST 2019
@@ -2154,19 +2160,19 @@ switch to help me next time.
 I got verification fails on the last three banks:
 
 ```
-Put in position 5: 
+Put in position 5:
 Erasing... 0.10Sec OK
 Writing Code...  76.96Sec  OK
 Reading Code...  4.99Sec  OK
 Verification failed at address 0x50FF0: File=0xFF, Device=0xFE
 
-Put in position 6: 
+Put in position 6:
 Erasing... 0.10Sec OK
 Writing Code...  76.92Sec  OK
 Reading Code...  4.98Sec  OK
 Verification failed at address 0x0FF0: File=0x07, Device=0x06
 
-Put in position 7: 
+Put in position 7:
 Erasing... 0.10Sec OK
 Writing Code...  76.96Sec  OK
 Reading Code...  4.99Sec  OK
@@ -2537,7 +2543,7 @@ AF
 82
 2345+11FF=3544
 WT
-Type: 
+Type:
 ```
 
 and then I can type stuff and get it echoed. The hardware does the first
@@ -2556,9 +2562,9 @@ few more glitches:
 
 ```
 AF
-82                                                                              
-345+11FF=35�4                                                                  
-WT                                                                              
+82
+345+11FF=35�4
+WT
 Type: goodness me, this is working!
 ```
 
@@ -2580,16 +2586,16 @@ It's the duty cycle. I've put in a 1.5nF C1 and set R2 to the max value of
 20k, and it's working perfectly:
 
 ```
-Hello                                                                           
-35                                                                              
+Hello
+35
  !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmno
-pqrstuvwxyz{|}~                                                                 
+pqrstuvwxyz{|}~
  !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmno
-pqrstuvwxyz{|}~                                                                 
-AF                                                                              
-82                                                                              
-2345+11FF=3544                                                                  
-WT                                                                              
+pqrstuvwxyz{|}~
+AF
+82
+2345+11FF=3544
+WT
 Type: I can type stuff and get it echoed.
 ```
 
@@ -2853,7 +2859,7 @@ Here's the drawing:
 
 The 555 circuit works! However, I'm not seeing any change in the JLT behaviour.
 That said, when I single-step it, it never occurs. I can only think that it's
-noise, then. We'll have to see if it goes away with the PCB version. I've 
+noise, then. We'll have to see if it goes away with the PCB version. I've
 moved the Vcc supply over to the UART, so I know that's going to work as well.
 
 I've ordered some stripboard, some more DIP sockets and some solder on-line.
@@ -3064,17 +3070,17 @@ Back to signedprint.s. Now running at 300Hz 50%, a verry slow clock! The output
 is:
 
 ```
--106                                                                     
--105                                                                     
--104                                                                     
--103                                                                     
--102                                                                     
--101                                                                     
--100                                                                     
--bu9                                                                     
--bt8                                                                     
--bs7                                                                     
--br6                                                                     
+-106
+-105
+-104
+-103
+-102
+-101
+-100
+-bu9
+-bt8
+-bs7
+-br6
 -bq5
 ```
 The same at 5kHz. I'm not sure if there are two separate issues or just one
@@ -3202,7 +3208,7 @@ except that I'm seeing A become $FE in csim -d. I think the culprit is:
                 ALUresult A-1 ARena JumpCarry	<===
                 uSreset
 ```
-On the libe above the arrow A <- A-1, and so the second A-1 is going
+On the line above the arrow A <- A-1, and so the second A-1 is going
 to calculate the original A-2. The code was originally:
 
 ```
@@ -3413,7 +3419,7 @@ Maybe there is a pattern. I got rid of the UART input and I'm doing this now:
 ```
         LCB $05
 1:      JOUT('1')
-        LDB B-1 JN 2f   
+        LDB B-1 JN 2f
         JMP 1b
 2:      JOUT('\r')
         JOUT('\n')
@@ -3439,9 +3445,9 @@ with a loop back to the top. On csim, I'm seeing:
 With the 555 circuit, I'm seeing this consistently:
 
 ```
-11111                                                                           
-222222                                                                          
-11111                                                                           
+11111
+222222
+11111
 222222 etc.
 ```
 
@@ -3550,7 +3556,7 @@ fixed the problem. Here's the two loops from smallfred.s:
         JOUT(A)         # and echo it back out
         LDB B-1 JN 2f   # and do it all again six times
         JMP 1b
-2:     
+2:
         LCB $05         # 5, 4, 3, 2, 1, 0 is six
 1:      JINA            # Read a character in from the UART
         JOUT(A)         # and echo it back out
@@ -3563,11 +3569,11 @@ Two different ways to loop, and I'm getting consistent looping at all
 clock speeds up to 3.57MHz:
 
 ```
-1111: qqqqq                                                                     
-2222: qqqqqq                                                                    
-1111: qqqqq                                                                     
-2222: qqqqqq                                                                    
-1111: qqqqq                                                                     
+1111: qqqqq
+2222: qqqqqq
+1111: qqqqq
+2222: qqqqqq
+1111: qqqqq
 2222: qqqqqq
 ```
 
@@ -3596,7 +3602,7 @@ at a location. Done, but it gets weirder. csim does this:
 
 ```
 > D0000
-0000: 00 00 00 00 00 00 60 03 41 80 04 60 00 41 80 05 
+0000: 00 00 00 00 00 00 60 03 41 80 04 60 00 41 80 05
 > D0010
 0010: F0 FF FE 00 17 01 6F 60 3E 77 00 19 64 60 20 77
 ```
@@ -3604,9 +3610,9 @@ at a location. Done, but it gets weirder. csim does this:
 when I dump the first 32 bytes of ROM. The hardware does:
 
 ```
-> D0000                                                                         
-9999: 52 7E 89 FC 81 68 71 C0 A2 3D A6 9D 82 02 41                              
-> D0010                                                                         
+> D0000
+9999: 52 7E 89 FC 81 68 71 C0 A2 3D A6 9D 82 02 41
+> D0010
 99A9: B8 01 39 0B 19 18 88 8B E2 BA 32 AE 62 44 7F
 ```
 
@@ -3718,15 +3724,15 @@ forever. Fine. But when I actually read a character in the first loop:
 then I start to see this sort of output:
 
 ```
-AAAAAA                                                                         
-BBBBBB                                                                          
-AAAAAA                                                                          
+AAAAAA
+BBBBBB
+AAAAAA
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB                                             
-AAAAAA                                                                          
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+AAAAAA
 BBBBBB
   ...
-AAAAAA                                                                          
+AAAAAA
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 ```
@@ -3754,7 +3760,7 @@ tests instructions, output only. Clock speed will be 1MHz. We have:
  + jlt_test.s RCS revision 1.4. Runs with the 555 clock with microcode 1.18 OK,
    but not with the 1MHz clock. I'll try with the RCS revision 1.15 microcode.
    It works fine at 1MHz with microcode 1.15. That's strange as I just read
-   both ROMs with the MiniPro reader. The only difference is the new 
+   both ROMs with the MiniPro reader. The only difference is the new
    instructions JAZ JBZ JAN JBN TST_A+B_JC TST_A-B_JC TST_B-A_JC TST_A+1_JC
    TST_B+1_JC.
 
@@ -3763,12 +3769,12 @@ clock and microcode 1.18 is fine. Every other run with the 1MHz clock
 prints this:
 
 ```
-356356                                                                          
-356                                                                             
-356                                                                             
-356                                                                             
-356                                                                             
-356                                                                             
+356356
+356
+356
+356
+356
+356
 41
 ```
 and then it locks up. Seems to be running NOPs near the top of ROM based on
