@@ -3829,3 +3829,8 @@ the RAM has random contents as far as the D command says. I might
 write some code to allow me to toggle in byte values in hex. Then I
 can hand upload some code and test that it runs OK. Also, fix csim.
 And now to bed, given that it seems to be working now.
+
+## Sat 25 May 15:19:36 AEST 2019
+
+I have rotated the UART in the PCB layout, and I'm running freeroute to
+redo all of the tracks.

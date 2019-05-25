@@ -1,6 +1,12 @@
-# Implementation Notes on This Version of CSCvon8
+# Implementation Notes for the CSCvon8 CPU
 
-I built this TTL-modelled version of the CSCvon8 CPU because I was seeing
+The CVCvon8 design has been implemented in three ways. One is the Perl
+simulator, *csim*. The second is the Verilog implementation. The third
+is the PCB layout using physical chips. This document covers the last two.
+
+## Verilog Implementation of the CSCvon8 CPU
+
+I built the TTL-modelled version of the CSCvon8 CPU because I was seeing
 events with the real chips when I was building my breadboard version of
 the CPU, and I realised that they were being caused by the different
 propagation delays through the various components.
@@ -65,10 +71,12 @@ generated a line called *PCincr* to do this, then it cannot be asserted in
 both of these microinstructions because there would never be a low value
 and at least one of the PC increments would never occur.
 
-Due to the delay issues, the rising edge issue and other issue, I've had
-to resort to some subtle wiring in the CSCvon8.
+## Building the Physical CSCvon8 CPU
 
-## Generating Rising Edges and Load Delays
+I built both the Verilog and the breadboard version of the CSCvon8 CPU
+in parallel. This allowed me to work out the effects of the propagation
+delays and the rising edge issue noted above.
+Due to thes issues, I've had to resort to some subtle wiring in the CSCvon8.
 
 Several components need to load the current value on the data bus: the A and
 B registers, the instruction register, the address registers, RAM and the UART.
