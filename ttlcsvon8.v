@@ -177,9 +177,12 @@ module ttlcsvon8 (i_clk, reset, PCval);
   ttl_74251 jumpLogic( 1'b0, jumpInput, JumpOp, PCload, PCload_bar);
 
   // I can't get the databus to work when connected to the ALU and memory,
-  // so I'm using a multiplexer for now
+  // so I'm using a multiplexer for now.
+  // There is a hard-coded UART input value for when DbusOp == 2'b10, as I
+  // don't know how to read a keypress with no delay in Icarus under Linux.
   assign databus= (DbusOp == 2'b00) ? MEMresult :
-		  (DbusOp == 2'b01) ? ALUresult[7:0] : {WordSize{1'bz}};
+		  (DbusOp == 2'b01) ? ALUresult[7:0] :
+		  (DbusOp == 2'b10) ? 8'h3f : {WordSize{1'bz}};
 
   // UART. Output the data bus value when IOload goes low
   uart UART(databus, IOload);
