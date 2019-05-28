@@ -6,11 +6,13 @@ use Data::Dumper;
 # CSCVon8 assembler, (C) 2019 Warren Toomey, GPL3
 
 my $debug   = 0;    # Print debugging information
+my $ramimage= 0;    # Assemble to RAM instead of ROM
 my $linenum = 0;    # Line number being parsed
-my $PC      = 0;    # Program counter
+my $PC;    	    # Program counter
+my $StartPC = 0;    # Start PC at 0x0000, or 0x8000 for $ramimage
 my @Line;           # Array of whole lines from input file
 my @Linenum;        # Line number for each line in @Line
-my @ROM = (0) x 32768;    # Contents of the instruction ROM
+my @MEM = (0) x 65536;    # Contents of memory
 my %Label;                # Hash of labels
 my @Numlabel;	    # Sparse 2D array of numeric labels and at what location
 		    # they were defined.
@@ -24,6 +26,18 @@ my %Keyword;
 # next available RAM location if none yet defined for a function
 my %ReturnAddr;
 my $nextreturnaddr = 0xFFFE;
+
+# Set a memory location to a specific value. We use this so that
+# we can track the lowest and highest locations used. This is needed
+# when we write out the code assembled for loading into RAM
+my $lomemused= 1000000;
+my $himemused= -1;
+sub setMEM {
+  my ($addr, $val)= @_;
+  $MEM[$addr]= $val;
+  $lomemused= $addr if ($addr < $lomemused);
+  $himemused= $addr if ($addr > $himemused);
+}
 
 # Get the return address for a function, given an int function address
 sub get_return_address {
@@ -275,8 +289,8 @@ sub parse2 {
     if ( !$firstpass && $inst eq "JSR" ) {
 
         # Store the function's start address in the instruction stream
-        $ROM[ $PC + 5 ] = $constant >> 8;
-        $ROM[ $PC + 6 ] = $constant & 0xff;
+        setMEM( $PC + 5 , $constant >> 8);
+        setMEM( $PC + 6 , $constant & 0xff);
 
         # Use the $constant, which is the function's start address, to get
         # the location of the return address in RAM for the function
@@ -285,8 +299,8 @@ sub parse2 {
         printf( "store return address at 0x%04x\n", $constant ) if ($debug);
 
         # Now put the return address into the instruction stream
-        $ROM[ $PC + 3 ] = ( $PC + 7 ) >> 8;
-        $ROM[ $PC + 4 ] = ( $PC + 7 ) & 0xff;
+        setMEM( $PC + 3 , ( $PC + 7 ) >> 8);
+        setMEM( $PC + 4 , ( $PC + 7 ) & 0xff);
     }
 
     # RTS instruction
@@ -315,8 +329,8 @@ sub parse2 {
 
     # SIA/SIB instruction: also insert an incremented low pointer byte
     if ( !$firstpass && $inst=~ m{^SI[AB]$} ) {
-	$ROM[ $PC + 3 ] = ($constant+1) & 0xff;
-	die("Pointer $constant straddles page!\n") if ($ROM[ $PC + 3 ] == 0);
+	setMEM( $PC + 3 , ($constant+1) & 0xff);
+	die("Pointer $constant straddles page!\n") if ($MEM[ $PC + 3 ] == 0);
     }
 
     # Insert a string
@@ -325,15 +339,17 @@ sub parse2 {
       # Evaluate escaped characters in the string
       $string=~ s{\\n}{\n}g; $string=~ s{\\t}{\t}g; $string=~ s{\\"}{"}g;
 
-      foreach my $ch (split("", $string)) { $ROM[$PC++] = ord($ch); }
-      $ROM[$PC++]=0;
+      foreach my $ch (split("", $string)) { setMEM($PC++, ord($ch)); }
+      setMEM($PC++, 0);
       die("String $string straddles pages\n") if (($oldPC>>8) != ($PC>>8));
     }
 
     # Insert a sequence of HEX bytes, given  as a string, e.g. "12 34 56 AB"
     if ( $inst eq "HEX" ) {
       my $oldPC= $PC;
-      foreach my $hexpair (split(" ", $string)) { $ROM[$PC++] = hex($hexpair); }
+      foreach my $hexpair (split(" ", $string)) {
+	setMEM($PC++, hex($hexpair));
+      }
       die("Hex $string straddles pages\n") if (($oldPC>>8) != ($PC>>8));
     }
 
@@ -353,16 +369,16 @@ sub parse2 {
         $constant = $constant >> 8 if ($isindexed);
 
         if ( $oplen > 0 ) {
-            $ROM[$PC] = $opcode;
+            setMEM($PC, $opcode);
             printf( "  %02x", $opcode ) if ( $debug && !$firstpass );
         }
         if ( $oplen == 2 ) {
-            $ROM[ $PC + 1 ] = $constant & 0xff;
+            setMEM( $PC + 1 , $constant & 0xff);
             printf( " %02x", $constant & 0xff ) if ( $debug && !$firstpass );
         }
         if ( $oplen > 2 ) {
-            $ROM[ $PC + 1 ] = $constant >> 8;
-            $ROM[ $PC + 2 ] = $constant & 0xff;
+            setMEM( $PC + 1 , $constant >> 8);
+            setMEM( $PC + 2 , $constant & 0xff);
             printf( " %02x %02x", $constant >> 8, $constant & 0xff )
               if ( $debug && !$firstpass );
         }
@@ -379,13 +395,18 @@ sub parse2 {
 #### MAIN PROGRAM ####
 
 # Enable debugging
-while ( ( @ARGV >= 1 ) && ( $ARGV[0] ) eq "-d" ) {
-    $debug++;
-    shift(@ARGV);
+while ( @ARGV > 1 ) {
+  if ( $ARGV[0] eq "-d" ) {
+    $debug++; shift(@ARGV); next;
+  }
+  if ( $ARGV[0] eq "-r" ) {
+    $StartPC = 0x8000; $ramimage++; shift(@ARGV); next;
+  }
+  die("Usage: $0 [-d] [-r] infile\n");
 }
 
 # Give usage
-die("Usage: $0 [-d] infile\n") if ( @ARGV != 1 );
+die("Usage: $0 [-d] [-r] infile\n") if ( @ARGV != 1 );
 
 # Load the instruction names, opcodes and lengths
 load_opcodes();
@@ -407,7 +428,7 @@ while (<$IN>) {
 close($IN);
 
 # First pass: find the labels
-$PC = 0;
+$PC = $StartPC;
 foreach my $i ( 0 .. ( @Line - 1 ) ) {
     my $line = $Line[$i];
     $linenum = $Linenum[$i];
@@ -428,17 +449,33 @@ if ($debug) {
 }
 
 # Second pass: assemble
-$PC = 0;
+$PC = $StartPC;
 foreach my $i ( 0 .. ( @Line - 1 ) ) {
     my $line = $Line[$i];
     $linenum = $Linenum[$i];
     parse2( $line, 0 );
 }
 
-# Write ROM out in hex
+# Dump a RAM image ready to load into the monitor if $ramimage is set
+if ($ramimage) {
+  my $hexfile= $ARGV[0];
+  $hexfile=~ s{\.s$}{};
+  $hexfile= $hexfile . ".hex";
+  open( my $OUT, ">", $hexfile ) || die("Can't write to $hexfile: $!\n");
+  printf($OUT "C%04x\n", $lomemused);
+  for my $i ($lomemused .. $himemused) {
+    printf( $OUT "%02x ", $MEM[$i] ? $MEM[$i] : 0 );
+    print( $OUT "\n" ) if ( ( $i % 16 ) == 15 );
+  }
+  print($OUT "Z\n");
+  close($OUT); exit(0);
+}
+
+
+# Otherwise, Write 32K ROM out in hex
 open( my $OUT, ">", "instr.rom" ) || die("Can't write to instr.rom: $!\n");
 for my $i ( 0 .. ( 2**15 - 1 ) ) {
-    printf( $OUT "%02x ", $ROM[$i] ? $ROM[$i] : 0 );
+    printf( $OUT "%02x ", $MEM[$i] ? $MEM[$i] : 0 );
     print( $OUT "\n" ) if ( ( $i % 16 ) == 15 );
 }
 close($OUT);

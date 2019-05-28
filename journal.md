@@ -3834,3 +3834,111 @@ And now to bed, given that it seems to be working now.
 
 I have rotated the UART in the PCB layout, and I'm running freeroute to
 redo all of the tracks.
+
+## Sun 26 May 21:04:30 AEST 2019
+
+Ho ho, perhaps a slight breakthrough. Latest test code is zz.s:
+
+```
+main:   NOP			# 0000: 00 NOP
+start:  JINA			# 0001: 78 JIU $0001; 0004: 66 INA
+        LCB '?'                 # 0005: 61 LCB $3f
+        JEQ printusage		# 0007: 71 JEQ $0017
+        JOUT('*')		# 000a: 77 JOU $000a; 000d: 68 OUT $2a
+        JOUT('\n')		# 000f: 77 JOU $000f; 0012: 68 OUT $0a
+        JMP start		# 0014: 70 JMP $0001
+
+printusage: JOUT('1')		# 0017: 77 JOU $0017; 001a: 68 OUT $31
+        JMP start		# 001c: 70 JMP $0001
+```
+
+Print '1' if we get a '?', print "*\n" otherwise. It indeed prints a '1'
+when a '?' is received. If the input char comes _after_ '?' we see the "*\n".
+If it comes _before_ '?' in the ASCII set, we see nothing. Somehow JEQ
+is not right. This occurs when I single-step too. The microcode is:
+
+```
+71 JEQ: MEMresult AHload PCincr
+        MEMresult ALload PCincr
+        ALUresult A-B ARena
+        ALUresult A-B ARena
+        ALUresult A-B ARena
+        ALUresult A-B ARena JumpZero
+        uSreset
+```
+
+When I enter an 'A' I see PC go from $7 to $8 to $9 to $A.
+When I enter a '<' I see PC go from $7 to $8 to $9.
+With $0017 on the address bus at sequence 3, A-B is $FD which is '<' - '?'.
+Fine. There's a carry, overflow, no zero, no negative on the Jump chip.
+The PCload# line is high. But then the PC goes back to $2 at sequence 7.
+instead of $A, and the IR loads a 'NOP' instruction! The JumpOp is $3.
+
+And, if I touch pin 6 of the 74HCT151 Jump chip with a multimeter probe
+which isn't wired up to anything, it works fine. Maybe I'm getting
+noise on pin 6. Pity I've just updated the schematic as I might be able to
+see which lines go nearby this pin.
+
+So, it seems like a noise problem. I wonder if I can put a cap to Vcc or
+ground to fix it? I tried a small cap to ground, no luck. But a 15nF cap
+from pin 6 to Vcc is working. I've put the monitor back in, and I can
+(C)hange bytes at $9000 and (R)un at $9000 and I've entered my first
+program! Also Ctrl-A Y in microcom, the paste operation, also works!
+This is with the 555, so now to try at 1MHz.
+
+Interesting. If I power on with no reset held down, at 1MHz I can
+get the monitor started, upload a small binary and run it at $9000.
+When I reset, it seems to run the $9000 program again before returning
+to the monitor. But it seems that it's not so reliable when starting.
+Maybe the cap is too big? Maybe I need a pullup/pulldown resistor
+instead. At least I know that it's not the microcode now. At 3MHz,
+again I can get it going with no reset, but not always.
+
+## Mon 27 May 06:34:46 AEST 2019
+
+I pulled the 15nF cap and tried another 100nF bypass cap from the Jump chip's
+Vcc to Gnd. That didn't help. So I've put the 15nF back again. However,
+maybe I need to pull out the Bitscope and look at the pin6 PCload# line.
+
+I changed the Verilog version to have a hard-coded UART input. When it's '?',
+clk rises, uSeq changes to 6, JumpOp changes to 3'b011 and PCload# drops
+in that order, and well before the falling clk edge. For any other UART value,
+PCload# stays high throughout the JEQ instruction. I read through the
+74HCT251 datasheet and there's nothing obvious that raises a flag.
+
+Looking at the old PCB layout. pin 6 PCload# line has LoadOp2 going past it.
+Then it runs horizontally past the top of the analog section and to pin 9 of
+PChi.
+That runs vertically up to pin 9 of PClo. I can't see much that would
+bring noise into the net. I had a crazy idea that the Jump chip isn't
+a 74HCT151 but a HC. No, the Digikey order says CD74HCT251E.
+
+## Mon 27 May 14:15:47 AEST 2019
+
+Some things to try.
+
+ + Pull the 15nF cap and do some analog measuring with my Bitscope,
+   especially for inputs below '?'. There should _not_ be any PCload#
+   drop. I'm not sure if my Bitscope has the time resolution to tell.
+ + Perhaps try a new wire direct from pin 6 Jump to pin 9 of PChi,
+   just in case noise is getting in somehow.
+ + Try different cap values, perhaps in the pF range. As small as I can
+   get.
+
+## Tue 28 May 14:06:03 AEST 2019
+
+I haven't had a chance to do the Bitscope thing yet. I have modified cas
+to generate RAM hex images which can be loaded with the monitor. I can't
+try them with csim -p as it seems to sample the keyboard too slowly,
+and in minicom when I send a file, csim -p misses characters. However,
+csim by itself is fine.
+
+However, the PCB board is OK. Using the 555 clock I can start the CPU,
+paste a hex file with minicom and R8000 to run it, and it works. I had
+to modify bigfred.s as it was clobbering locations at $8000. Now it's
+fine. Ditto a few minsky.s modifications. With the 1MHz and 3.57MHz
+oscillators, I'm still not restarting at $0000, it seems like the PC
+is retaining its memory (along with the RAM) and it restarts with what
+it was previously running. So, power down the CPU, wait for the big cap to
+discharge, then start the CPU. Do a reset to get it back to the
+monitor prompt. Once at the prompt I can run bigfred and minsky from RAM.
