@@ -3942,3 +3942,18 @@ is retaining its memory (along with the RAM) and it restarts with what
 it was previously running. So, power down the CPU, wait for the big cap to
 discharge, then start the CPU. Do a reset to get it back to the
 monitor prompt. Once at the prompt I can run bigfred and minsky from RAM.
+
+## Thu 30 May 08:28:06 AEST 2019
+
+I've ordered a DSLogic Plus USB-based Logic Analyzer. It can sample
+4 channels at 400MHz, 16 channels at 100MHz. So that's 2.5nS between
+samples at 400MHz, which should be enough to spot any PCload# glitches.
+
+While I'm waiting, I've decided to write a Game of Life program. I
+just finished it this morning, but now to find the bugs. The code
+runs and prints out the board properly, but it isn't calculating the
+right new cell values yet.
+
+D'oh! I just realised that I'm changing the mid-row cells, but I need
+the old cell values to calculate the next row down. So I need a two
+row cache.

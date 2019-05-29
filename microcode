@@ -548,6 +548,11 @@ START := MEMresult IRload PCincr
 	ALUresult B ARena MEMload
 	uSreset
 
+94 STO_0_,B: MEMresult AHload PCincr
+	ALUresult B ALload ARena
+	ALUresult 0 ARena MEMload
+	uSreset
+
 # Clutching at straws instructions
 E0 JLT8: MEMresult AHload PCincr
 	MEMresult ALload PCincr
