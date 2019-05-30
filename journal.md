@@ -3956,4 +3956,8 @@ right new cell values yet.
 
 D'oh! I just realised that I'm changing the mid-row cells, but I need
 the old cell values to calculate the next row down. So I need a two
-row cache.
+row cache. Added and fixed a bug and now it runs. I still have a
+top row bug but that's because I need to clear the row caches.
+OK, the row caches are being cleared, and I'm also printing out an
+empty bottom row to make the display symmetric. Looks good now.
+I've only tested it in the csim simulator. Will try on the PCB later.
