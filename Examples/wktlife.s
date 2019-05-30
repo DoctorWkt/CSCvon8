@@ -30,30 +30,21 @@ midcell:	EQU $F006		# Cached copy of our cell value
 row:		EQU $F007		# Current row number: $D0 .. $EF
 col:		EQU $F008		# Current column number: $00 .. $7F
 
-midrowcache:	EQU $C100		# Cache of the previous mid row
-toprowcache:	EQU $C000		# Cache of the previous top row
+midrowcache:	EQU $CF00		# Cache of the previous mid row
+toprowcache:	EQU $CE00		# Cache of the previous top row
 
-# Initialisation. Zero the row zero $0000 and row 31 $EF00.
-start:		LCB $00			# B is the index
-		LCA $80			# A is the exit value
-1:		STO 0 $D000,B
-		STO 0 $EF00,B
+# Initialisation. Zero both cached rows and the board. Use
+# self-modifying code to do this.
+		LHA toprowcache		# A is the row hi-byte
+1:		LCB $00			# B is the index
+sm1:		STO 0 toprowcache,B
 		LDB B+1			# Increment B and loop
-		JNE 1b			# while we are below $80
-
-
-# Now zero column 0 and column 31. Need self-modifying code here
-		LCB $D0			# B is the index
-		LCA $F0			# A is the exit value
-sm1:		STO 0 $D000
-sm2:		STO 0 $D07F
-		LDB B+1			# Increment B. Exit when we hit $F0
-		JEQ 1f
-		STO B sm1+1		# Otherwise update the pointers
-		STO B sm2+1
+		JBN 2f			# while we are below $80
 		JMP sm1
-
-1:
+2:		LDA A+1			# Move up to the next row
+		STO A sm1+1
+		LCB $F1			# Stop when we get past the
+		JNE 1b			# last row
 
 # Set up an r-pentomino pattern in the centre of the board
 		LCA $01

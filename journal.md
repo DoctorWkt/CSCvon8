@@ -3961,3 +3961,12 @@ top row bug but that's because I need to clear the row caches.
 OK, the row caches are being cleared, and I'm also printing out an
 empty bottom row to make the display symmetric. Looks good now.
 I've only tested it in the csim simulator. Will try on the PCB later.
+
+## Thu 30 May 16:24:29 AEST 2019
+
+I've just burned the ROM again.
+Decode ROM B has RCS revision 1.21 of microcode. Extra instruction: STO_0_,B.
+I'm running wktlife.s with the 555 and also at 1MHz. I forgot that the RAM
+is full of random values when it boots, so I need to add some code to clear
+the board and the cached rows. Otherwise, it's running Life properly. I've
+fixed the code to clear the board and the cached rows.
