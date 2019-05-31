@@ -3970,3 +3970,31 @@ I'm running wktlife.s with the 555 and also at 1MHz. I forgot that the RAM
 is full of random values when it boots, so I need to add some code to clear
 the board and the cached rows. Otherwise, it's running Life properly. I've
 fixed the code to clear the board and the cached rows.
+
+## Fri 31 May 17:01:34 AEST 2019
+
+Some progress. I've written up the details of the jump problem in
+[my blog](https://minnie.tuhs.org/Blog/2019_05_31_CSCvon8_Debug1.html),
+in response to an e-mail from Tim Rudy.
+
+I then looked around the web for other people who had ROM glitches, and
+found
+[this article on Hackaday](https://hackaday.io/project/20334-breadboard-vga-from-ttl-and-sram)
+where someone had a similar situation and used a 330pF capacitor to minimise
+the glitch. So I've replaced the PCload# capacitor with a 330pF. This also
+seems to work fine.
+
+I have modified the monitor so that it doesn't use a subroutine to print
+out the greeting message. This seems to have fixed the weird boot behaviour.
+Now for all clock speeds I can get to the monitor prompt.
+
+I've also compiled and assembled several of the *.cl programs, and they
+run on the PCB. I had to change the variables from starting at $8000,
+as that's where the programs start now! I'll have to fix the compiler.
+
+However, I now seem to have a reasonably stable CPU running and booting
+at 3.57MHz which can download programs over the serial line and then
+run them. That's good news. I've modified the PCB to have the 330pF capacitor.
+I've also modified the monitor to not JSR near the beginning, and this makes
+the boot-up more stable. So, I've finally committed the monitor to the
+examples.
