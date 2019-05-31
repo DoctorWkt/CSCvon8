@@ -4,7 +4,7 @@
 	NOP
 	LCB hello		# Start at the base of hello
 loop:	LDA hello,B		# Get a character
-	LDA A JZ end		# Exit if NUL
+	JAZ end			# Exit if NUL
 	OUT A			# Print it out
 	JOU .			# Wait for UART
 	LDB B+1

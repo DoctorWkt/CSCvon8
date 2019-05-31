@@ -14,7 +14,7 @@
 # This will destroy loptr in the process.
 
 puts:	LIA	hiptr		# Get character through the ptr
-	LDA	A JZ endputs	# Exit when we get the NUL character
+	JAZ endputs		# Exit when we get the NUL character
 	JOU 	.		# Print out the character
 	OUT	A
 	LDB	loptr		# Increment the low byte of the pointer

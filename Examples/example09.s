@@ -45,13 +45,13 @@ L2:	JOU L2
 
 	LDA xlo		# Calculate low result
 	LDB ylo		# and jump if carry
-	LDA A+B JC acarry
-	STO A reslo
+	TST A+B JC acarry
+	STO A+B reslo
 	LDA xhi		# Calculate high result
 	LDB yhi
 	STO A+B reshi
 	JMP preslt
-acarry:	STO A reslo
+acarry:	STO A+B reslo
 	LDA xhi		# Calc hi result with carry
 	LDB yhi
 	STO A+B+1 reshi

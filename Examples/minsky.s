@@ -34,7 +34,8 @@ loop:	LCB $04			# Do y= y - (x/4)
 	LCA $20			# Load a ' ' into A
 sploop:	OUT A
 L1:	JOU L1
-	LDB B-1 JN spend	# B--, exit when it's negative
+	LDB B-1
+	JBN spend		# B--, exit when it's negative
 	JMP sploop
 
 spend:	LCA '*'			# Print out "*\n"
