@@ -4001,7 +4001,7 @@
   (gr_line (start 21.336 120.904) (end 21.336 31.496) (angle 90) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 271.272 120.904) (end 21.336 120.904) (angle 90) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 271.272 31.496) (end 271.272 120.904) (angle 90) (layer Edge.Cuts) (width 0.15))
-  (gr_text v2019/05/25 (at 261.112 117.856) (layer F.SilkS) (tstamp 5CE8B978)
+  (gr_text v2019/06/01 (at 261.112 117.856) (layer F.SilkS) (tstamp 5CE8B978)
     (effects (font (size 1.5 1.5) (thickness 0.3)))
   )
   (gr_text Pulse (at 66.548 116.205) (layer F.SilkS)
