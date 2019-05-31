@@ -878,32 +878,32 @@ Text Notes 650  3850 0    60   ~ 0
 $Comp
 L 74xx:74LS139 IC15
 U 2 1 5CC0FB47
-P 7750 4700
-F 0 "IC15" H 7750 5250 50  0000 C CNN
-F 1 "74HCT139" H 7750 5150 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 7750 4700 50  0001 C CNN
-F 3 "" H 7750 4700 50  0001 C CNN
-	2    7750 4700
+P 9050 4800
+F 0 "IC15" H 9050 5350 50  0000 C CNN
+F 1 "74HCT139" H 9050 5250 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 9050 4800 50  0001 C CNN
+F 3 "" H 9050 4800 50  0001 C CNN
+	2    9050 4800
 	1    0    0    -1  
 $EndComp
-Text GLabel 7000 4700 0    60   Input ~ 0
+Text GLabel 8300 4800 0    60   Input ~ 0
 Clk
 Wire Wire Line
-	7250 4700 7000 4700
-Text GLabel 6950 4600 0    60   Input ~ 0
+	8550 4800 8300 4800
+Text GLabel 8250 4700 0    60   Input ~ 0
 Lo
-Text GLabel 6950 4900 0    60   Input ~ 0
+Text GLabel 8250 5000 0    60   Input ~ 0
 Lo
 Wire Wire Line
-	6950 4600 7250 4600
+	8250 4700 8550 4700
 Wire Wire Line
-	6950 4900 7250 4900
-Text GLabel 8600 4700 2    60   Output ~ 0
+	8250 5000 8550 5000
+Text GLabel 9900 4800 2    60   Output ~ 0
 ~Clkbar
-NoConn ~ 8250 4600
-NoConn ~ 8250 4800
-NoConn ~ 8250 4900
-Text Notes 6400 5400 0    60   ~ 0
+NoConn ~ 9550 4700
+NoConn ~ 9550 4900
+NoConn ~ 9550 5000
+Text Notes 7700 5500 0    60   ~ 0
 Clkbar is an inverted Clk signal, used to initiate events on the\nfalling edge of Clk. We use the spare 139 half as an inverter.
 Wire Wire Line
 	9750 1550 9750 1600
@@ -1039,7 +1039,39 @@ F 3 "~" H 3700 5950 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	8250 4700 8600 4700
+	9550 4800 9900 4800
+Text GLabel 5850 4700 0    60   Input ~ 0
+~PCload
+$Comp
+L power:VCC #PWR0104
+U 1 1 5CF39113
+P 6100 4200
+F 0 "#PWR0104" H 6100 4050 50  0001 C CNN
+F 1 "VCC" H 6100 4350 50  0000 C CNN
+F 2 "" H 6100 4200 50  0001 C CNN
+F 3 "" H 6100 4200 50  0001 C CNN
+	1    6100 4200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6100 4200 6100 4300
+Text Notes 5200 5100 0    60   ~ 0
+This capacitor minimises glitches\nin PCload# due to glitches in the\nDecode ROM output.
+$Comp
+L Device:C_Small C2
+U 1 1 5CF599C2
+P 6100 4400
+F 0 "C2" H 6192 4446 50  0000 L CNN
+F 1 "330pF" H 6192 4355 50  0000 L CNN
+F 2 "Capacitor_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm" H 6100 4400 50  0001 C CNN
+F 3 "~" H 6100 4400 50  0001 C CNN
+	1    6100 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5850 4700 6100 4700
+Wire Wire Line
+	6100 4700 6100 4500
 Wire Bus Line
 	2500 4800 2500 5850
 Wire Bus Line
