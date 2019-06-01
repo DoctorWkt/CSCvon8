@@ -31,13 +31,14 @@ You can find the [bill of materials here](bom_20190601.csv).
 
 ## Special Tools Required
 
-*I need to fill this out a bit more*.
+*XXX I need to fill this out a bit more*.
 
 Apart from the usual tools (soldering station, side cutters, pliers etc.),
 you will also need these specialised tools and equipment:
 
  + Minipro EPROM burner
  + TL866 adapter so that you can burn the 42-pin M27C322 EPROM
+ + A UV eraser so that you can erase the ALU and Decode EPROMs
 
 ## Step 1: Clock Pulse and Reset
 
@@ -353,6 +354,8 @@ build the circuit. I used four individual pin sockets as the legs.
 On top, I used another two pin sockets so that I could change the
 C1 timing capacitor and thus have a wide set of running frequencies.
 
+*XXX Insert pictures here!*
+
 I'd recommend that you solder in a 4-pin DIP18 IC socket so that you can
 insert and remove the 555 clock circuit, but also replace it with a faster
 oscillator.
@@ -372,7 +375,7 @@ can reach.
 
 By now you are probably getting sick of burning the Instruction ROM each
 time you want to change the program. Now you might want to burn the
-[monitor.s][../Examples/monitor.s] program to ROM. This is a very
+[monitor.s](../Examples/monitor.s) program to ROM. This is a very
 rudimentary system monitor. With it, you can *Dump* memory location values,
 *Change* memory location values, and *Run* machine code starting at a
 specific location. Example commands are:
@@ -419,7 +422,7 @@ Z
 ```
 
 When you are in *minicom* and you have the monitor prompt, you can
-use ctrl-A Y to paste a file to the monitor. Choose *Examples/wktlife.hex*.
+use *ctrl-A Y* to paste a file to the monitor. Choose *Examples/wktlife.hex*.
 The above *C8000* and hex stream will be uploaded to the monitor. Then
 you can *R8000* to run the program. You can see this program running in
 [this YouTube video](https://www.youtube.com/watch?v=LJe3Z_fGDhg).
