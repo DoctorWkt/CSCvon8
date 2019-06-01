@@ -14,18 +14,14 @@ need to wire a 330pF capacitor from pin 6 of the 74HCT251 Jump Logic chip
 to Vcc. This helps to prevent a glitch with the Jump instructions. The
 completed "2019/05/08" PCB looks like this:
 
-<center>
 ![](Figs/pcb_20190601.jpg)
-</center>
 
 If you have the "2019/06/01" version of the PCB, then the UM245R is
 oriented so that the USB connect points upwards to the edge of the PCB.
 Also, there is a 330pF capacitor, C2, right next to the IC9 74LS593
 chip, as shown in these pictures.
 
-<center>
 ![](Figs/UM245R_vertical.png) ![](Figs/C2_capacitor.png)
-</center>
 
 
 ## Bill of Materials
@@ -48,9 +44,7 @@ you will also need these specialised tools and equipment:
 The first step is to solder in the 555, the switches and the associated
 diode, capacitors and resistors:
 
-<center>
 ![](Figs/clk_pulse_reset.jpg)
-</center>
 
 Also solder in a 24-pin DIP socket for the UM245R, as this is going to provide
 the 5V supply to the whole board. You could solder the UM245R onto the PCB;
@@ -58,9 +52,7 @@ I chose not to as it is expensive. Make sure that the jumpers on the UM245R
 are set as per the photo below so that it is passing on the 5V from the USB
 input:
 
-<center>
 ![](Figs/UM245R.jpg)
-</center>
 
 Also, solder in the C3 220uF capacitor which will help to smooth out any
 DC spikes.
@@ -76,16 +68,12 @@ Next up, solder in the IC13 74HCT161 microsequencer just below the UART and
 its bypass capacitor. If you want to display the microsequencer's value on
 LEDs, also solder in the pin socket next to the chip:
 
-<center>
 ![](Figs/usequencer.png)
-</center>
 
 I created several LED arrays with some pin sockets, some rectangular LEDs
 and a few 1K (or close) resistors, e.g.:
 
-<center>
 ![](Figs/led_array.jpg)
-</center>
 
 On my board, the "2019/05/08" version, the UART sits right above the LED
 display for the 74HCT161 microsequencer, so I had to solder the LEDs and
@@ -107,9 +95,7 @@ The next step is to solder in the IC15 74HCT139 demultiplexer and its
 bypass capacitor. Half of this chip is used as an inverter gate to convert
 the system clock signal into an inverted *Clkbar#* signal.
 
-<center>
 ![](Figs/dbwriter.png)
-</center>
 
 Power up the board, toggle the Clock pulse button. You should observe pin 11
 of IC15 drop: *Clkbar#* is normally high but goes to zero when the clock
@@ -148,9 +134,7 @@ So the steps are:
    that you don't use one with circular pin holes: if you choose to use a
    ZIF socket, they have rectangular pins. Try the left-hand sockets below:
 
-   <center>
    ![](Figs/dip28_socket.jpg) &nbsp;&nbsp; ![](Figs/dip28_not_socket.jpg)
-   </center>
 
  + Solder in the IC9 and IC10 74LS593 Program Counter chips and
    associated capacitors.
@@ -177,9 +161,7 @@ Yes, this is a lot of work!
 
 I've highlighted below the components you should add in this step:
 
-<center>
 ![](Figs/ir_decode_etc.png)
-</center>
 
 ## Step 5: Running Your First Instructions
 
@@ -362,9 +344,7 @@ At this point, you are probably getting sick of pushing the Clock pulse
 button to run instructions. I built this 555 circuit which has the same pins
 as the 1MHz and 3.57MHz oscillators that I bought.
 
-<center>
 ![](Figs/555_astable.jpg)
-</center>
 
 The design for this 50% duty cycle circuit comes from 
 [this web page](https://www.electronics-tutorials.ws/waveforms/555_oscillator.html).
