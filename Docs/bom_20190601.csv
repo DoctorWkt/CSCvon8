@@ -1,0 +1,62 @@
+Source:,/home/wkt/ownCloud/CSCvon8/Schematic/Schematic.sch,
+Date:,Thu 09 May 2019 13:39:52 AEST,
+Tool:,Eeschema 5.1.2-f72e74a~84~ubuntu18.04.1,
+Component Count:,55,
+,,
+Ref,Value,Footprint
+C1,10uF,Capacitors_THT:CP_Radial_D5.0mm_P2.00mm
+C2,330pF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C3,220uF,Capacitors_THT:CP_Radial_D8.0mm_P5.00mm
+C4,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C5,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C6,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C7,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C8,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C9,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C10,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C11,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C12,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C13,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C14,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C15,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C16,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C17,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C18,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C19,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C20,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C21,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+C22,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
+D1,1N4148,Diodes_THT:D_DO-35_SOD27_P2.54mm_Vertical_AnodeUp
+IC1,AS6C62256,Housings_DIP:DIP-28_W15.24mm_Socket
+IC2,28C256,Housings_DIP:DIP-28_W15.24mm_Socket
+IC3,UM245R,Housings_DIP:DIP-24_W15.24mm_Socket
+IC4,74HCT574,Housings_DIP:DIP-20_W7.62mm_Socket
+IC5,74HCT574,Housings_DIP:DIP-20_W7.62mm_Socket
+IC6,M27C322-100F1,Housings_DIP:DIP-42_W15.24mm_Socket
+IC7,74HCT574,Housings_DIP:DIP-20_W7.62mm_Socket
+IC8,74HCT574,Housings_DIP:DIP-20_W7.62mm_Socket
+IC9,74LS593,Housings_DIP:DIP-20_W7.62mm_Socket
+IC10,74LS593,Housings_DIP:DIP-20_W7.62mm_Socket
+IC11,74HCT251,Package_DIP:DIP-16_W7.62mm_Socket
+IC12,74HCT574,Housings_DIP:DIP-20_W7.62mm_Socket
+IC13,74HCT161,Housings_DIP:DIP-16_W7.62mm_Socket
+IC14,AT27C1024-70PU,Housings_DIP:DIP-40_W15.24mm_Socket
+IC15,74HCT139,Package_DIP:DIP-16_W7.62mm_Socket
+IC16,74HCT138,Housings_DIP:DIP-16_W7.62mm_Socket
+IC17,74HCT04,Housings_DIP:DIP-14_W7.62mm_Socket
+IC18,NE555,Housings_DIP:DIP-8_W7.62mm_Socket
+J1,Jumper_3_Bridged12,Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical
+J2,Data Bus Pin Header,Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical
+J3,Address Bus Pin Header,Connector_PinSocket_2.54mm:PinSocket_1x18_P2.54mm_Vertical
+J4,uSeq Pin Header,Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical
+J5,IR Pin Header,Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical
+J6,Areg Pin Header,Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical
+J7,Breg Pin Header,Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical
+R1,20K,Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical
+R2,1K,Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical
+R4,1M,Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical
+R5,10K,Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical
+R6,10K,Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical
+SW1,SW_Push_Dual,Buttons_Switches_THT:Push_E-Switch_KS01Q01
+SW2,SW_Push_Dual,Buttons_Switches_THT:Push_E-Switch_KS01Q01
+U1,ECS-100A-035,QX14T50B1.843200B50TT:QX14T50B1.843200B50TT
