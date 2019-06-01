@@ -151,7 +151,7 @@ So the steps are:
  + Solder in the IC17 74HCT04 inverter and associated capacitor.
  + Solder in the IC11 74HCT251 8:1 multiplexer and associated capacitor.
    Also remember to solder in the C2 330pF capacitor, either next to IC11
-   or underneath the board from pin 6 of IC11 to ping 16 of IC11.
+   or underneath the board from pin 6 of IC11 to pin 16 of IC11.
  + I would also recommend installing the pin socket to display the data bus
    value, and build a LED array for the IR and another LED array for the
    data bus. Ditto, solder in the pin socket for the address bus, and build
