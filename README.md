@@ -10,7 +10,8 @@ clock circuitry.
 
 The overall design of the CPU is covered in
 [Docs/CSCvon8_design.md](Docs/CSCvon8_design.md). Also read the
-[getting started guide](Docs/getgoing_instructions.md).
+[getting started guide](Docs/getgoing_instructions.md) and the
+[guide to building the PCB version](Docs/building_the_CSCvon8.md).
 
 As at the 18th May 2019 I have the CPU running solidly at 3.57MHz on
 the PCBs that I ordered from the PCB design in the Schematics folder.
