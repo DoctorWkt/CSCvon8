@@ -29,6 +29,16 @@ chip, as shown in these pictures.
 
 You can find the [bill of materials here](bom_20190601.csv).
 
+## Special Tools Required
+
+*I need to fill this out a bit more*.
+
+Apart from the usual tools (soldering station, side cutters, pliers etc.),
+you will also need these specialised tools and equipment:
+
+ + Minipro EPROM burner
+ + TL866 adapter so that you can burn the 42-pin M27C322 EPROM
+
 ## Step 1: Clock Pulse and Reset
 
 The first step is to solder in the 555, the switches and the associated
@@ -319,10 +329,10 @@ the jump instructions in the instruction set.
 
 Some of the example programs you can try here are:
 
- + [example01.s](../Figs/example01.s)
- + [example02.s](../Figs/example02.s)
- + [example04.s](../Figs/example04.s)
- + [example08.s](../Figs/example08.s)
+ + [example01.s](../Examples/example01.s)
+ + [example02.s](../Examples/example02.s)
+ + [example04.s](../Examples/example04.s)
+ + [example08.s](../Examples/example08.s)
 
 ## Step 8: The RAM
 
