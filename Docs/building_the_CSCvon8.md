@@ -18,8 +18,8 @@ completed "2019/05/08" PCB looks like this:
 
 If you have the "2019/06/01" version of the PCB, then the UM245R is
 oriented so that the USB connect points upwards to the edge of the PCB.
-Also, there is a 330pF capacitor, C2, right next to the PClo 74LS593
-chip, as show in these pictures.
+Also, there is a 330pF capacitor, C2, right next to the IC9 74LS593
+chip, as shown in these pictures.
 
 ![](Figs/UM245R_vertical.png)
 
@@ -98,13 +98,13 @@ instruction into the Instruction Register, and generate the control lines
 for each microinstruction. The sort of code you should be able to do is:
 
 ```
-	NOP
-	NOP
-	OUT 'H'
-	OUT 'e'
-	OUT 'l'
-	OUT 'l'
-	OUT 'o'
+        NOP
+        NOP
+        OUT 'H'
+        OUT 'e'
+        OUT 'l'
+        OUT 'l'
+        OUT 'o'
 ```
 
 For these instructions to work, you need:
@@ -113,7 +113,7 @@ For these instructions to work, you need:
  + a Program Counter to generate the address for each instruction
  + an Instruction Register to load the NOP and OUT instructions
  + the Decode ROM so that it can generate most of the control lines
- + the databus reader demultiplexer, as it generates the *IRload* line
+ + the 74HCT138 databus reader demultiplexer, as it generates the *IRload* line
  + the 74HCT04 inverter as it inverts *IRload* to create *IRload#*
  + the 74HCT251 8:1 multiplexer, as this will stop the PC from jumping
    and ensure that it increments instead
@@ -143,7 +143,9 @@ So the steps are:
    or underneath the board from pin 6 of IC11 to ping 16 of IC11.
  + I would also recommend installing the pin socket to display the data bus
    value, and build a LED array for the IR and another LED array for the
-   data bus.
+   data bus. Ditto, solder in the pin socket for the address bus, and build
+   a 16-LED array for the address bus. I chose to use four resistors here for
+   groups of four LEDs.
 
 Yes, this is a lot of work!
 
@@ -249,3 +251,185 @@ display. Keep pulsing the clock to see the other characters. Once the
 instructions are all done, the rest of the Instruction ROM is full of
 NOP instructions so no more activity will occur if you keep pulsing the
 clock signal.
+
+## Step 6: The A and B registers
+
+The next step is to solder in the IC4 74HCT574 and IC5 74HCT574 A and B
+registers, and associated capacitors. Also solder in the pin sockets
+for the two registers, and build two LED arrays to display the A and B
+values.
+
+To test the resgisters, you should be able to assemble a program like
+this one:
+
+```
+        LCA $01
+        LCB $02
+        LCA $03
+        LCB $04
+        LCA $05
+        LCB $06
+```
+
+We can't yet print out the registers, as we need the ALU. This is going to
+be the next step.
+
+## Step 7: The ALU
+
+The ALU is IC6, a 42-pin M27C322 EPROM. It's the biggest component on the
+PCB. I'd highly recommend that you use an IC socket instead of soldering
+it to the board. This is in case you ever need to change the ALU operations.
+So far, I haven't needed to do this. Don't forget the bypass capacitor
+associated with IC6.
+
+To generate the ALU ROM's contents, run the *gen_alu* script in the
+main Github repository, which will produce the file *27Cucode.rom*.
+While you are doing this, erase your M27C322 EPROM with your UV eraser.
+
+The M27C322 EPROM is too big to fit into the Minipro programmer. You will
+need to use the TL866 adapter. Remember to set the switch to "M27C322".
+Here is the script that I used to burn the eight "sections" of the ALU ROM
+image to the ROM.
+
+**XXX I need to add this part in!**
+
+Once the ALU ROM is burned, gently insert it into the IC socket on the PCB.
+
+With this done, you can assemble programs that perform ALU operations,
+and also pass A and B register values through to the data bus where they
+can be printed by the UART. An example program might be:
+
+```
+        LCA 'H'
+        OUT A           # Print out a 'H'
+        LCB 'i'
+        OUT B           # Print out an 'i'
+        LCA $20
+        LCB $01         # Add $20+$01 to get $21
+        LDA A+B
+        OUT A           # which is a '!' character
+```
+
+## Step 7: The Address Register Chips
+
+We are two steps away from finishing the CPU. In this step, solder in IC7
+and IC8 74HCT574 registers and associated capacitors. These form the 16-bit
+Address Register. With these and the ALU installed, you can now perform
+the jump instructions in the instruction set.
+
+Some of the example programs you can try here are:
+
+ + [example01.s](../Figs/example01.s)
+ + [example02.s](../Figs/example02.s)
+ + [example04.s](../Figs/example04.s)
+ + [example08.s](../Figs/example08.s)
+
+## Step 8: The RAM
+
+The final hardware component, unless I missed something, is the IC1 AS6C62256
+32K RAM chip. It's the same size as the Instruction ROM. It's up to you if
+you want to solder it in, or use an IC socket. I used a socket here.
+
+At this point, you are probably getting sick of pushing the Clock pulse
+button to run instructions. I built this 555 circuit which has the same pins
+as the 1MHz and 3.57MHz oscillators that I bought.
+
+![](Figs/555_astable.jpg)
+
+The design for this 50% duty cycle circuit comes from 
+[this web page](https://www.electronics-tutorials.ws/waveforms/555_oscillator.html).
+Below are photos of both sides of the small stripboard that I used to
+build the circuit. I used four individual pin sockets as the legs.
+On top, I used another two pin sockets so that I could change the
+C1 timing capacitor and thus have a wide set of running frequencies.
+
+I'd recommend that you solder in a 4-pin DIP18 IC socket so that you can
+insert and remove the 555 clock circuit, but also replace it with a faster
+oscillator.
+
+At this point, the PCB is complete. Now you can try assembling, burning
+and running any of the *exampleNN.s* programs in the *Examples/* folder.
+
+## Step 9: Higher Clock Speeds
+
+Based on my calculations, the CPU should be able run at clock speeds up
+to around 2.5MHz. However, my PCB can mostly run at 3.57MHz. It definitely
+should be stable at 1MHz. So now go and get some 4-pin oscillators that
+will fit in the 4-pin DIP18 IC socket, and see what clock speeds your PCB
+can reach.
+
+## Step 10: Burning the Monitor ROM
+
+By now you are probably getting sick of burning the Instruction ROM each
+time you want to change the program. Now you might want to burn the
+[monitor.s][../Examples/monitor.s] program to ROM. This is a very
+rudimentary system monitor. With it, you can *Dump* memory location values,
+*Change* memory location values, and *Run* machine code starting at a
+specific location. Example commands are:
+
+ + D8000: Dump 16 bytes starting at 0x8000
+ + D: Dump 16 byte at the location after the previous dump
+ + C8000: Change memory starting at location 0x8000. Enter hex pairs
+   separated by spaces, and end with a Z.
+ + R8000: Run a program that has been entered and which starts at 
+   location 0x8000.
+
+The *cas* assembler can generate output for loading in the RAM with the
+monitor. Here's an example:
+
+```
+$ ./cas -r Examples/wktlife.s
+```
+
+generates code for running in RAM as the file *Examples/wktlife.hex*,
+which looks like this:
+
+```
+C8000
+60 ce 61 00 94 ce 26 7c 80 0d 70 80 04 05 41 80 
+05 61 f1 72 80 02 60 01 41 e0 40 41 e0 41 41 e1 
+3f 41 e1 40 41 e2 40 77 80 27 68 1b 77 80 2c 68 
+5b 77 80 31 68 32 77 80 36 68 4a 60 01 41 f0 08 
+60 d2 41 f0 07 61 00 60 80 94 ce 94 cf 26 72 80 
+49 60 d1 41 80 c1 60 d2 41 80 86 77 80 5b 68 1b 
+77 80 60 68 5b 77 80 65 68 48 60 00 41 f0 01 41 
+f0 02 41 f0 06 63 f0 08 26 90 ce 41 f0 04 90 cf 
+41 f0 03 92 ce 90 d2 41 f0 05 92 cf 63 f0 03 09 
+63 f0 04 49 f0 00 62 f0 01 63 f0 02 09 63 f0 00 
+09 61 01 76 80 b6 61 04 75 80 b6 61 03 71 80 bb 
+62 f0 06 70 80 bd 60 00 70 80 bd 60 01 63 f0 08 
+92 d1 61 01 71 80 cf 77 80 c7 68 2e 70 80 d4 77 
+80 cf 68 40 63 f0 08 46 f0 08 60 80 71 80 f7 62 
+f0 02 63 f0 06 49 f0 01 62 f0 00 63 f0 03 4b f0 
+02 42 f0 06 70 80 75 77 80 f7 68 0a 63 f0 07 60 
+f0 71 81 1b 46 f0 07 62 80 86 41 80 c1 62 f0 07 
+41 80 86 60 01 41 f0 08 70 80 6a 61 00 60 80 77 
+81 1f 68 2e 26 72 81 1f 77 81 28 68 0a 71 80 3b 
+Z
+```
+
+When you are in *minicom* and you have the monitor prompt, you can
+use ctrl-A Y to paste a file to the monitor. Choose *Examples/wktlife.hex*.
+The above *C8000* and hex stream will be uploaded to the monitor. Then
+you can *R8000* to run the program. You can see this program running in
+[this YouTube video](https://www.youtube.com/watch?v=LJe3Z_fGDhg).
+
+## What Next?
+
+From here on, it's now mostly a software game. Look at the *microcode*
+and the *opcodes* to see what instructions are available. Read through and
+try some of the example programs. Use the *clc* compiler to compile the
+high-level programs and then assemble them.
+
+Remember that, if you try to run things in RAM, don't use memory locations
+where the code will end up. You may have to modify the example programs
+to *not* use locations at or near 0x8000, as that's where *cas -r* places
+the code.
+
+You can also try writing the microcode for your own instructions, but you
+will need to erase, burn and reinsert the Decode ROM chip. If you are
+really keen, you can try out some new ALU operations, but you'll need to
+modify the name of the ALU operations in the microcode file. And you'll
+have to erase, burn and reinsert the ALU ROM chip. At least you can try
+these out with the *csim* simulator and the Verilog version of the CPU
+before you replace the ROMs on the PCB.
