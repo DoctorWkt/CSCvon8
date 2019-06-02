@@ -301,36 +301,25 @@ it to the board. This is in case you ever need to change the ALU operations.
 So far, I haven't needed to do this. Don't forget the bypass capacitor
 associated with IC6.
 
-To generate the ALU ROM's contents, run the *gen_alu* script in the
-main Github repository, which will produce the file *27Cucode.rom*.
+To generate the ALU ROM's contents, run the *gen_alu* script in your copy
+of the Github repository. Make sure that you have created a *ROMs/* folder
+in your copy of the repository, as the *gen_alu* script will create eight
+segments of the ALU ROM's contents in this subfolder.
 While you are doing this, erase your M27C322 EPROM with your UV eraser.
 
 The M27C322 EPROM is too big to fit into the Minipro programmer. You will
 need to use the TL866 adapter. Remember to set the switch to "M27C322".
-Here is the script that I used to burn the eight "sections" of the ALU ROM
+Here is the script that I used to burn the eight segments of the ALU ROM
 image to the ROM.
 
 ```
 #!/bin/sh
-# Break the ALU ROM image into eight sections
-dd if=../27Cucode.rom bs=16384 count=1        > alu0.rom 2> /dev/null
-dd if=../27Cucode.rom bs=16384 count=1 skip=1 > alu1.rom 2> /dev/null
-dd if=../27Cucode.rom bs=16384 count=1 skip=2 > alu2.rom 2> /dev/null
-dd if=../27Cucode.rom bs=16384 count=1 skip=3 > alu3.rom 2> /dev/null
-dd if=../27Cucode.rom bs=16384 count=1 skip=4 > alu4.rom 2> /dev/null
-dd if=../27Cucode.rom bs=16384 count=1 skip=5 > alu5.rom 2> /dev/null
-dd if=../27Cucode.rom bs=16384 count=1 skip=6 > alu6.rom 2> /dev/null
-dd if=../27Cucode.rom bs=16384 count=1 skip=7 > alu7.rom 2> /dev/null
-
-# Write each one out. 
+# Write each segment of the ALU data out to the ROM
 for i in 0 1 2 3 4 5 6 7
 do echo -n "Put TL866 Adaptor rotary switch in position $i, hit Enter: "
    read fred
    minipro -p 'AT27C4096 @DIP40' -y -w alu$i.rom
 done
-
-# Remove temporary files
-rm -f alu?.rom
 ```
 
 Make sure you really do start with the rotary switch at position zero!
@@ -419,7 +408,7 @@ rudimentary system monitor. With it, you can *Dump* memory location values,
 specific location. Example commands are:
 
  + D8000: Dump 16 bytes starting at 0x8000
- + D: Dump 16 byte at the location after the previous dump
+ + D: Dump 16 bytes at the location after the previous dump
  + C8000: Change memory starting at location 0x8000. Enter hex pairs
    separated by spaces, and end with a Z.
  + R8000: Run a program that has been entered and which starts at 
