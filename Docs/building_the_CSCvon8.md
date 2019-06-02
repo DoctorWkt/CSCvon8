@@ -27,17 +27,26 @@ chip, as shown in these pictures.
 ## Bill of Materials
 
 You can find the [bill of materials here](bom_20190601.csv).
+I ordered most of my components from Digikey. Some things I could not
+easily obtain from them or other places, e.g. the 74LS593 registers
+and the large EPROMs. For these, I searched on
+[utsource](https://www.utsource.net/).
 
 ## Special Tools Required
-
-*XXX I need to fill this out a bit more*.
 
 Apart from the usual tools (soldering station, side cutters, pliers etc.),
 you will also need these specialised tools and equipment:
 
- + Minipro EPROM burner
- + TL866 adapter so that you can burn the 42-pin M27C322 EPROM
- + A UV eraser so that you can erase the ALU and Decode EPROMs
+ + An EPROM burner. I bought a Minipro EPROM programmer from eBay.
+   Search for "minipro programmer". My model is a TL866CS.
+ + The Minipro programmer can only accomodate DIP chips up to 40 pins.
+   To burn the 42-pin M27C322 EPROM for the ALU, you will need an adaptor. I
+   bought mine from
+   [Digicoolthings](http://digicoolthings.com/eprom-programmer-adapter-for-27c400800160-and-27c322-16bit-eproms/).
+   They are also available on eBay; search for "TL866 Programmer Adapter for
+   27C322".
+ + A UV eraser so that you can erase the ALU and Decode EPROMs. Again, eBay.
+   Search for "UV EPROM eraser".
 
 ## Step 1: Clock Pulse and Reset
 
@@ -301,8 +310,32 @@ need to use the TL866 adapter. Remember to set the switch to "M27C322".
 Here is the script that I used to burn the eight "sections" of the ALU ROM
 image to the ROM.
 
-**XXX I need to add this part in!**
+```
+#!/bin/sh
+# Break the ALU ROM image into eight sections
+dd if=../27Cucode.rom bs=16384 count=1        > alu0.rom 2> /dev/null
+dd if=../27Cucode.rom bs=16384 count=1 skip=1 > alu1.rom 2> /dev/null
+dd if=../27Cucode.rom bs=16384 count=1 skip=2 > alu2.rom 2> /dev/null
+dd if=../27Cucode.rom bs=16384 count=1 skip=3 > alu3.rom 2> /dev/null
+dd if=../27Cucode.rom bs=16384 count=1 skip=4 > alu4.rom 2> /dev/null
+dd if=../27Cucode.rom bs=16384 count=1 skip=5 > alu5.rom 2> /dev/null
+dd if=../27Cucode.rom bs=16384 count=1 skip=6 > alu6.rom 2> /dev/null
+dd if=../27Cucode.rom bs=16384 count=1 skip=7 > alu7.rom 2> /dev/null
 
+# Write each one out. 
+for i in 0 1 2 3 4 5 6 7
+do echo -n "Put TL866 Adaptor rotary switch in position $i, hit Enter: "
+   read fred
+   minipro -p 'AT27C4096 @DIP40' -y -w alu$i.rom
+done
+
+# Remove temporary files
+rm -f alu?.rom
+```
+
+Make sure you really do start with the rotary switch at position zero!
+My switch wasn't well marked, and so for a while I was starting at
+position five.
 Once the ALU ROM is burned, gently insert it into the IC socket on the PCB.
 
 With this done, you can assemble programs that perform ALU operations,
@@ -344,16 +377,22 @@ At this point, you are probably getting sick of pushing the Clock pulse
 button to run instructions. I built this 555 circuit which has the same pins
 as the 1MHz and 3.57MHz oscillators that I bought.
 
-![](Figs/555_astable.jpg)
+![](Figs/waveforms-tim58a.gif)
+
 
 The design for this 50% duty cycle circuit comes from 
 [this web page](https://www.electronics-tutorials.ws/waveforms/555_oscillator.html).
-Below are photos of both sides of the small stripboard that I used to
+
+Here is the layout of the small stripboard that I used to
 build the circuit. I used four individual pin sockets as the legs.
 On top, I used another two pin sockets so that I could change the
 C1 timing capacitor and thus have a wide set of running frequencies.
 
-*XXX Insert pictures here!*
+![](Figs/555_astable.jpg)
+
+Below are photos of the stripboard from top, below and the side.
+
+![](Figs/555_board1.jpg) &nbsp; &nbsp; ![](Figs/555_board2.jpg) &nbsp; &nbsp; ![](Figs/555_board3.jpg)
 
 I'd recommend that you solder in a 4-pin DIP18 IC socket so that you can
 insert and remove the 555 clock circuit, but also replace it with a faster
