@@ -1,0 +1,4 @@
+#!/bin/sh
+minipro -p 28C256 -r fred.bin
+bin2hex fred.bin fred.hex
+rm fred.bin

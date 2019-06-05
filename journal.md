@@ -3998,3 +3998,51 @@ run them. That's good news. I've modified the PCB to have the 330pF capacitor.
 I've also modified the monitor to not JSR near the beginning, and this makes
 the boot-up more stable. So, I've finally committed the monitor to the
 examples.
+
+## Mon  3 Jun 09:48:05 AEST 2019
+
+I've written up some "how to build" notes which took a fair bit of the
+weekend. I've decided to implement tic-tac-toe as an example program
+while I wait for the logic analyzer. I've just added a PPR "put pointer"
+instruction, so as the game state changes I can update a JMP instruction
+to jump to the correct next piece of code based on the current state.
+I had to change cas and disasm to do this.
+
+I also want to modify csim so I can name a "RAM hex file" on the command
+line. It will read the CXXXX start address, then the hex digits, load the
+bytes into RAM and start execution at the start address.
+
+## Tue  4 Jun 07:55:41 AEST 2019
+
+Hmm, looks like my multiply instruction isn't working. Ah, I have 
+
+```
+A*BHI      = 0010
+A*BLO      = 0011
+```
+
+in the microcode, but I've just noticed that the ALU is doing them the
+other way around. So I'll need to update my microcode!
+
+Yes, that helped. Now I'm getting real X moves, but sometimes the tie
+and win flags are being set and I'm not sure why yet. So perhaps my
+jump calculations are not right. But it's getting closer.
+
+Closer: I forgot to fill the unused user moves with 11 bytes of random
+code. Now doing this and it's even closer but still not working right.
+
+So there's a bug in the original move generator, as this is now right:
+
+```
+XO_______ O move 3 X move 4 wins
+```
+
+With the only two moves being XO in the top-left, and then
+O moves at 3 and X moves at 4, there is no way that X can claim a win!
+It looks like the assembly code is working based on bad data.
+
+## Wed  5 Jun 10:24:37 AEST 2019
+
+I found several ttt bugs. The biggest one was that I wasn't putting 11
+bytes out for each code snippet. That's now fixed and the game plays
+properly now. I'll check all of this in to the Github repository.

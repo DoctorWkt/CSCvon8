@@ -20,8 +20,8 @@ A-Bspecial = 000C
 B-A        = 000D
 A-B-1      = 000E
 B-A-1      = 000F
-A*BHI      = 0010
-A*BLO      = 0011
+A*BLO      = 0010
+A*BHI      = 0011
 A/B        = 0012
 A%B        = 0013
 A<<B       = 0014
@@ -765,4 +765,24 @@ F5 SIB: MEMresult AHload PCincr		# Load top of indirect addr into AH
 	ARena MEMresult ALload		# and load it into AL
 	ALUresult AHload A ARena	# Copy the high real addr byte into AH
 	ALUresult B ARena MEMload	# Now store B into the real location
+	uSreset
+
+# PPR: Put pointer: overwrite a pointer at location $XXXX with new value $CCCC.
+# $XXXX then $CCCC.
+# We will destroy A and B in the process.
+#	Load AH and B with the $XXXX value.
+#	Load A with the first $CC byte.
+#	Store A to MEM[ AH,B ].
+#	B++
+#	Load A with the next $CC byte.
+#	Store A to MEM[ AH,B ].
+F6 PPR: MEMresult AHload PCincr
+	MEMresult Bload PCincr
+	MEMresult Aload PCincr
+	ALUresult B ALload
+	ALUresult A ARena MEMload
+	ALUresult B+1 Bload
+	MEMresult Aload PCincr
+	ALUresult B ALload
+	ALUresult A ARena MEMload
 	uSreset

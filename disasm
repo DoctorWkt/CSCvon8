@@ -54,6 +54,8 @@ while ($i < 0x7FFF) {
   printf("\$%02s", $ROM[$i+1]) if ($len==2);
   printf("\$%02s%02s", $ROM[$i+1], $ROM[$i+2]) if ($len==3);
   printf("\$%02s%02s/%02s", $ROM[$i+1], $ROM[$i+2], $ROM[$i+3]) if ($len==4);
+  printf("\$%02s%02s \$%02s%02s",
+	$ROM[$i+1], $ROM[$i+2], $ROM[$i+3], $ROM[$i+4]) if ($len==5);
   printf("\$%02s%02s \$%02s%02s \$%02s%02s",
 	$ROM[$i+1], $ROM[$i+2], $ROM[$i+3], $ROM[$i+4], $ROM[$i+5], $ROM[$i+6])
 		if ($len==7);

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Write each segment of the ALU data out to the ROM
+for i in 0 1 2 3 4 5 6 7
+do echo -n "Put TL866 Adaptor rotary switch in position $i, hit Enter: "
+   read fred
+   minipro -p 'AT27C4096 @DIP40' -y -w alu$i.rom
+done
+
+# Remove temporary files
+rm -f alu?.rom

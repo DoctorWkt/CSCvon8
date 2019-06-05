@@ -5,17 +5,17 @@ use Data::Dumper;
 
 # CSCVon8 assembler, (C) 2019 Warren Toomey, GPL3
 
-my $debug   = 0;    # Print debugging information
-my $ramimage= 0;    # Assemble to RAM instead of ROM
-my $linenum = 0;    # Line number being parsed
-my $PC;    	    # Program counter
-my $StartPC = 0;    # Start PC at 0x0000, or 0x8000 for $ramimage
-my @Line;           # Array of whole lines from input file
-my @Linenum;        # Line number for each line in @Line
-my @MEM = (0) x 65536;    # Contents of memory
-my %Label;                # Hash of labels
-my @Numlabel;	    # Sparse 2D array of numeric labels and at what location
-		    # they were defined.
+my $debug    = 0;    # Print debugging information
+my $ramimage = 0;    # Assemble to RAM instead of ROM
+my $linenum  = 0;    # Line number being parsed
+my $PC;              # Program counter
+my $StartPC = 0;     # Start PC at 0x0000, or 0x8000 for $ramimage
+my @Line;            # Array of whole lines from input file
+my @Linenum;         # Line number for each line in @Line
+my @MEM = (0) x 65536;  # Contents of memory
+my %Label;              # Hash of labels
+my @Numlabel;           # Sparse 2D array of numeric labels and at what location
+                        # they were defined.
 
 # Hash of instruction names, their opcode values and length in bytes.
 # Also, hash of known keywords that occur in instructions.
@@ -30,13 +30,14 @@ my $nextreturnaddr = 0xFFFE;
 # Set a memory location to a specific value. We use this so that
 # we can track the lowest and highest locations used. This is needed
 # when we write out the code assembled for loading into RAM
-my $lomemused= 1000000;
-my $himemused= -1;
+my $lomemused = 1000000;
+my $himemused = -1;
+
 sub setMEM {
-  my ($addr, $val)= @_;
-  $MEM[$addr]= $val;
-  $lomemused= $addr if ($addr < $lomemused);
-  $himemused= $addr if ($addr > $himemused);
+    my ( $addr, $val ) = @_;
+    $MEM[$addr] = $val;
+    $lomemused = $addr if ( $addr < $lomemused );
+    $himemused = $addr if ( $addr > $himemused );
 }
 
 # Get the return address for a function, given an int function address
@@ -55,13 +56,20 @@ sub load_opcodes {
     my %Opcode;
 
     # Insert pseudo-ops by hand
-    $Inst{EQU} = [ 0x100, 0 ]; $Keyword{EQU} = 1;
-    $Inst{ORG} = [ 0x101, 0 ]; $Keyword{ORG} = 1;
-    $Inst{STR} = [ 0x102, 0 ]; $Keyword{STR} = 1;
-    $Inst{LHB} = [ 0x103, 2 ]; $Keyword{LHB} = 1;
-    $Inst{LHA} = [ 0x104, 2 ]; $Keyword{LHA} = 1;
-    $Inst{HEX} = [ 0x105, 0 ]; $Keyword{HEX} = 1;
-    $Inst{PAG} = [ 0x106, 0 ]; $Keyword{PAG} = 1;
+    $Inst{EQU}    = [ 0x100, 0 ];
+    $Keyword{EQU} = 1;
+    $Inst{ORG}    = [ 0x101, 0 ];
+    $Keyword{ORG} = 1;
+    $Inst{STR}    = [ 0x102, 0 ];
+    $Keyword{STR} = 1;
+    $Inst{LHB}    = [ 0x103, 2 ];
+    $Keyword{LHB} = 1;
+    $Inst{LHA}    = [ 0x104, 2 ];
+    $Keyword{LHA} = 1;
+    $Inst{HEX}    = [ 0x105, 0 ];
+    $Keyword{HEX} = 1;
+    $Inst{PAG}    = [ 0x106, 0 ];
+    $Keyword{PAG} = 1;
 
     open( my $IN, "<", "opcodes" ) || die("Cannot read opcodes: $!\n");
     while (<$IN>) {
@@ -94,26 +102,27 @@ sub load_opcodes {
 # Given a numeric label value and either 'b' or 'f', return the value of
 # the matching numeric label, or die if none is found
 sub get_numeric_label_value {
-  my ($n, $direction)= @_;
+    my ( $n, $direction ) = @_;
 
-  # Get the reference to the array of addresses for the given label
-  my $lref= $Numlabel[$n];
-  die("Numeric label $n never used, cannot be referenced on line $linenum\n")
-	if (!defined($lref));
+    # Get the reference to the array of addresses for the given label
+    my $lref = $Numlabel[$n];
+    die("Numeric label $n never used, cannot be referenced on line $linenum\n")
+      if ( !defined($lref) );
 
-  # Walk the list getting the next value. Keep the previous value.
-  my $bval= undef;
-  foreach my $fval (@{ $lref }) {
-    # Return the first value after the PC if direction is forward
-    return($fval) if (($direction eq "f") && ($fval > $PC));
-    $bval= $fval;
-  }
+    # Walk the list getting the next value. Keep the previous value.
+    my $bval = undef;
+    foreach my $fval ( @{$lref} ) {
 
-  # Return the last back value if the direction is backward
-  return($bval) if (($direction eq "b") && defined($bval));
+        # Return the first value after the PC if direction is forward
+        return ($fval) if ( ( $direction eq "f" ) && ( $fval > $PC ) );
+        $bval = $fval;
+    }
 
-  # We didn't find a reference for the direction
-  die("No value for $n$direction on line $linenum\n");
+    # Return the last back value if the direction is backward
+    return ($bval) if ( ( $direction eq "b" ) && defined($bval) );
+
+    # We didn't find a reference for the direction
+    die("No value for $n$direction on line $linenum\n");
 }
 
 # Get the value of a label or a $hex constant. Also support . for PC,
@@ -121,288 +130,358 @@ sub get_numeric_label_value {
 sub get_label_value {
     my ( $word, $firstpass ) = @_;
     my $address = 0;
-    my $offset = 0;
+    my $offset  = 0;
 
     # If it's a reference to a numeric label, use another function
-    if ($word=~ m{^(\d+)([bf])$}) { return(get_numeric_label_value($1, $2)); }
+    if ( $word =~ m{^(\d+)([bf])$} ) {
+        return ( get_numeric_label_value( $1, $2 ) );
+    }
 
     # Find any decimal offset and separate the word from the offset
-    if ($word=~ m{^(.*)\+(\d+)$}) { $word= $1; $offset=$2; }
-    if ($word=~ m{^(.*)\-(\d+)$}) { $word= $1; $offset= -$2; }
+    if ( $word =~ m{^(.*)\+(\d+)$} ) { $word = $1; $offset = $2; }
+    if ( $word =~ m{^(.*)\-(\d+)$} ) { $word = $1; $offset = -$2; }
 
     if ( defined( $Label{$word} ) ) {
         $address = $Label{$word};
     }
-    elsif ( ($word=~ m{^(.*)/HI} ) && defined( $Label{$1} ) ) {
-        $address = $Label{$1} >> 8;	# Get high byte of the address
+    elsif ( ( $word =~ m{^(.*)/HI} ) && defined( $Label{$1} ) ) {
+        $address = $Label{$1} >> 8;    # Get high byte of the address
     }
-    elsif ( $word eq ".") {		# . means current PC value
+    elsif ( $word eq "." ) {           # . means current PC value
         $address = $PC;
     }
-    elsif ( $word=~ m{^\.\+(\d+)}) {	# .+num
+    elsif ( $word =~ m{^\.\+(\d+)} ) {    # .+num
         $address = $PC + $1;
     }
-    elsif ( $word=~ m{^\.\-(\d+)}) {	# .-num
+    elsif ( $word =~ m{^\.\-(\d+)} ) {    # .-num
         $address = $PC - $1;
     }
     elsif ( !$firstpass ) {
         die("Expression $word on line $linenum unrecognised\n");
     }
 
-    return ($address + $offset);
+    return ( $address + $offset );
 }
 
 # Parse a single line from the assembly input. Also get a boolean
 # to indicate this is the first pass, so we can ignore unknown labels.
 sub parse2 {
-  my ( $wholeline, $firstpass ) = @_;
+    my ( $wholeline, $firstpass ) = @_;
 
-  # Split the whole line up into lines that are semicolon separated
-  foreach my $line (split(m{\s*;\s*}, $wholeline)) {
+    # Split the whole line up into lines that are semicolon separated
+    foreach my $line ( split( m{\s*;\s*}, $wholeline ) ) {
 
-    my $label     = "";
-    my $constant  = 0;
-    my $string    = "";
-    my $index     = "";
-    my $word      = "";
-    my $isindexed = 0;
+        my $label = "";
+        my @constant;
+        my $string    = "";
+        my $index     = "";
+        my $word      = "";
+        my $isindexed = 0;
 
-    # Divide the words up into keywords and non-keywords
-    my @keylist;
-    my @otherlist;
+        # Divide the words up into keywords and non-keywords
+        my @keylist;
+        my @otherlist;
 
-    # Loop while there is something left in the line
-    while (1) {
+        # Loop while there is something left in the line
+        while (1) {
 
-        # Single character
-        if ( $line =~ m{^\s*'(.)'(.*)} ) {
-            $constant = ord($1); $line     = $2; next;
-        }
-
-        # Escaped single character
-        if ( $line =~ m{^\s*'\\(.)'(.*)} ) {
-      	    # Evaluate escaped characters
-	    my $c= $1; $c=~ y{tnr}{\t\n\r};
-            $constant = ord($c); $line= $2; next;
-        }
-
-        # String
-        if ( $line =~ m{^\s*"(.*)"(.*)} ) {
-            $string = $1; $line   = $2;
-      	    # Evaluate escaped characters
-	    $string=~ s{\\n}{\n}g; $string=~ s{\\t}{\t}g; $string=~ s{\\"}{"}g;
-	    next;
-        }
-
-        # Two byte hex value
-        if ( $line =~
-            m{^\s*\$([0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f])(.*)} ) {
-            $constant = hex($1); $line     = $2; next;
-        }
-
-        # One byte hex value
-        if ( $line =~ m{^\s*\$([0-9A-Fa-f][0-9A-Fa-f])(.*)} ) {
-            $constant = hex($1); $line     = $2; next;
-        }
-
-	# Numbered label: push the PC to define the current position
-	# of this temporary label
-        if ( $line =~ m{^\s*(\d+):(.*)} ) {
-          my $nlabel = $1; $line  = $2;
-	  push( @{ $Numlabel[$nlabel] }, $PC); next;
-	}
-
-        # Label
-        if ( $line =~ m{^\s*(\S+):(.*)} ) {
-            $label = $1; $line  = $2; next;
-        }
-
-        # Word, either a label, keyword or operation. May have an index
-        if ( $line =~ m{^\s*(\S+)(.*)} ) {
-            $word = $1; $line = $2;
-
-            # Find any index
-            if ( $word =~ m{(.*)(,[AB])$} ) {
-                $word= $1; $index=$2; $isindexed = 1;
+            # Single character
+            if ( $line =~ m{^\s*'(.)'(.*)} ) {
+                push( @constant, ord($1) );
+                $line = $2;
+                next;
             }
 
-            if ( defined( $Keyword{$word} ) ) {
-                push( @keylist, $word );
+            # Escaped single character
+            if ( $line =~ m{^\s*'\\(.)'(.*)} ) {
+
+                # Evaluate escaped characters
+                my $c = $1;
+                $c =~ y{tnr}{\t\n\r};
+                push( @constant, ord($c) );
+                $line = $2;
+                next;
+            }
+
+            # String
+            if ( $line =~ m{^\s*"(.*)"(.*)} ) {
+                $string = $1;
+                $line   = $2;
+
+                # Evaluate escaped characters
+                $string =~ s{\\n}{\n}g;
+                $string =~ s{\\t}{\t}g;
+                $string =~ s{\\"}{"}g;
+                next;
+            }
+
+            # Two byte hex value
+            if ( $line =~
+                m{^\s*\$([0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f])(.*)} )
+            {
+                push( @constant, hex($1) );
+                $line = $2;
+                next;
+            }
+
+            # One byte hex value
+            if ( $line =~ m{^\s*\$([0-9A-Fa-f][0-9A-Fa-f])(.*)} ) {
+                push( @constant, hex($1) );
+                $line = $2;
+                next;
+            }
+
+            # Numbered label: push the PC to define the current position
+            # of this temporary label
+            if ( $line =~ m{^\s*(\d+):(.*)} ) {
+                my $nlabel = $1;
+                $line = $2;
+                push( @{ $Numlabel[$nlabel] }, $PC );
+                next;
+            }
+
+            # Label
+            if ( $line =~ m{^\s*(\S+):(.*)} ) {
+                $label = $1;
+                $line  = $2;
+                next;
+            }
+
+            # Word, either a label, keyword or operation. May have an index
+            if ( $line =~ m{^\s*(\S+)(.*)} ) {
+                $word = $1;
+                $line = $2;
+
+                # Find any index
+                if ( $word =~ m{(.*)(,[AB])$} ) {
+                    $word      = $1;
+                    $index     = $2;
+                    $isindexed = 1;
+                }
+
+                if ( defined( $Keyword{$word} ) ) {
+                    push( @keylist, $word );
+                } else {
+                    push( @otherlist, $word ) if ($word);
+                }
+                push( @keylist, $index ) if ($isindexed);
+                next;
+            }
+
+            # Stop now if nothing is left
+            last if ( $line =~ m{^\s*$} );
+
+            # Otherwise we don't recognise it
+            die("Unrecognised input on line $linenum: $wholeline\n");
+        }
+
+        # We have parsed the line, now implement it
+        # Build the instruction from the keywords
+        my $inst = join( '_', @keylist );
+
+        # ORG instruction: set the PC. Do this here so
+        # we can put the label on the same line
+        if ( $inst eq "ORG" ) {
+            die("No ORG address on line $linenum: $wholeline\n")
+              if ( !defined( $constant[0] ) );
+            $PC = $constant[0];
+        }
+
+        # Save location of label on pass one
+        if ( $label && $firstpass ) {
+
+            # An EQU defines the value of this label.
+            if ( $inst eq "EQU" ) {
+                die("No EQU value on line $linenum: $wholeline\n")
+                  if ( !defined( $constant[0] ) );
+                $Label{$label} = $constant[0];
             } else {
-                push( @otherlist, $word ) if ($word);
+                # Otherwise the label's value is the PC's value
+                $Label{$label} = $PC;
             }
-            push( @keylist, $index ) if ($isindexed);
-            next;
         }
 
-        # Stop now if nothing is left
-        last if ( $line =~ m{^\s*$} );
+        # Deal with the unrecognised words on the line
+        if ( !$firstpass ) {
+            foreach my $word (@otherlist) {
 
-        # Otherwise we don't recognise it
-        die("Unrecognised input on line $linenum: $line\n");
-    }
-
-    # We have parsed the line, now implement it
-    # Build the instruction from the keywords
-    my $inst = join( '_', @keylist );
-
-    # ORG instruction: set the PC. Do this here so
-    # we can put the label on the same line
-    if ( $inst eq "ORG" ) {
-      $PC= $constant;
-    }
-
-    # Save location of label on pass one
-    if ( $label && $firstpass ) {
-
-        # An EQU defines the value of this label.
-        if ( $inst eq "EQU" ) {
-            $Label{$label} = $constant;
+                # Convert a label into an address.
+                # Die if it isn't a known label on pass two
+                push( @constant, get_label_value( $word, $firstpass ) );
+            }
         }
-        else {
-            # Otherwise the label's value is the PC's value
-            $Label{$label} = $PC;
+
+        # No instruction, skip the line
+        return if ( !defined($inst) || $inst eq "" );
+
+        die("Unrecognised instruction >$inst< on line $linenum\n")
+          if ( !defined( $Inst{$inst} ) );
+        my ( $opcode, $oplen ) = @{ $Inst{$inst} };
+        printf( "PC %04x, Recognised $inst => $opcode $oplen\n", $PC )
+          if ($debug);
+
+        # Special instruction handling code goes here
+
+        # JSR instruction
+        if ( !$firstpass && $inst eq "JSR" ) {
+
+            # Store the function's start address in the instruction stream
+            die("No JSR value on line $linenum: $wholeline\n")
+              if ( !defined( $constant[0] ) );
+            setMEM( $PC + 5, $constant[0] >> 8 );
+            setMEM( $PC + 6, $constant[0] & 0xff );
+
+           # Use the $constant[0], which is the function's start address, to get
+           # the location of the return address in RAM for the function
+            printf( "JSR: for function at 0x%04x, ", $constant[0] ) if ($debug);
+            $constant[0] = get_return_address( $constant[0] );
+            printf( "store return address at 0x%04x\n", $constant[0] )
+              if ($debug);
+
+            # Now put the return address into the instruction stream
+            setMEM( $PC + 3, ( $PC + 7 ) >> 8 );
+            setMEM( $PC + 4, ( $PC + 7 ) & 0xff );
         }
-    }
 
-    # Deal with the unrecognised words on the line
-    if ( !$firstpass ) {
-        foreach my $word (@otherlist) {
+        # RTS instruction
+        if ( !$firstpass && $inst eq "RTS" ) {
 
-            # Convert a label into an address.
-            # Die if it isn't a known label on pass two
-            $constant = get_label_value( $word, $firstpass );
+           # Use the $constant[0], which is the function's start address, to get
+           # the location of the return address in RAM for the function
+            die("No RTS value on line $linenum: $wholeline\n")
+              if ( !defined( $constant[0] ) );
+            printf( "RTS: for function at 0x%04x, ", $constant[0] ) if ($debug);
+            $constant[0] = get_return_address( $constant[0] );
+            printf( "return address is 0x%04x\n", $constant[0] ) if ($debug);
         }
-    }
 
-    # No instruction, skip the line
-    return if (!defined($inst) || $inst eq "");
+        # LHB instruction: load the high byte of a label in B
+        if ( !$firstpass && $inst eq "LHB" ) {
 
-    die("Unrecognised instruction >$inst< on line $linenum\n")
-      if ( !defined( $Inst{$inst} ) );
-    my ( $opcode, $oplen ) = @{ $Inst{$inst} };
-    printf("PC %04x, Recognised $inst => $opcode $oplen\n", $PC) if ($debug);
-
-    # Special instruction handling code goes here
-
-    # JSR instruction
-    if ( !$firstpass && $inst eq "JSR" ) {
-
-        # Store the function's start address in the instruction stream
-        setMEM( $PC + 5 , $constant >> 8);
-        setMEM( $PC + 6 , $constant & 0xff);
-
-        # Use the $constant, which is the function's start address, to get
-        # the location of the return address in RAM for the function
-        printf( "JSR: for function at 0x%04x, ", $constant ) if ($debug);
-        $constant = get_return_address($constant);
-        printf( "store return address at 0x%04x\n", $constant ) if ($debug);
-
-        # Now put the return address into the instruction stream
-        setMEM( $PC + 3 , ( $PC + 7 ) >> 8);
-        setMEM( $PC + 4 , ( $PC + 7 ) & 0xff);
-    }
-
-    # RTS instruction
-    if ( !$firstpass && $inst eq "RTS" ) {
-
-        # Use the $constant, which is the function's start address, to get
-        # the location of the return address in RAM for the function
-        printf( "JSR: for function at 0x%04x, ", $constant ) if ($debug);
-        $constant = get_return_address($constant);
-        printf( "return address is 0x%04x\n", $constant ) if ($debug);
-    }
-
-    # LHB instruction: load the high byte of a label in B
-    if ( !$firstpass && $inst eq "LHB" ) {
-	# Shift down the top byte, then change instruction to LCB
-	$constant= $constant >> 8;
-        ( $opcode, $oplen ) = @{ $Inst{"LCB"} };
-    }
-
-    # LHA instruction: load the high byte of a label in A
-    if ( !$firstpass && $inst eq "LHA" ) {
-	# Shift down the top byte, then change instruction to LCA
-	$constant= $constant >> 8;
-        ( $opcode, $oplen ) = @{ $Inst{"LCA"} };
-    }
-
-    # SIA/SIB instruction: also insert an incremented low pointer byte
-    if ( !$firstpass && $inst=~ m{^SI[AB]$} ) {
-	setMEM( $PC + 3 , ($constant+1) & 0xff);
-	die("Pointer $constant straddles page!\n") if ($MEM[ $PC + 3 ] == 0);
-    }
-
-    # Insert a string
-    if ( $inst eq "STR" ) {
-      my $oldPC= $PC;
-      # Evaluate escaped characters in the string
-      $string=~ s{\\n}{\n}g; $string=~ s{\\t}{\t}g; $string=~ s{\\"}{"}g;
-
-      foreach my $ch (split("", $string)) { setMEM($PC++, ord($ch)); }
-      setMEM($PC++, 0);
-      die("String $string straddles pages\n") if (($oldPC>>8) != ($PC>>8));
-    }
-
-    # Insert a sequence of HEX bytes, given  as a string, e.g. "12 34 56 AB"
-    if ( $inst eq "HEX" ) {
-      my $oldPC= $PC;
-      foreach my $hexpair (split(" ", $string)) {
-	setMEM($PC++, hex($hexpair));
-      }
-      die("Hex $string straddles pages\n") if (($oldPC>>8) != ($PC>>8));
-    }
-
-    # Increment PC to the start of the next page
-    if ( $inst eq "PAG" ) {
-      my $oldPC= $PC; $PC= ($PC + 0xFF) & 0xFF00;
-      printf("Page aligned PC %04x -> %04x\n", $oldPC, $PC) if ($debug);
-    }
-
-    # Back to general instruction handling
-
-    # Save the instruction on pass 2 if there was an instruction.
-    if ( !$firstpass ) {
-
-        # Shift the constant if indexed
-        printf("\tShifting addr %04x as indexed\n", $constant) if ($debug && $isindexed);
-        $constant = $constant >> 8 if ($isindexed);
-
-        if ( $oplen > 0 ) {
-            setMEM($PC, $opcode);
-            printf( "  %02x", $opcode ) if ( $debug && !$firstpass );
+            # Shift down the top byte, then change instruction to LCB
+            die("No LHB value on line $linenum: $wholeline\n")
+              if ( !defined( $constant[0] ) );
+            $constant[0] = $constant[0] >> 8;
+            ( $opcode, $oplen ) = @{ $Inst{"LCB"} };
         }
-        if ( $oplen == 2 ) {
-            setMEM( $PC + 1 , $constant & 0xff);
-            printf( " %02x", $constant & 0xff ) if ( $debug && !$firstpass );
-        }
-        if ( $oplen > 2 ) {
-            setMEM( $PC + 1 , $constant >> 8);
-            setMEM( $PC + 2 , $constant & 0xff);
-            printf( " %02x %02x", $constant >> 8, $constant & 0xff )
-              if ( $debug && !$firstpass );
-        }
-        print("\n") if ( $debug && !$firstpass && $oplen > 0 );
-    }
 
-    # Increment the PC
-    die("Out of instruction space!\n") if ( $PC > 0xFFFF );
-    $PC += $oplen;
-  }
+        # LHA instruction: load the high byte of a label in A
+        if ( !$firstpass && $inst eq "LHA" ) {
+
+            # Shift down the top byte, then change instruction to LCA
+            die("No LHA value on line $linenum: $wholeline\n")
+              if ( !defined( $constant[0] ) );
+            $constant[0] = $constant[0] >> 8;
+            ( $opcode, $oplen ) = @{ $Inst{"LCA"} };
+        }
+
+        # SIA/SIB instruction: also insert an incremented low pointer byte
+        if ( !$firstpass && $inst =~ m{^SI[AB]$} ) {
+            die("No SIA/SIB value on line $linenum: $wholeline\n")
+              if ( !defined( $constant[0] ) );
+            setMEM( $PC + 3, ( $constant[0] + 1 ) & 0xff );
+            die("Pointer $constant[0] straddles page!\n")
+              if ( $MEM[ $PC + 3 ] == 0 );
+        }
+
+        # Insert a string
+        if ( $inst eq "STR" ) {
+            my $oldPC = $PC;
+
+            # Evaluate escaped characters in the string
+            $string =~ s{\\n}{\n}g;
+            $string =~ s{\\t}{\t}g;
+            $string =~ s{\\"}{"}g;
+
+            foreach my $ch ( split( "", $string ) ) {
+                setMEM( $PC++, ord($ch) );
+            }
+            setMEM( $PC++, 0 );
+            die("String $string straddles pages\n")
+              if ( ( $oldPC >> 8 ) != ( $PC >> 8 ) );
+        }
+
+        # Insert a sequence of HEX bytes, given  as a string, e.g. "12 34 56 AB"
+        if ( $inst eq "HEX" ) {
+            my $oldPC = $PC;
+            foreach my $hexpair ( split( " ", $string ) ) {
+                setMEM( $PC++, hex($hexpair) );
+            }
+            die("Hex $string straddles pages\n")
+              if ( ( $oldPC >> 8 ) != ( $PC >> 8 ) );
+        }
+
+        # Increment PC to the start of the next page
+        if ( $inst eq "PAG" ) {
+            my $oldPC = $PC;
+            $PC = ( $PC + 0xFF ) & 0xFF00;
+            printf( "Page aligned PC %04x -> %04x\n", $oldPC, $PC ) if ($debug);
+        }
+
+        # Back to general instruction handling
+
+        # Save the instruction on pass 2 if there was an instruction.
+        if ( !$firstpass ) {
+
+            # Shift the constant if indexed
+            die("No indexed value on line $linenum: $wholeline\n")
+              if ( $isindexed && !defined( $constant[0] ) );
+            printf( "\tShifting addr %04x as indexed\n", $constant[0] )
+              if ( $debug && $isindexed );
+            $constant[0] = $constant[0] >> 8 if ($isindexed);
+
+            if ( $oplen > 0 ) {
+                setMEM( $PC, $opcode );
+                printf( "  %02x", $opcode ) if ( $debug && !$firstpass );
+            }
+            if ( $oplen == 2 ) {
+                die("No constant/label value on line $linenum: $wholeline\n")
+                  if ( !defined( $constant[0] ) );
+                setMEM( $PC + 1, $constant[0] & 0xff );
+                printf( " %02x", $constant[0] & 0xff )
+                  if ( $debug && !$firstpass );
+            }
+            if ( $oplen > 2 ) {
+                die("No constant/label value on line $linenum: $wholeline\n")
+                  if ( !defined( $constant[0] ) );
+                setMEM( $PC + 1, $constant[0] >> 8 );
+                setMEM( $PC + 2, $constant[0] & 0xff );
+                printf( " %02x %02x", $constant[0] >> 8, $constant[0] & 0xff )
+                  if ( $debug && !$firstpass );
+            }
+            if ( $oplen == 5 ) {
+                die("No constant/label value on line $linenum: $wholeline\n")
+                  if ( !defined( $constant[1] ) );
+                setMEM( $PC + 3, $constant[1] >> 8 );
+                setMEM( $PC + 4, $constant[1] & 0xff );
+                printf( " %02x %02x", $constant[1] >> 8, $constant[1] & 0xff )
+                  if ( $debug && !$firstpass );
+            }
+            print("\n") if ( $debug && !$firstpass && $oplen > 0 );
+        }
+
+        # Increment the PC
+        die("Out of instruction space!\n") if ( $PC > 0xFFFF );
+        $PC += $oplen;
+    }
 }
-
 
 #### MAIN PROGRAM ####
 
 # Enable debugging
 while ( @ARGV > 1 ) {
-  if ( $ARGV[0] eq "-d" ) {
-    $debug++; shift(@ARGV); next;
-  }
-  if ( $ARGV[0] eq "-r" ) {
-    $StartPC = 0x8000; $ramimage++; shift(@ARGV); next;
-  }
-  die("Usage: $0 [-d] [-r] infile\n");
+    if ( $ARGV[0] eq "-d" ) {
+        $debug++;
+        shift(@ARGV);
+        next;
+    }
+    if ( $ARGV[0] eq "-r" ) {
+        $StartPC = 0x8000;
+        $ramimage++;
+        shift(@ARGV);
+        next;
+    }
+    die("Usage: $0 [-d] [-r] infile\n");
 }
 
 # Give usage
@@ -413,8 +492,8 @@ load_opcodes();
 
 # Read in the instructions and store in the @Line array. Use the
 # C preprocessor as well.
-open( my $IN, "-|", "cpp -nostdinc $ARGV[0]")
-                                || die("Cannot open $ARGV[0]: $!");
+open( my $IN, "-|", "cpp -nostdinc $ARGV[0]" )
+  || die("Cannot open $ARGV[0]: $!");
 while (<$IN>) {
     chomp;
     $linenum++;
@@ -437,14 +516,14 @@ foreach my $i ( 0 .. ( @Line - 1 ) ) {
 
 if ($debug) {
     print("Labels:\n");
-    foreach my $k (sort(keys(%Label))) {
-      printf("%s:\t%04x\n", $k, $Label{$k});
+    foreach my $k ( sort( keys(%Label) ) ) {
+        printf( "%s:\t%04x\n", $k, $Label{$k} );
     }
 
     print("Numeric labels:\n");
-    foreach my $k (0 .. scalar(@Numlabel)-1) {
-      next if (!defined($Numlabel[$k]));
-      print("$k: ", join(", ", @{ $Numlabel[$k] }), "\n");
+    foreach my $k ( 0 .. scalar(@Numlabel) - 1 ) {
+        next if ( !defined( $Numlabel[$k] ) );
+        print( "$k: ", join( ", ", @{ $Numlabel[$k] } ), "\n" );
     }
 }
 
@@ -458,19 +537,19 @@ foreach my $i ( 0 .. ( @Line - 1 ) ) {
 
 # Dump a RAM image ready to load into the monitor if $ramimage is set
 if ($ramimage) {
-  my $hexfile= $ARGV[0];
-  $hexfile=~ s{\.s$}{};
-  $hexfile= $hexfile . ".hex";
-  open( my $OUT, ">", $hexfile ) || die("Can't write to $hexfile: $!\n");
-  printf($OUT "C%04x\n", $lomemused);
-  for my $i ($lomemused .. $himemused) {
-    printf( $OUT "%02x ", $MEM[$i] ? $MEM[$i] : 0 );
-    print( $OUT "\n" ) if ( ( $i % 16 ) == 15 );
-  }
-  print($OUT "Z\n");
-  close($OUT); exit(0);
+    my $hexfile = $ARGV[0];
+    $hexfile =~ s{\.s$}{};
+    $hexfile = $hexfile . ".hex";
+    open( my $OUT, ">", $hexfile ) || die("Can't write to $hexfile: $!\n");
+    printf( $OUT "C%04x\n", $lomemused );
+    for my $i ( $lomemused .. $himemused ) {
+        printf( $OUT "%02x ", $MEM[$i] ? $MEM[$i] : 0 );
+        print( $OUT "\n" ) if ( ( $i % 16 ) == 15 );
+    }
+    print( $OUT "Z\n" );
+    close($OUT);
+    exit(0);
 }
-
 
 # Otherwise, Write 32K ROM out in hex
 open( my $OUT, ">", "instr.rom" ) || die("Can't write to instr.rom: $!\n");

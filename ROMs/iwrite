@@ -1,0 +1,4 @@
+#!/bin/sh
+hex2bin ../instr.rom fred.bin
+minipro -p 28C256 -w fred.bin
+rm fred.bin

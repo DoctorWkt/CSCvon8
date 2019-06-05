@@ -1,0 +1,5 @@
+#!/bin/sh
+if [ ! -f "../27Cucode.rom" ]
+then echo ../27Cucode.rom does not exist; exit 1
+fi
+minipro -p 'M27C1024 @DIP40' -y -w ../27Cucode.rom

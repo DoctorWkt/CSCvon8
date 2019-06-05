@@ -1,0 +1,4 @@
+#!/bin/sh
+minipro -p 'M27C1024 @DIP40' -y -r decode.bin
+bin2hex decode.bin decode.hex
+rm decode.bin
