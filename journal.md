@@ -4046,3 +4046,52 @@ It looks like the assembly code is working based on bad data.
 I found several ttt bugs. The biggest one was that I wasn't putting 11
 bytes out for each code snippet. That's now fixed and the game plays
 properly now. I'll check all of this in to the Github repository.
+
+## Thu  6 Jun 19:12:08 AEST 2019
+
+My new logic analyser has arrived, and yes it has revealed the jump glitch:
+
+![](Docs/Figs/jump_glitch.png)
+
+So this is happening when the JumpOp returns to 3'b000. I'm capturing the
+pin 5 _Z_ output in the diagram as I still have the glitch cap on the _Z#_
+pin 6 line. I'm using this code so I don't need any UART input:
+
+```
+main:	NOP
+	LCA '4'
+	LCB '4'
+	JEQ 1f
+1:	LCA '1'
+	JEQ 2f
+2:	LCA '7'
+	JEQ 3f
+3:	JMP $FFFF
+```
+
+I'm now running a repetetive capture which triggers on _Z_ low and JumpOp0
+falling. I can consistently see the glitch with the 555 clock. At 1MHz,
+same glitch. And I can also see it at 3.57 MHz.
+
+I'm also monitoring the N,Z,V,C lines and they are staying constant. I'm
+also not seeing a glitch on the JumpOp lines. That means that the glitch
+is actually in the 74HCT251 8:1 mulitplexer!
+
+Now I'm looking at the _Z#_ line which has the 330pF capacitor. I'm seeing
+a 50nS delay from the JumpOp change to the _Z#_ change. On the _Z_ (no
+capacitor), that's a 20nS delay on a rise and 30nS delay on a fall.
+Measuring the 3.57MHz clock, I see a 140nS between edges and a 280nS cycle
+time, which is what it should be: 1/3570000 = .000000280.
+
+So technically the 330pF capacitor is absorbing the glitch to make it
+invisible, and the 50nS delay is much less than the 140nS delay so it
+should solve the problem. But I know that it sometimes doesn't "boot"
+correctly. There could be a glitch elsewhere.
+
+I tried to load the _ttt.hex_ binary into the Monitor but somehow it gets out
+of sync at all three clock speeds which is a shame. Not sure why that is.
+Then I tried to burn it to ROM (with smjump moved to RAM), but that didn't
+work. I know why: I haven't burned a new Decode ROM with the PPR instruction!
+
+So tomorrow I might do this, and also try out a few different versions of
+the JEQ microcode now that I'm sure that the glitch capacitor is working OK.
