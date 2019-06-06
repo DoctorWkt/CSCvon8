@@ -1,4 +1,4 @@
-// 8-input multiplexer; hi output when disabled
+// 8-input multiplexer; low output when disabled
 // (c) Warren Toomey, GPL3
 
 /* verilator lint_off DECLFILENAME */
@@ -27,8 +27,8 @@ assign internal_Y_bar= ~internal_Y;
 //------------------------------------------------//
 
 /* verilator lint_off ASSIGNDLY */
-assign #(DELAY_RISE, DELAY_FALL) Y = (!Output_bar) ? internal_Y : 1'b1;
-assign #(DELAY_RISE, DELAY_FALL) Y_bar = (!Output_bar) ? internal_Y_bar : 1'b0;
+assign #(DELAY_RISE, DELAY_FALL) Y = (!Output_bar) ? internal_Y : 1'b0;
+assign #(DELAY_RISE, DELAY_FALL) Y_bar = (!Output_bar) ? internal_Y_bar : 1'b1;
 /* verilator lint_on ASSIGNDLY */
 
 endmodule

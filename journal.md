@@ -4095,3 +4095,19 @@ work. I know why: I haven't burned a new Decode ROM with the PPR instruction!
 
 So tomorrow I might do this, and also try out a few different versions of
 the JEQ microcode now that I'm sure that the glitch capacitor is working OK.
+
+## Thu  6 Jun 22:21:55 AEST 2019
+
+Argh!! In my list of 7400 chips I had the 74HCT151 as a 16:1 multiplexer
+but actually it's a 8:1 mux with exactly the same pinouts as the 74HCT251
+except that the _Z#_ output stays high when the _E#_ enable line is high.
+So, I could actually use this as the Jump logic chip. I could wire
+the _E#_ wire to the system clock. Then the _Z#_ output would be enabled
+halfway through the clock cycle, which would allow the output to settle.
+If I'd known this I probably would have used it.
+
+So I could order a 74HCT151. The nearest clock is on pin 4 of the databus
+reader demux, so I could patch a wire from this over to pin 7 _E#_ on
+the 74HCT151. If I decide to do this, I might put an IC socket in. I've
+just modelled this with the Verilog version and yes it would work. Also,
+Jaycar have 74LS151N in stock in the nearby shop.
