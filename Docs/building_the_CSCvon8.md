@@ -11,6 +11,9 @@ PCB: the "2019/05/08" version and the "2019/06/07" version.
 
 If you have the "2019/06/07" version of the PCB, then the UM245R UART is
 oriented so that the USB connect points upwards to the edge of the PCB.
+Here's what this version of the PCB should look like when fully populated:
+
+![](Figs/20190607_board.jpg)
 
 If you have the "2019/05/08" version of the PCB, then the UM245R UART is
 oriented so that the USB connect points downwards towards the IC13
