@@ -4111,3 +4111,26 @@ reader demux, so I could patch a wire from this over to pin 7 _E#_ on
 the 74HCT151. If I decide to do this, I might put an IC socket in. I've
 just modelled this with the Verilog version and yes it would work. Also,
 Jaycar have 74LS151N in stock in the nearby shop.
+
+## Fri  7 Jun 13:41:04 AEST 2019
+
+I desoldered the 74HCT251 (not fun on a double-sided board) and inserted
+the IC socket, then the new 74HCT151. I added the wire from clk to
+pin 7 _E#_ enable line. Damn, got the chip upside down. Fixed that up
+and I've burned the Monitor to the ROM. It boots fine. I've downloaded
+wktlife.hex and run it at 3.57 MHz with no issues whatsoever. I've also
+downloaded the hex version of the zz.s program which checks JEQ when
+values are below/equal/above. Absolutely no problems when it runs. So
+the glitch is still there but is ignored; the _PCload#_ line settles and
+then is used at the clock mid-point. Yay!!
+
+I tried to run ttt but I forgot that I haven't changed the Decode ROM
+to have the PPR instruction yet, so I'll do that soon. Things to do:
+
+ + update the Decode ROM
+ + update the schematic
+ + update the PCB layout
+ + update the build instructions
+ + try some jump instructions with shorter microsequences
+
+
