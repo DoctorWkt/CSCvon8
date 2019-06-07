@@ -888,8 +888,6 @@ F 3 "" H 9050 4800 50  0001 C CNN
 $EndComp
 Text GLabel 8300 4800 0    60   Input ~ 0
 Clk
-Wire Wire Line
-	8550 4800 8300 4800
 Text GLabel 8250 4700 0    60   Input ~ 0
 Lo
 Text GLabel 8250 5000 0    60   Input ~ 0
@@ -1040,38 +1038,8 @@ F 3 "~" H 3700 5950 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	9550 4800 9900 4800
-Text GLabel 5850 4700 0    60   Input ~ 0
-~PCload
-$Comp
-L power:VCC #PWR0104
-U 1 1 5CF39113
-P 6100 4200
-F 0 "#PWR0104" H 6100 4050 50  0001 C CNN
-F 1 "VCC" H 6100 4350 50  0000 C CNN
-F 2 "" H 6100 4200 50  0001 C CNN
-F 3 "" H 6100 4200 50  0001 C CNN
-	1    6100 4200
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	6100 4200 6100 4300
-Text Notes 5200 5100 0    60   ~ 0
-This capacitor minimises glitches\nin PCload# due to glitches in the\nDecode ROM output.
-$Comp
-L Device:C_Small C2
-U 1 1 5CF599C2
-P 6100 4400
-F 0 "C2" H 6192 4446 50  0000 L CNN
-F 1 "330pF" H 6192 4355 50  0000 L CNN
-F 2 "Capacitor_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm" H 6100 4400 50  0001 C CNN
-F 3 "~" H 6100 4400 50  0001 C CNN
-	1    6100 4400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5850 4700 6100 4700
-Wire Wire Line
-	6100 4700 6100 4500
+	8300 4800 8550 4800
 Wire Bus Line
 	2500 4800 2500 5850
 Wire Bus Line

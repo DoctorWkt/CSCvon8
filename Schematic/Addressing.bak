@@ -600,8 +600,6 @@ Wire Wire Line
 	8550 3600 8550 3650
 Text GLabel 7300 3400 2    60   Input ~ 0
 Lo
-Text GLabel 5250 6050 0    60   Input ~ 0
-Lo
 Wire Wire Line
 	5250 6050 5450 6050
 Text Notes 1550 7350 0    60   ~ 0
@@ -695,7 +693,7 @@ L Schematic-rescue:74LS251-RESCUE-Schematic IC11
 U 1 1 5CDB88DB
 P 6150 5400
 F 0 "IC11" H 6150 6275 50  0000 C CNN
-F 1 "74LS251-RESCUE-Schematic" H 6150 6184 50  0000 C CNN
+F 1 "74HCT151" H 6150 6184 50  0000 C CNN
 F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 6150 5400 50  0001 C CNN
 F 3 "" H 6150 5400 50  0001 C CNN
 	1    6150 5400
@@ -707,4 +705,6 @@ Wire Bus Line
 	4000 650  4000 3800
 Wire Bus Line
 	1950 1350 1950 4900
+Text GLabel 5250 6050 0    60   Input ~ 0
+Clk
 $EndSCHEMATC
