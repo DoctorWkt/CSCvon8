@@ -6,7 +6,7 @@
 `include "74138.v"
 `include "74139.v"
 `include "74161.v"
-`include "74251.v"
+`include "74151.v"
 `include "74574.v"
 `include "74593.v"
 `include "ram.v"
@@ -174,7 +174,7 @@ module ttlcsvon8 (i_clk, reset, PCval);
 
   wire [7:0] jumpInput= { 1'b0, 1'b0, DivByZero, Negative,
 			  Zero, Overflow, Carry, 1'b0 };
-  ttl_74251 jumpLogic( 1'b0, jumpInput, JumpOp, PCload, PCload_bar);
+  ttl_74151 jumpLogic( i_clk, jumpInput, JumpOp, PCload, PCload_bar);
 
   // I can't get the databus to work when connected to the ALU and memory,
   // so I'm using a multiplexer for now.

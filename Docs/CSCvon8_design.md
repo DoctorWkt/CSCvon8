@@ -111,7 +111,7 @@ construct it.
 | A reg | 74HCT574 | 
 | Breg | 74HCT574 | 
 | PC | Two 74LS593 | 
-| Jump Logic | 74HCT251 | 
+| Jump Logic | 74HCT151 | 
 | Decode Logic | M27C1024 64Kx16 EEPROM | 
 | Microsequencer | 74HCT161 |
 | Other chips | 74HCT138, 74HTC139 |
@@ -154,7 +154,7 @@ and/or a zero result (Z).
 
 The D, N, Z, V and C bits are sent to the Jump logic along with two
 UART status lines: UART is ready to send a character, UART has a character
-ready to be received. The Jump logic is a 74HCT251 8:1 multiplexer.
+ready to be received. The Jump logic is a 74HCT151 8:1 multiplexer.
 This is controlled by  three *Jumpsel* bits using this table:
 
 | Jumpsel | PCjump (active low) is set to |

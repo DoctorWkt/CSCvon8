@@ -5,7 +5,6 @@ Component Count:,55,
 ,,
 Ref,Value,Footprint
 C1,10uF,Capacitors_THT:CP_Radial_D5.0mm_P2.00mm
-C2,330pF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
 C3,220uF,Capacitors_THT:CP_Radial_D8.0mm_P5.00mm
 C4,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
 C5,0.1uF,Capacitors_THT:C_Disc_D4.7mm_W2.5mm_P5.00mm
@@ -37,7 +36,7 @@ IC7,74HCT574,Housings_DIP:DIP-20_W7.62mm_Socket
 IC8,74HCT574,Housings_DIP:DIP-20_W7.62mm_Socket
 IC9,74LS593,Housings_DIP:DIP-20_W7.62mm_Socket
 IC10,74LS593,Housings_DIP:DIP-20_W7.62mm_Socket
-IC11,74HCT251,Package_DIP:DIP-16_W7.62mm_Socket
+IC11,74HCT151,Package_DIP:DIP-16_W7.62mm_Socket
 IC12,74HCT574,Housings_DIP:DIP-20_W7.62mm_Socket
 IC13,74HCT161,Housings_DIP:DIP-16_W7.62mm_Socket
 IC14,AT27C1024-70PU,Housings_DIP:DIP-40_W15.24mm_Socket

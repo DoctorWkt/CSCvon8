@@ -7,22 +7,25 @@ or you have ordered your own PCB from the Kicad PCB layout.
 ## PCB Versions
 
 One thing that you should be aware of is that there are two versions of the
-PCB. If you have the PCB with the "2019/05/08" version number at the
-bottom-right, then you will need to mount the UM245R UART with the USB
-connector pointing downwards. And on the underside of the PCB, you will
-need to wire a 330pF capacitor from pin 6 of the 74HCT251 Jump Logic chip
-to Vcc. This helps to prevent a glitch with the Jump instructions. The
-completed "2019/05/08" PCB looks like this:
+PCB: the "2019/05/08" version and the "2019/06/07" version.
+
+If you have the "2019/06/07" version of the PCB, then the UM245R UART is
+oriented so that the USB connect points upwards to the edge of the PCB.
+
+If you have the "2019/05/08" version of the PCB, then the UM245R UART is
+oriented so that the USB connect points downwards towards the IC13
+microsequencer chip. Also, you need to disconnect pin 7 of the IC11
+74HCT151 Jump Logic chip and run a wire from this pin to pin 4 of the 
+IC16 74HCT138 chip. This pin was originally wired to ground, but it
+should be wired to the system clock signal. Here are a couple of pictures
+of the added wire:
+
+![](Figs/151_wire1.jpg) &nbsp;&nbsp; ![](Figs/151_wire2.jpg)
+
+And here is a picture of the PCB before the need for the wire was
+discovered:
 
 ![](Figs/pcb_20190601.jpg)
-
-If you have the "2019/06/01" version of the PCB, then the UM245R is
-oriented so that the USB connect points upwards to the edge of the PCB.
-Also, there is a 330pF capacitor, C2, right next to the IC9 74LS593
-chip, as shown in these pictures.
-
-![](Figs/UM245R_vertical.png) ![](Figs/C2_capacitor.png)
-
 
 ## Bill of Materials
 
@@ -134,7 +137,7 @@ For these instructions to work, you need:
  + the Decode ROM so that it can generate most of the control lines
  + the 74HCT138 databus reader demultiplexer, as it generates the *IRload* line
  + the 74HCT04 inverter as it inverts *IRload* to create *IRload#*
- + the 74HCT251 8:1 multiplexer, as this will stop the PC from jumping
+ + the 74HCT151 8:1 multiplexer, as this will stop the PC from jumping
    and ensure that it increments instead
 
 So the steps are:
@@ -157,12 +160,9 @@ So the steps are:
    need a ZIF socket here.
  + Solder in the IC16 74HCT138 3:8 demultiplexer and associated capacitor.
  + Solder in the IC17 74HCT04 inverter and associated capacitor.
- + Solder in the IC11 74HCT251 8:1 multiplexer and associated capacitor.
-   Also remember to solder in the C2 330pF capacitor, either next to IC11
-   or underneath the board from pin 6 of IC11 to pin 16 of IC11. Here's
-   my board:
-
-   ![](Figs/glitch_cap.jpg)
+ + Solder in the IC11 74HCT151 8:1 multiplexer and associated capacitor.
+   Also remember to leave pin 7 out and wire it to pin 4 of IC16, if you have
+   the "2019/05/08" version of the PCB.
 
  + I would also recommend installing the pin socket to display the data bus
    value, and build a LED array for the IR and another LED array for the
