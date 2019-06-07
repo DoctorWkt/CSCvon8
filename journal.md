@@ -4133,4 +4133,8 @@ to have the PPR instruction yet, so I'll do that soon. Things to do:
  + update the build instructions
  + try some jump instructions with shorter microsequences
 
-
+Decode ROM A has version 1.24 of the microcode. This has the PPR
+PPR instruction and all the jump instructions with shorter microcode.
+I've run both wktlife and ttt at 3.57MHz after downloading them
+with the Monitor ROM. They both run perfectly, and the downloads were
+successful. I'm very happy right now!!! I declare the hardware "solid".

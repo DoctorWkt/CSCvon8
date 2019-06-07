@@ -385,58 +385,37 @@ START := MEMresult IRload PCincr
 # Always jump to $XXXX
 70 JMP: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult 0 ARena
-	ALUresult 0 ARena
-	ALUresult 0 ARena
 	ALUresult 0 ARena JumpZero
 	uSreset
 
 # Comparisons between A and B
 71 JEQ: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult A-B ARena
-	ALUresult A-B ARena
-	ALUresult A-B ARena
 	ALUresult A-B ARena JumpZero
 	uSreset
 
 72 JNE: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult A-Bspecial ARena
-	ALUresult A-Bspecial ARena
-	ALUresult A-Bspecial ARena
 	ALUresult A-Bspecial ARena JumpZero
 	uSreset
 
 73 JGT: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult B-A ARena
-	ALUresult B-A ARena
-	ALUresult B-A ARena
 	ALUresult B-A ARena JumpNeg
 	uSreset
 
 74 JLT: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult A-B ARena
-	ALUresult A-B ARena
-	ALUresult A-B ARena
 	ALUresult A-B ARena JumpNeg
 	uSreset
 
 75 JGE: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult B-A-1 ARena
-	ALUresult B-A-1 ARena
-	ALUresult B-A-1 ARena
 	ALUresult B-A-1 ARena JumpNeg
 	uSreset
 
 76 JLE: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult A-B-1 ARena
-	ALUresult A-B-1 ARena
-	ALUresult A-B-1 ARena
 	ALUresult A-B-1 ARena JumpNeg
 	uSreset
 
@@ -448,40 +427,26 @@ START := MEMresult IRload PCincr
 78 JIU: MEMresult AHload PCincr
 	MEMresult ALload PCincr
 	JumpNoRx ARena
-	JumpNoRx ARena
-	JumpNoRx ARena
 	uSreset
 
 # Sign value of A and B registers
 79 JAZ: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult A ARena
-	ALUresult A ARena
-	ALUresult A ARena
 	ALUresult A ARena JumpZero
 	uSreset
 	
 7A JBZ: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult B ARena
-	ALUresult B ARena
-	ALUresult B ARena
 	ALUresult B ARena JumpZero
 	uSreset
 	
 7B JAN: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult A ARena
-	ALUresult A ARena
-	ALUresult A ARena
 	ALUresult A ARena JumpNeg
 	uSreset
 	
 7C JBN: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult B ARena
-	ALUresult B ARena
-	ALUresult B ARena
 	ALUresult B ARena JumpNeg
 	uSreset
 	
@@ -489,41 +454,26 @@ START := MEMresult IRload PCincr
 # Add A+B, jump to $XXXX if there is a carry
 80 TST_A+B_JC:	MEMresult AHload PCincr
 		MEMresult ALload PCincr
-		ALUresult A+B ARena
-		ALUresult A+B ARena
-		ALUresult A+B ARena
 		ALUresult A+B ARena JumpCarry
 		uSreset
 
 81 TST_A-B_JC:	MEMresult AHload PCincr
 		MEMresult ALload PCincr
-		ALUresult A-B ARena
-		ALUresult A-B ARena
-		ALUresult A-B ARena
 		ALUresult A-B ARena JumpCarry
 		uSreset
 
 82 TST_B-A_JC:	MEMresult AHload PCincr
 		MEMresult ALload PCincr
-		ALUresult B-A ARena
-		ALUresult B-A ARena
-		ALUresult B-A ARena
 		ALUresult B-A ARena JumpCarry
 		uSreset
 
 83 TST_A+1_JC:	MEMresult AHload PCincr
 		MEMresult ALload PCincr
-		ALUresult A+1 ARena
-		ALUresult A+1 ARena
-		ALUresult A+1 ARena
 		ALUresult A+1 ARena JumpCarry
 		uSreset
 
 84 TST_B+1_JC:	MEMresult AHload PCincr
 		MEMresult ALload PCincr
-		ALUresult B+1 ARena
-		ALUresult B+1 ARena
-		ALUresult B+1 ARena
 		ALUresult B+1 ARena JumpCarry
 		uSreset
 
