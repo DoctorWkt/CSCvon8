@@ -78,10 +78,11 @@ A common instruction to wait until there is input available on the UART is:
         JIU .   # Jump to this instruction if input unavailable
 ```
 
-The assembler supports the "label,A"  and "label,B" syntax. This has
-the effect of appending the register letter to the end of the opcode name.
-Example: LDA $2000,B becomes LDAB $2000. This requires that the *microcode*
-file contain index instructions with the ,A and ,B suffix.
+The assembler supports the "label,A"  and "label,B" syntax. This uses
+the top byte of the label as a base, and indexes at this base with the
+given register. Note: the bottom byte of the label is treated as zero!
+Note: not all instructions support indexing; read the file *opcodes*
+to determine which instructions support indexing.
 
 The assembler also supports the "label+num" and "label-num" syntax.
 This adds or subtracts a constant decimal value from the label's value.
@@ -93,7 +94,7 @@ The assembler defines some other pseudo-instructions (one so far):
 | Pseudoinstruction | Meaning |
 |--------------------------|-------------|
 | EQU | give a value to a label |
-| ORG | set the address of the next thing to a specific value |
+| ORG | set the address of the next input line to a specific value |
 | STR | Define a NUL-terminated string in memory |
 | LHA | Load the high byte of an address or label into A |
 | LHB | Load the high byte of an address or label into B |
