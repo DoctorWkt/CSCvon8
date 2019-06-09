@@ -4142,4 +4142,6 @@ successful. I'm very happy right now!!! I declare the hardware "solid".
 ## Sat  8 Jun 10:56:33 AEST 2019
 
 I've done all the bullet points from the last journal entry and
-I've brought the _cas_ documentation up to date.
+I've brought the _cas_ documentation up to date. I also updated
+my [blog entries](https://minnie.tuhs.org/Blog/) with more details
+about the jump glitch and the 74LS593s.
