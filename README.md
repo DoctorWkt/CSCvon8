@@ -7,7 +7,7 @@ some RAM and ROM. The CPU requires only seventeen chips, not including the
 clock circuitry.
 A short video is [here](https://www.youtube.com/watch?v=LJe3Z_fGDhg).
 
-![](Docs/Figs/CSCvon8_overview.png) 
+![](Docs/Figs/pcb_20190601.jpg)
 
 The overall design of the CPU is covered in
 [Docs/CSCvon8_design.md](Docs/CSCvon8_design.md). Also read the
