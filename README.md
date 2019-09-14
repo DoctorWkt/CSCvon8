@@ -2,8 +2,7 @@
 
 This repository holds the files for my 8-bit "big brother" CPU to the
 [4-bit Crazy Small CPU](https://minnie.tuhs.org/Programs/CrazySmallCPU/).
-This is a von Neumann style CPU designed with 7400-style logic chips and
-some RAM and ROM. The CPU requires only seventeen chips, not including the
+This is a von Neumann style CPU designed with 7400-style logic chips, 32K of RAM, 32K of ROM and a UART. The CPU requires only seventeen chips, not including the
 clock circuitry.
 A short video is [here](https://www.youtube.com/watch?v=LJe3Z_fGDhg).
 
