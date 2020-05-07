@@ -130,13 +130,13 @@ can perform. Below is the current list of ALU operations.
 
 |0-7 ALU Ops|8-15 ALU Ops |16-23 ALU Ops|24-31 ALU Ops|
 |----------------|-------------------|--------------------|--------------------|
-|       0           |   B-1               |     A*B (high bits) | A ROR B    |
-|       A        |      A+B               |     A*B (low bits) | A AND B    |
+|       0           |   B-1               |     A*B (low bits) | A ROR B    |
+|       A        |      A+B               |     A*B (high bits) | A AND B    |
 |       B          |    A+B+1     |     A/B                | A OR B        |
 |       -A          |   A-B               |     A%B        | A XOR B       |
 |       -B          | A-B (special) |   A &lt;&lt; B  | NOT A      |
-|       A+1         |   B-A               | A &gt;&gt; B arithmetic | NOT B |
-|       B+1         |   A-B-1     | A &gt;&gt; B logical | A+B (BCD) |
+|       A+1         |   B-A               | A &gt;&gt; B logical | NOT B |
+|       B+1         |   A-B-1     | A &gt;&gt; B arithmetic | A+B (BCD) |
 |       A-1         |   B-A-1     | A ROL B        | A-B (BCD) |
 
 
